@@ -69,7 +69,7 @@ class PostApiService {
   static Future<String?> callApi({
     required BuildContext context,
     required String url,
-    required Map<String, dynamic> body,
+    Map<String, dynamic>? body,
     String? token,
   }) async {
     try {
@@ -174,10 +174,8 @@ class PostApiServices {
       log("DATA : ${response.data}");
       log("===================================");
 
-      if (response.statusCode != null &&
-          response.statusCode! >= 200 &&
-          response.statusCode! < 300) {
-        return response.data.toString();
+      if (response.statusCode! >= 200 && response.statusCode! < 300) {
+        return response.data;
       } else {
         AppMessage.show(context, "Server Error : ${response.statusCode}");
         return null;

@@ -46,6 +46,14 @@ class SpotBillingScreen extends ConsumerWidget {
       "Adv.",
       "Rev.fa",
     ];
+    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+
+    /// KEYBOARD CLOSED
+    if (!isKeyboardOpen) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        spotBillingController.updateState(isDoneByApi: false);
+      });
+    }
     return PopScope(
       canPop: false, // Prevents the default back button behavior
       onPopInvokedWithResult: (didPop, result) async {
@@ -130,11 +138,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       (index) => patientTitles[index],
                     ),
                     onSelected: (value) {
-                      spotBillingController.updateState(
-                        patientDetailsController: TextEditingController(
-                          text: value,
-                        ),
-                      );
+                      spotBillingState.patientDetailsController.text = value;
                     },
                   ),
                   SizedBox(height: 8),
@@ -152,6 +156,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     label: 'Phone',
                     hint: 'Phone Number',
                     icon: Icons.phone,
+                    controller: spotBillingState.patientPhoneController,
                   ),
 
                   //SizedBox(height: 8),
@@ -159,6 +164,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     label: 'Email',
                     hint: 'Email',
                     icon: Icons.email,
+                    controller: spotBillingState.patientEmailController,
                   ),
 
                   // SizedBox(height: 8),
@@ -180,11 +186,7 @@ class SpotBillingScreen extends ConsumerWidget {
 
                       final age = spotBillingController.calculateAge(dob);
 
-                      spotBillingController.updateState(
-                        ageController: TextEditingController(
-                          text: age.toString(),
-                        ),
-                      );
+                      spotBillingState.ageController.text = age.toString();
                       log(dob.year.toString());
 
                       log(spotBillingState.age);
@@ -220,9 +222,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     isSuffix: true,
                     isReadOnly: true,
                     onChanged: (p0) {
-                      spotBillingController.updateState(
-                        genderController: TextEditingController(text: p0),
-                      );
+                      spotBillingState.genderController.text = p0;
                     },
                   ),
                   SizedBox(height: 8),
@@ -238,27 +238,96 @@ class SpotBillingScreen extends ConsumerWidget {
                   TypeTextFormField(
                     hintText: 'Done by *',
                     textController: spotBillingState.doneByController,
-                    onChanged: (p0) {
-                      spotBillingController.doneBySearch(
-                        searchText: spotBillingState.doneByController.text,
-                        context: context,
-                      );
+                    onChanged: (value) {
+                      spotBillingController.updateState(isDoneByApi: true);
+                      if (spotBillingState.isDoneByApi && value.isEmpty) {
+                        List<String> newSearchList = [];
+
+                        for (var item
+                            in spotBillingState.doneByAccountListApi) {
+                          newSearchList.add(item.name ?? '');
+                        }
+                        spotBillingController.updateState(
+                          doneByAccountListSearch: newSearchList,
+                        );
+                      } else {
+                        spotBillingController.doneBySearch(
+                          searchText: value,
+                          context: context,
+                        );
+                      }
+                      // spotBillingController.doneBySearch(
+                      //   searchText: value,
+                      //   context: context,
+                      // );
                     },
                   ),
+                  if (spotBillingState.doneByAccountListSearch.isNotEmpty ||
+                      spotBillingState.isDoneByApi == true)
+                    Container(
+                      height: 70,
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: const Color.fromARGB(255, 238, 240, 238),
+                        border: Border.all(color: AppColors.appGrey, width: 2),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: spotBillingState.doneByAccountListSearch.isEmpty
+                          ? Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Item not found.',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 13,
+                                ),
+                              ),
+                            )
+                          : ListView.separated(
+                              padding: const EdgeInsets.all(8),
+                              itemCount: spotBillingState
+                                  .doneByAccountListSearch
+                                  .length,
+                              itemBuilder: (context, index) {
+                                final accountList = spotBillingState
+                                    .doneByAccountListSearch[index];
 
+                                return InkWell(
+                                  splashColor: Colors.transparent,
+                                  highlightColor: Colors.transparent,
+                                  hoverColor: Colors.transparent,
+                                  focusColor: Colors.transparent,
+                                  onTap: () {
+                                    spotBillingState.doneByController.text =
+                                        accountList;
+
+                                    spotBillingController.updateState(
+                                      doneByAccountListSearch: [],
+                                      isDoneByApi: false,
+                                    );
+                                  },
+                                  child: Text(
+                                    accountList,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                );
+                              },
+                              separatorBuilder: (context, index) =>
+                                  SizedBox(height: 10),
+                            ),
+                    ),
                   SizedBox(height: 18),
 
                   ShowMenu(
-                    heading: spotBillingState.assignedByController.text.isEmpty
+                    heading: spotBillingState.referredByController.text.isEmpty
                         ? 'Referred by'
-                        : spotBillingState.assignedByController.text,
+                        : spotBillingState.referredByController.text,
                     items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
                     onSelected: (value) {
-                      spotBillingController.updateState(
-                        assignedByController: TextEditingController(
-                          text: value,
-                        ),
-                      );
+                      spotBillingState.referredByController.text = value;
                     },
                   ),
                   SizedBox(height: 18),
@@ -269,11 +338,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         : spotBillingState.assignedByController.text,
                     items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
                     onSelected: (value) {
-                      spotBillingController.updateState(
-                        assignedByController: TextEditingController(
-                          text: value,
-                        ),
-                      );
+                      spotBillingState.assignedByController.text = value;
                     },
                   ),
                   SizedBox(height: 18),
@@ -315,10 +380,12 @@ class SpotBillingScreen extends ConsumerWidget {
                         CommonTextField(
                           hint: 'ABHA ID',
                           icon: Icons.insert_drive_file_outlined,
+                          controller: spotBillingState.abhaIdController,
                         ),
                         CommonTextField(
                           hint: 'Passport Number',
                           icon: Icons.password_sharp,
+                          controller: spotBillingState.passPortNumberController,
                         ),
                         CommonTextField(
                           hint: 'Out Doctor',
@@ -327,6 +394,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         CommonTextField(
                           hint: 'Note',
                           icon: Icons.note_alt_outlined,
+                          controller: spotBillingState.noteController,
                         ),
                       ],
                     ),

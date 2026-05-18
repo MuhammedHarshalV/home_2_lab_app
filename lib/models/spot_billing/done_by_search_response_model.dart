@@ -35,10 +35,10 @@ class DoneBySearchResponseModel {
 }
 
 class AccountsList {
-  int? key;
+  num? key;
   String? name;
   String? type;
-  int? schemeId;
+  num? schemeId;
 
   AccountsList({this.key, this.name, this.type, this.schemeId});
 

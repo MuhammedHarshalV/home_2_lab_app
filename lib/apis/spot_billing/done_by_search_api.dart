@@ -10,7 +10,7 @@ class DoneBySearchApi {
     required BuildContext context,
   }) async {
     try {
-      final response = await PostApiServices.callApi(
+      final response = await PostApiService.callApi(
         context: context,
         url: '${ApiConstants.baseUrl}${ApiConstants.doneBySearchApi}',
       );
@@ -23,16 +23,17 @@ class DoneBySearchApi {
           doneBySearchResponseModelFromJson(response);
 
       log('===============response :${responseBody.accountsList}');
-      List<AccountsList> newAccountList = [];
+      // List<AccountsList> newAccountList = [];
 
-      for (var item in responseBody.accountsList ?? []) {
-        final account = AccountsList.fromJson(item);
+      // for (var item in responseBody.accountsList ?? []) {
+      //   final account = AccountsList.fromJson(item);
 
-        if (account.type == "Staff") {
-          newAccountList.add(account);
-        }
-      }
-      return newAccountList;
+      //   if (account.type == "Staff") {
+      //     newAccountList.add(account);
+      //   }
+      // }
+      // log('>>>>>>>>>>>new list : $newAccountList');
+      return responseBody.accountsList ?? [];
     } catch (e) {
       log("++++++++++++ catch log ${e.toString()}");
       return [];

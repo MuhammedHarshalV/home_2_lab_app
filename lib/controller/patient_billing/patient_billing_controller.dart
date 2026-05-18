@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/apis/spot_billing/done_by_search_api.dart';
 import 'package:icon_infoware/apis/spot_billing/search_patient_api.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_state.dart';
+import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 
@@ -25,6 +26,9 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           referredByController: TextEditingController(),
           assignedByController: TextEditingController(),
           doneByController: TextEditingController(),
+          abhaIdController: TextEditingController(),
+          passPortNumberController: TextEditingController(),
+          noteController: TextEditingController(),
         ),
       );
 
@@ -54,55 +58,84 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
     required String searchText,
     required BuildContext context,
   }) async {
-    final response = await DoneBySearchApi.doneBySearch(context: context);
-    log('00000000000${response.toString()}');
+    if (state.doneByAccountListApi.isEmpty) {
+      final response = await DoneBySearchApi.doneBySearch(context: context);
+      log('00000000000${response.toString()}');
+      List<AccountsList> newAccountList = [];
+
+      for (var item in response) {
+        final account = item;
+
+        if (account.type == "Staff") {
+          newAccountList.add(account);
+        }
+      }
+      log('>>>>>>>>>>>new list : $newAccountList');
+      state = state.copyWith(
+        doneByAccountListApi: newAccountList,
+        isDoneByApi: true,
+      );
+    } else {
+      final searchTexts = searchText.toLowerCase();
+
+      if (searchTexts.isEmpty) {
+        state = state.copyWith(doneByAccountListSearch: [], isDoneByApi: true);
+      } else {
+        List<String> newsearchList = [];
+
+        for (var item in state.doneByAccountListApi) {
+          final name = item.name?.toLowerCase() ?? '';
+
+          if (name.contains(searchTexts)) {
+            newsearchList.add(item.name ?? '');
+
+            log('====================new search account list : $newsearchList');
+          }
+        }
+
+        state = state.copyWith(
+          doneByAccountListSearch: newsearchList,
+          isDoneByApi: true,
+        );
+      }
+    }
+
+    // state = state.copyWith(
+    //   doneByAccountListApi: newAccountList,
+    //   isDoneByApi: true,
+    // );
   }
 
   /// COMMON UPDATE METHOD
   void updateState({
-    TextEditingController? patientSearchController,
-    TextEditingController? patientDetailsController,
-    TextEditingController? patientNameController,
-    TextEditingController? patientPhoneController,
-    TextEditingController? patientEmailController,
-    TextEditingController? ageController,
-
-    TextEditingController? patientDateOfBirthController,
     String? age,
-    TextEditingController? genderController,
-    TextEditingController? addressController,
-    TextEditingController? referredByController,
-    TextEditingController? assignedByController,
-    TextEditingController? doneByController,
+
     List<PatientsList>? searchPatientList,
+    List<AccountsList>? doneByAccountListApi,
+    List<String>? doneByAccountListSearch,
+
     bool? isSubmitted,
     bool? isAge,
     bool? isLoading,
     bool? isTextClear,
+    bool? isDoneByApi,
 
     bool? isAdditional,
     bool? isUrgent,
     GlobalKey<FormState>? formKey,
   }) {
     state = state.copyWith(
-      patientSearchController: patientSearchController,
-      patientDetailsController: patientDetailsController,
-      patientNameController: patientNameController,
-      patientPhoneController: patientPhoneController,
-      patientEmailController: patientEmailController,
-      patientDateOfBirthController: patientDateOfBirthController,
-      ageController: ageController,
       age: age,
-      genderController: genderController,
-      addressController: addressController,
-      referredByController: referredByController,
-      assignedByController: assignedByController,
-      doneByController: doneByController,
+
       searchPatientList: searchPatientList,
+      doneByAccountListApi: doneByAccountListApi,
+      doneByAccountListSearch: doneByAccountListSearch,
+
       isSubmitted: isSubmitted,
       isAge: isAge,
       isLoading: isLoading,
       isTextClear: isTextClear,
+      isDoneByApi: isDoneByApi,
 
       isAdditional: isAdditional,
       isUrgent: isUrgent,

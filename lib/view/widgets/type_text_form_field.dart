@@ -9,6 +9,7 @@ class TypeTextFormField extends StatelessWidget {
 
   final bool isReadOnly;
   final Function(String)? onChanged;
+  final Function(Function)? onChangedFunction;
 
   const TypeTextFormField({
     super.key,
@@ -19,6 +20,7 @@ class TypeTextFormField extends StatelessWidget {
 
     this.isReadOnly = false,
     this.onChanged,
+    this.onChangedFunction,
   });
 
   @override
@@ -28,7 +30,7 @@ class TypeTextFormField extends StatelessWidget {
       child: TextFormField(
         readOnly: isReadOnly ? true : false,
         controller: textController,
-
+        onChanged: onChanged,
         // VALIDATION ONLY HERE
         validator: (value) {
           if (value == null || value.isEmpty) {

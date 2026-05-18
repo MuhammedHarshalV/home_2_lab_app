@@ -146,6 +146,24 @@ class SearchBarContainer extends ConsumerWidget {
                           onTap: () {
                             spotBillingState.patientSearchController.text =
                                 patient.patName ?? '';
+                            spotBillingState.patientNameController.text =
+                                patient.patName ?? '';
+                            spotBillingState.patientDetailsController.text =
+                                patient.namePrefix ?? '';
+                            spotBillingState.patientPhoneController.text =
+                                patient.patPhno ?? '';
+                            spotBillingState.patientEmailController.text =
+                                patient.patEmail ?? '';
+                            spotBillingState.ageController.text =
+                                patient.patAge != null
+                                ? patient.patAge.toString()
+                                : '';
+                            spotBillingState.genderController.text =
+                                patient.patGender ?? '';
+                            spotBillingState.addressController.text =
+                                patient.patAddress ?? '';
+                            spotBillingState.passPortNumberController.text =
+                                patient.passport ?? '';
 
                             spotBillingController.updateState(
                               searchPatientList: [],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 
 class PatientBillingState {
@@ -9,7 +10,9 @@ class PatientBillingState {
   final TextEditingController patientEmailController;
   final TextEditingController patientDateOfBirthController;
   final TextEditingController ageController;
-
+  final TextEditingController abhaIdController;
+  final TextEditingController passPortNumberController;
+  final TextEditingController noteController;
   final String age;
   final TextEditingController genderController;
   final TextEditingController addressController;
@@ -18,12 +21,15 @@ class PatientBillingState {
   final TextEditingController doneByController;
 
   final List<PatientsList> searchPatientList;
+  final List<AccountsList> doneByAccountListApi;
+  final List<String> doneByAccountListSearch;
 
   final bool isSubmitted;
   final bool isAge;
   final bool isAdditional;
   final bool isLoading;
   final bool isTextClear;
+  final bool isDoneByApi;
 
   final bool isUrgent;
   final GlobalKey<FormState> formKey;
@@ -32,10 +38,14 @@ class PatientBillingState {
     this.age = '',
     required this.formKey,
     this.searchPatientList = const [],
+    this.doneByAccountListApi = const [],
+    this.doneByAccountListSearch = const [],
+
     this.isSubmitted = false,
     this.isAge = false,
     this.isLoading = false,
     this.isTextClear = false,
+    this.isDoneByApi = false,
 
     this.isAdditional = false,
     this.isUrgent = false,
@@ -51,6 +61,9 @@ class PatientBillingState {
     required this.assignedByController,
     required this.doneByController,
     required this.ageController,
+    required this.abhaIdController,
+    required this.passPortNumberController,
+    required this.noteController,
   });
 
   PatientBillingState copyWith({
@@ -60,6 +73,9 @@ class PatientBillingState {
     TextEditingController? patientPhoneController,
     TextEditingController? patientEmailController,
     TextEditingController? patientDateOfBirthController,
+    TextEditingController? abhaIdController,
+    TextEditingController? passPortNumberController,
+    TextEditingController? noteController,
     String? age,
     TextEditingController? genderController,
     TextEditingController? ageController,
@@ -69,10 +85,14 @@ class PatientBillingState {
     TextEditingController? assignedByController,
     TextEditingController? doneByController,
     List<PatientsList>? searchPatientList,
+    List<AccountsList>? doneByAccountListApi,
+    List<String>? doneByAccountListSearch,
+
     bool? isSubmitted,
     bool? isAge,
     bool? isLoading,
     bool? isTextClear,
+    bool? isDoneByApi,
 
     bool? isAdditional,
     bool? isUrgent,
@@ -93,6 +113,10 @@ class PatientBillingState {
           patientEmailController ?? this.patientEmailController,
       patientDateOfBirthController:
           patientDateOfBirthController ?? this.patientDateOfBirthController,
+      abhaIdController: abhaIdController ?? this.abhaIdController,
+      passPortNumberController:
+          passPortNumberController ?? this.passPortNumberController,
+      noteController: noteController ?? this.noteController,
       age: age ?? this.age,
       genderController: genderController ?? this.genderController,
       addressController: addressController ?? this.addressController,
@@ -100,8 +124,14 @@ class PatientBillingState {
       assignedByController: assignedByController ?? this.assignedByController,
       doneByController: doneByController ?? this.doneByController,
       searchPatientList: searchPatientList ?? this.searchPatientList,
+      doneByAccountListApi: doneByAccountListApi ?? this.doneByAccountListApi,
+      doneByAccountListSearch:
+          doneByAccountListSearch ?? this.doneByAccountListSearch,
+
       isSubmitted: isSubmitted ?? this.isSubmitted,
       isAge: isAge ?? this.isAge,
+      isDoneByApi: isDoneByApi ?? this.isDoneByApi,
+
       isTextClear: isTextClear ?? this.isTextClear,
       isLoading: isLoading ?? this.isLoading,
       isAdditional: isAdditional ?? this.isAdditional,
