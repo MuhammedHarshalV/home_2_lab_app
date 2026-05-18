@@ -10,53 +10,42 @@ import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
-import 'package:icon_infoware/view/widgets/date_of_birth_container.dart';
+import 'package:icon_infoware/view/screens/spot_billing_screen/widget/date_of_birth_container.dart';
 import 'package:icon_infoware/view/widgets/spot_billing_popup.dart';
 import 'package:icon_infoware/view/widgets/top_texts.dart';
 
 import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
 import 'package:intl/intl.dart';
 
-
-class SpotBillingScreen extends ConsumerStatefulWidget {
+class SpotBillingScreen extends ConsumerWidget {
   const SpotBillingScreen({super.key});
 
   @override
-  ConsumerState<SpotBillingScreen> createState() => _SpotBillingScreenState();
-}
-
-class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
-  // final _formKey = GlobalKey<FormState>();
-  // final TextEditingController namecontroller = TextEditingController();
-  // final TextEditingController agecontroller = TextEditingController();
-  // final TextEditingController gendercontroller = TextEditingController();
-  // final TextEditingController doneBycontroller = TextEditingController();
-  // final TextEditingController freecontroller = TextEditingController();
-  // final TextEditingController patientSearchcontroller = TextEditingController();
-  // final TextEditingController patientNameController = TextEditingController();
-
-  // //final TextEditingController freecontroller = TextEditingController();
-
-  // final TextEditingController dateOfBirthcontroller = TextEditingController();
-
-  // @override
-  // void dispose() {
-  //   namecontroller.dispose();
-  //   agecontroller.dispose();
-  //   gendercontroller.dispose();
-  //   doneBycontroller.dispose();
-  //   freecontroller.dispose();
-  //   super.dispose();
-  // }
-
-  @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
     log('initial');
-    //log(spotBillingState.searchPatientList[0].toString());
-
+    log(spotBillingState.searchPatientList.length.toString());
+    final List<String> patientTitles = [
+      "Mr.",
+      "Mrs.",
+      "Ms.",
+      "Miss.",
+      "Master.",
+      "Baby.",
+      "B/O.",
+      "Per.",
+      "Fr.",
+      "Sist.",
+      "Smt.",
+      "Sri.",
+      "C/O Hosp.",
+      "Km.",
+      "Justice.",
+      "Adv.",
+      "Rev.fa",
+    ];
     return PopScope(
       canPop: false, // Prevents the default back button behavior
       onPopInvokedWithResult: (didPop, result) async {
@@ -122,76 +111,10 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                   TopText(heading: 'Patient Search'),
                   SizedBox(height: 8),
 
-                  // Row(
-                  //   children: [
-                  //     Expanded(
-                  //       child: TypeContainer(
-                  //         hintText: 'Search Patients',
-                  //         textController: patientSearchcontroller,
-                  //       ),
-                  //     ),
-                  //     SizedBox(width: 8),
-                  //     Container(
-                  //       decoration: BoxDecoration(
-                  //         color: AppColors.appPrimaryColor,
-                  //         borderRadius: BorderRadius.circular(10),
-                  //       ),
-                  //       padding: EdgeInsets.all(16),
-                  //       child: Icon(Icons.search, color: AppColors.appWhite),
-                  //     ),
-                  //   ],
-                  // ),
-                  // TypeContainer(
-                  //   items: List.generate(
-                  //     spotBillingState.searchPatientList.length,
-                  //     (index) =>
-                  //         spotBillingState.searchPatientList[index].patName ??
-                  //         '',
-                  //   ),
-                  //   hintText: 'Search Patients',
-                  //   textController: patientSearchcontroller,
-                  //   onSearchTap: () async {
-                  //     log("Search clicked: ${patientSearchcontroller.text}");
-                  //     if (patientSearchcontroller.text.length > 1) {
-                  //       await spotBillingController.searchPatient(
-                  //         context: context,
-                  //         body: patientSearchcontroller.text,
-                  //       );
-                  //     }
-                  //   },
-                  // ),
                   SearchBarContainer(
                     textController: spotBillingState.patientSearchController,
                   ),
 
-                  // SizedBox(height: 3),
-                  // Container(
-                  //   height: 400,
-                  //   width: double.infinity,
-                  //   decoration: BoxDecoration(
-                  //     color: const Color.fromARGB(255, 238, 240, 238),
-                  //     border: Border.all(color: AppColors.appGrey, width: 2),
-                  //     borderRadius: BorderRadius.circular(10),
-                  //   ),
-                  //   child: SingleChildScrollView(
-                  //     child: Padding(
-                  //       padding: const EdgeInsets.all(8.0),
-                  //       child: Column(
-                  //         crossAxisAlignment: CrossAxisAlignment.start,
-                  //         spacing: 2,
-                  //         children: List.generate(
-                  //           spotBillingState.searchPatientList.length,
-                  //           (index) => Text(
-                  //             spotBillingState
-                  //                     .searchPatientList[index]
-                  //                     .patName ??
-                  //                 '',
-                  //           ),
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
                   SizedBox(height: 16),
 
                   TopText(heading: 'Patient Details'),
@@ -203,10 +126,8 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                         ? 'Patient Details'
                         : spotBillingState.patientDetailsController.text,
                     items: List.generate(
-                      spotBillingState.searchPatientList.length,
-                      (index) =>
-                          spotBillingState.searchPatientList[index].patName ??
-                          '',
+                      patientTitles.length,
+                      (index) => patientTitles[index],
                     ),
                     onSelected: (value) {
                       spotBillingController.updateState(
@@ -243,17 +164,27 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                   // SizedBox(height: 8),
                   DateOfBirthContainer(
                     hintText: 'Date of Birth',
-                    textController: spotBillingState.patientDateOfBirthController,
+                    textController:
+                        spotBillingState.patientDateOfBirthController,
                     ageSetting: () {
-                      if (spotBillingState.patientDateOfBirthController.text.isEmpty) return;
+                      if (spotBillingState
+                          .patientDateOfBirthController
+                          .text
+                          .isEmpty) {
+                        return;
+                      }
 
-                      final dob = DateFormat(
-                        'dd-MM-yyyy',
-                      ).parse(spotBillingState.patientDateOfBirthController.text);
+                      final dob = DateFormat('dd-MM-yyyy').parse(
+                        spotBillingState.patientDateOfBirthController.text,
+                      );
 
                       final age = spotBillingController.calculateAge(dob);
 
-               spotBillingController.updateState(age: age.toString())  ;    
+                      spotBillingController.updateState(
+                        ageController: TextEditingController(
+                          text: age.toString(),
+                        ),
+                      );
                       log(dob.year.toString());
 
                       log(spotBillingState.age);
@@ -266,8 +197,9 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                       Expanded(
                         child: TypeTextFormField(
                           hintText: 'Age *',
+
                           textController: spotBillingState.ageController,
-                          isReadOnly: true,
+                          //isReadOnly: true,
                         ),
                       ),
                       SizedBox(width: 10),
@@ -288,7 +220,9 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                     isSuffix: true,
                     isReadOnly: true,
                     onChanged: (p0) {
-                      spotBillingController.updateState(genderController: TextEditingController(text: p0));
+                      spotBillingController.updateState(
+                        genderController: TextEditingController(text: p0),
+                      );
                     },
                   ),
                   SizedBox(height: 8),
@@ -297,13 +231,21 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                     label: 'Address',
                     hint: 'Address',
                     icon: Icons.home,
+                    controller: spotBillingState.addressController,
                   ),
                   SizedBox(height: 8),
 
                   TypeTextFormField(
                     hintText: 'Done by *',
                     textController: spotBillingState.doneByController,
+                    onChanged: (p0) {
+                      spotBillingController.doneBySearch(
+                        searchText: spotBillingState.doneByController.text,
+                        context: context,
+                      );
+                    },
                   ),
+
                   SizedBox(height: 18),
 
                   ShowMenu(
@@ -312,7 +254,11 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                         : spotBillingState.assignedByController.text,
                     items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
                     onSelected: (value) {
-                      spotBillingController.updateState(assignedByController: TextEditingController(text: value));
+                      spotBillingController.updateState(
+                        assignedByController: TextEditingController(
+                          text: value,
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 18),
@@ -323,7 +269,11 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                         : spotBillingState.assignedByController.text,
                     items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
                     onSelected: (value) {
-                      spotBillingController.updateState(assignedByController: TextEditingController(text: value));
+                      spotBillingController.updateState(
+                        assignedByController: TextEditingController(
+                          text: value,
+                        ),
+                      );
                     },
                   ),
                   SizedBox(height: 18),
@@ -343,7 +293,7 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                         focusColor: Colors.transparent,
                         onTap: () {
                           spotBillingController.updateState(
-                       isAdditional     :!spotBillingState.isAdditional,
+                            isAdditional: !spotBillingState.isAdditional,
                           );
                         },
                         child: Icon(
@@ -389,8 +339,8 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         onTap: () {
-                          spotBillingController.updateState(isUrgent:
-                            !spotBillingState.isUrgent,
+                          spotBillingController.updateState(
+                            isUrgent: !spotBillingState.isUrgent,
                           );
                         },
                         child: Icon(
@@ -413,9 +363,9 @@ class _SpotBillingScreenState extends ConsumerState<SpotBillingScreen> {
                     focusColor: Colors.transparent,
                     onTap: () {
                       spotBillingController.updateState(isSubmitted: true);
-                      if (spotBillingState. formKey.currentState!.validate()) {
+                      if (spotBillingState.formKey.currentState!.validate()) {
                         // Only update state when form is valid
-                      
+
                         log("Success ");
                         bottomNavController.setIndex(0);
                       } else {

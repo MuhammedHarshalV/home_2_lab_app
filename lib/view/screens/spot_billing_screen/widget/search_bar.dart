@@ -38,13 +38,19 @@ class SearchBarContainer extends ConsumerWidget {
                 child: TextField(
                   controller: textController,
                   keyboardType: TextInputType.text,
-                  onChanged: (value) {
+                  onChanged: (value) async {
                     if (value.length < 2) {
                       spotBillingController.updateState(searchPatientList: []);
+                      if (value.isEmpty) {
+                        spotBillingController.updateState(isTextClear: false);
+                      }
                     } else if (value.length > 1) {
+                      // spotBillingController.updateState(searchPatientList: []);
+                      // await spotBillingController.searchPatient(
+                      //   context: context,
+                      //   body: value,
+                      // );
                       spotBillingController.updateState(isTextClear: true);
-                    } else {
-                      spotBillingController.updateState(isTextClear: false);
                     }
                   },
                   decoration: const InputDecoration(
@@ -61,9 +67,11 @@ class SearchBarContainer extends ConsumerWidget {
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   onTap: () {
+                    spotBillingState.patientSearchController.clear();
                     spotBillingController.updateState(
                       isTextClear: false,
-                      patientSearchController: TextEditingController(text: ''),
+
+                      // patientSearchController: TextEditingController(text: ''),
                       searchPatientList: [],
                     );
                   },
@@ -104,6 +112,8 @@ class SearchBarContainer extends ConsumerWidget {
               ),
             ],
           ),
+          if (spotBillingState.searchPatientList.isNotEmpty)
+            SizedBox(height: 10),
 
           /// SEARCH LIST
           if (spotBillingState.searchPatientList.isNotEmpty)
@@ -121,60 +131,50 @@ class SearchBarContainer extends ConsumerWidget {
                         color: AppColors.appBlack,
                       ),
                     )
-                  : SingleChildScrollView(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 8,
-                          children: List.generate(
-                            spotBillingState.searchPatientList.length,
-                            (index) => InkWell(
-                              splashColor: Colors.transparent,
-                              highlightColor: Colors.transparent,
-                              hoverColor: Colors.transparent,
-                              focusColor: Colors.transparent,
-                              onTap: () {
-                                spotBillingController.updateState(
-                                  patientSearchController:
-                                      TextEditingController(
-                                        text:
-                                            spotBillingState
-                                                .searchPatientList[index]
-                                                .patName ??
-                                            '',
-                                      ),
-                                );
-                                spotBillingController.updateState(
-                                  searchPatientList: [],
-                                );
-                              },
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    spotBillingState
-                                            .searchPatientList[index]
-                                            .patName ??
-                                        '',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                    ),
+                  : ListView.builder(
+                      padding: const EdgeInsets.all(8),
+                      itemCount: spotBillingState.searchPatientList.length,
+                      itemBuilder: (context, index) {
+                        final patient =
+                            spotBillingState.searchPatientList[index];
+
+                        return InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          onTap: () {
+                            spotBillingState.patientSearchController.text =
+                                patient.patName ?? '';
+
+                            spotBillingController.updateState(
+                              searchPatientList: [],
+                            );
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 6),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  patient.patName ?? '',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
                                   ),
-                                  Text(
-                                    "Phone : ${spotBillingState.searchPatientList[index].patPhno ?? ''}",
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
+                                ),
+                                Text(
+                                  "Phone : ${patient.patPhno ?? ''}",
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 12,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        ),
-                      ),
+                        );
+                      },
                     ),
             ),
           if (spotBillingState.searchPatientList.isNotEmpty)

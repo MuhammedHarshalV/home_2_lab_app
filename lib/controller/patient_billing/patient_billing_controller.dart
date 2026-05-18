@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/apis/spot_billing/done_by_search_api.dart';
 import 'package:icon_infoware/apis/spot_billing/search_patient_api.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_state.dart';
 
@@ -46,6 +47,15 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
     } finally {
       state = state.copyWith(isLoading: false);
     }
+  }
+
+  //Search done by api
+  Future<void> doneBySearch({
+    required String searchText,
+    required BuildContext context,
+  }) async {
+    final response = await DoneBySearchApi.doneBySearch(context: context);
+    log('00000000000${response.toString()}');
   }
 
   /// COMMON UPDATE METHOD
@@ -99,11 +109,6 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
       formKey: formKey,
     );
   }
-  // Update Age
-
-  // Update Gender
-
-  // Reset All Fields
 
   int calculateAge(DateTime birthDate) {
     final currentDate = DateTime.now();
