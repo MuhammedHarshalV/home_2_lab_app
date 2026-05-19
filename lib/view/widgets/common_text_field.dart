@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class CommonTextField extends StatelessWidget {
@@ -29,7 +30,7 @@ class CommonTextField extends StatelessWidget {
               fontSize: 14,
             ),
           ),
-        const SizedBox(height: 8),
+        SizedBox(height: 8.h),
         TextField(
           controller: controller,
 
@@ -57,7 +58,7 @@ class CommonTextField extends StatelessWidget {
             contentPadding: const EdgeInsets.symmetric(vertical: 16),
           ),
         ),
-        const SizedBox(height: 20),
+        // SizedBox(height: 20),
       ],
     );
   }

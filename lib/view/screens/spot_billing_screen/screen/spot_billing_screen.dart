@@ -3,12 +3,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/api_constants/base64_image.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
+import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/screen/spot_billing_test_add_screen.dart';
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/date_of_birth_container.dart';
 import 'package:icon_infoware/view/widgets/spot_billing_popup.dart';
@@ -46,14 +48,14 @@ class SpotBillingScreen extends ConsumerWidget {
       "Adv.",
       "Rev.fa",
     ];
-    final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+    // final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
-    /// KEYBOARD CLOSED
-    if (!isKeyboardOpen) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        spotBillingController.updateState(isDoneByApi: false);
-      });
-    }
+    // /// KEYBOARD CLOSED
+    // if (!isKeyboardOpen) {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     spotBillingController.updateState(isDoneByApi: false);
+    //   });
+    // }
     return PopScope(
       canPop: false, // Prevents the default back button behavior
       onPopInvokedWithResult: (didPop, result) async {
@@ -117,16 +119,16 @@ class SpotBillingScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TopText(heading: 'Patient Search'),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
                   SearchBarContainer(
                     textController: spotBillingState.patientSearchController,
                   ),
 
-                  SizedBox(height: 16),
+                  SizedBox(height: 16.h),
 
                   TopText(heading: 'Patient Details'),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   // ShowMenu(heading: 'Ms'),
                   ShowMenu(
                     heading:
@@ -141,7 +143,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       spotBillingState.patientDetailsController.text = value;
                     },
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
                   TopText(heading: 'Patient Name *'),
                   SizedBox(height: 7),
@@ -151,13 +153,14 @@ class SpotBillingScreen extends ConsumerWidget {
                     isPreffix: true,
                   ),
 
-                  // SizedBox(height: 8),
+                  // SizedBox(height: 8.h),
                   CommonTextField(
                     label: 'Phone',
                     hint: 'Phone Number',
                     icon: Icons.phone,
                     controller: spotBillingState.patientPhoneController,
                   ),
+                  SizedBox(height: 20.h),
 
                   //SizedBox(height: 8),
                   CommonTextField(
@@ -166,8 +169,9 @@ class SpotBillingScreen extends ConsumerWidget {
                     icon: Icons.email,
                     controller: spotBillingState.patientEmailController,
                   ),
+                  SizedBox(height: 20.h),
 
-                  // SizedBox(height: 8),
+                  // SizedBox(height: 8.h),
                   DateOfBirthContainer(
                     hintText: 'Date of Birth',
                     textController:
@@ -192,7 +196,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       log(spotBillingState.age);
                     },
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
                   Row(
                     children: [
@@ -214,7 +218,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
                   TypeTextFormField(
                     hintText: 'Gender *',
@@ -225,7 +229,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       spotBillingState.genderController.text = p0;
                     },
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
                   CommonTextField(
                     label: 'Address',
@@ -233,34 +237,41 @@ class SpotBillingScreen extends ConsumerWidget {
                     icon: Icons.home,
                     controller: spotBillingState.addressController,
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
 
-                  TypeTextFormField(
-                    hintText: 'Done by *',
-                    textController: spotBillingState.doneByController,
-                    onChanged: (value) {
-                      spotBillingController.updateState(isDoneByApi: true);
-                      if (spotBillingState.isDoneByApi && value.isEmpty) {
-                        List<String> newSearchList = [];
-
-                        for (var item
-                            in spotBillingState.doneByAccountListApi) {
-                          newSearchList.add(item.name ?? '');
-                        }
-                        spotBillingController.updateState(
-                          doneByAccountListSearch: newSearchList,
-                        );
-                      } else {
-                        spotBillingController.doneBySearch(
-                          searchText: value,
-                          context: context,
-                        );
+                  Focus(
+                    onFocusChange: (hasFocus) {
+                      if (!hasFocus) {
+                        spotBillingController.updateState(isDoneByApi: false);
                       }
-                      // spotBillingController.doneBySearch(
-                      //   searchText: value,
-                      //   context: context,
-                      // );
                     },
+                    child: TypeTextFormField(
+                      hintText: 'Done by *',
+                      textController: spotBillingState.doneByController,
+                      onChanged: (value) {
+                        spotBillingController.updateState(isDoneByApi: true);
+                        if (spotBillingState.isDoneByApi && value.isEmpty) {
+                          List<String> newSearchList = [];
+
+                          for (var item
+                              in spotBillingState.doneByAccountListApi) {
+                            newSearchList.add(item.name ?? '');
+                          }
+                          spotBillingController.updateState(
+                            doneByAccountListSearch: newSearchList,
+                          );
+                        } else {
+                          spotBillingController.doneBySearch(
+                            searchText: value,
+                            context: context,
+                          );
+                        }
+                        // spotBillingController.doneBySearch(
+                        //   searchText: value,
+                        //   context: context,
+                        // );
+                      },
+                    ),
                   ),
                   if (spotBillingState.doneByAccountListSearch.isNotEmpty ||
                       spotBillingState.isDoneByApi == true)
@@ -371,7 +382,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       Text('Add additional info.'),
                     ],
                   ),
-                  SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   if (spotBillingState.isAdditional == true)
                     ListView(
                       physics: NeverScrollableScrollPhysics(),
@@ -398,7 +409,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-
+                  SizedBox(height: 8.h),
                   Row(
                     children: [
                       InkWell(
@@ -432,7 +443,12 @@ class SpotBillingScreen extends ConsumerWidget {
                     onTap: () {
                       spotBillingController.updateState(isSubmitted: true);
                       if (spotBillingState.formKey.currentState!.validate()) {
-                        // Only update state when form is valid
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SpotBillingTestAddScreen(),
+                          ),
+                        );
 
                         log("Success ");
                         bottomNavController.setIndex(0);
@@ -464,38 +480,6 @@ class SpotBillingScreen extends ConsumerWidget {
       ),
     );
   }
-
-  void _showMore(BuildContext context, Offset tapPosition, List items) async {
-    final screenSize = MediaQuery.of(context).size;
-
-    final selected = await showMenu<String>(
-      context: context,
-      color: AppColors.appWhite,
-      constraints: BoxConstraints(
-        minWidth: screenSize.width,
-        maxHeight: screenSize.height / 2,
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      position: RelativeRect.fromLTRB(
-        0, // full width
-        tapPosition.dy,
-        0,
-        screenSize.height - tapPosition.dy,
-      ),
-      items: items
-          .map(
-            (item) => PopupMenuItem<String>(
-              value: item,
-              child: Align(alignment: Alignment.centerLeft, child: Text(item)),
-            ),
-          )
-          .toList(),
-    );
-
-    // if (selected != null) {
-    //   onSelected(selected); // callback
-    // }
-  }
 }
 
 class ShowMenu extends StatelessWidget {
@@ -521,7 +505,7 @@ class ShowMenu extends StatelessWidget {
         _showMore(context, details.globalPosition);
       },
       child: Container(
-        height: 50,
+        height: 60.h,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
