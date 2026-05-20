@@ -61,7 +61,7 @@ class PatientDetailsCard extends ConsumerWidget {
                 Text(
                   'Gender:',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Color(0xFF37474F), // Dark grey-blue
                     fontWeight: FontWeight.bold,
                   ),
@@ -69,7 +69,7 @@ class PatientDetailsCard extends ConsumerWidget {
                 Text(
                   ' Male',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Color(0xFF37474F), // Dark grey-blue
                   ),
                 ),
@@ -77,7 +77,7 @@ class PatientDetailsCard extends ConsumerWidget {
                 Text(
                   'Age:',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Color(0xFF37474F), // Dark grey-blue
                     fontWeight: FontWeight.bold,
                   ),
@@ -85,7 +85,7 @@ class PatientDetailsCard extends ConsumerWidget {
                 Text(
                   ' 20',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Color(0xFF37474F), // Dark grey-blue
                   ),
                 ),
@@ -99,7 +99,7 @@ class PatientDetailsCard extends ConsumerWidget {
                 Text(
                   'Location:',
                   style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     color: Color(0xFF37474F),
                     fontWeight: FontWeight.bold,
                   ),
@@ -108,7 +108,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   child: Text(
                     ' Kochi Location (Kerala)hjgdkdjsaf sajfahsjh jkhjghsaj',
                     style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                       color: Color(0xFF37474F), // Dark grey-blue
                     ),
                   ),
@@ -123,7 +123,7 @@ class PatientDetailsCard extends ConsumerWidget {
               child: const Text(
                 'Edit Patient Info',
                 style: TextStyle(
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w600,
                   color: Colors.blueAccent,
                 ),

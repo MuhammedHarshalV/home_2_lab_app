@@ -108,8 +108,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
 
   /// COMMON UPDATE METHOD
   void updateState({
-    String? age,
-
+    //  String? age,
     List<PatientsList>? searchPatientList,
     List<AccountsList>? doneByAccountListApi,
     List<String>? doneByAccountListSearch,
@@ -125,8 +124,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
     GlobalKey<FormState>? formKey,
   }) {
     state = state.copyWith(
-      age: age,
-
+      // age: age,
       searchPatientList: searchPatientList,
       doneByAccountListApi: doneByAccountListApi,
       doneByAccountListSearch: doneByAccountListSearch,
@@ -156,7 +154,9 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
             currentDate.day < birthDate.day)) {
       age--;
     }
-    state = state.copyWith(age: age.toString()); //after correction
+    state = state.copyWith(
+      ageController: TextEditingController(text: age.toString()),
+    ); //after correction
 
     log(age.toString());
     return age;

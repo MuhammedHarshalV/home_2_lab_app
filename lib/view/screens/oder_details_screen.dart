@@ -18,12 +18,6 @@ class OderDetailsScreen extends ConsumerWidget {
     final state = ref.watch(orderDetailsScreenProvider);
     final controller = ref.read(orderDetailsScreenProvider.notifier);
 
-    final pages = [
-      const NewOrderDetailsScreen(),
-      const Center(child: Text("Assigned Orders")),
-      const Center(child: Text("Completed Orders")),
-      const Center(child: Text("Pending Invoices")),
-    ];
     return DefaultTabController(
       initialIndex: state.selectedTabIndex,
       length: 4,

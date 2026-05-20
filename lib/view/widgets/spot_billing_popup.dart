@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -35,7 +36,7 @@ class SpotBillingPopUp extends ConsumerWidget {
           children: [
             Expanded(
               child: ElevatedButton(
-                onPressed: () => Navigator.pop(context),
+                onPressed: () => context.pop(),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.appPrimaryColor,
                   shape: RoundedRectangleBorder(
@@ -59,8 +60,8 @@ class SpotBillingPopUp extends ConsumerWidget {
                   // 👉 Example: update provider before leaving
                   // ref.read(yourProvider.notifier).reset();
 
-                  Navigator.pop(context); // close dialog
-                  Navigator.pop(context); // go back screen
+                  context.pop(); // close dialog
+                  context.pop(); // go back screen
                   patientBillingController.updateState(isAdditional: false);
                   patientBillingController.updateState(isUrgent: false);
                 },

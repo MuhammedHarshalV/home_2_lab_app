@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class SearchBarContainer extends ConsumerWidget {
   final TextEditingController textController;
 
-  final List<String> items;
-
-  const SearchBarContainer({
-    super.key,
-    required this.textController,
-
-    this.items = const [],
-  });
+  const SearchBarContainer({super.key, required this.textController});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,7 +17,7 @@ class SearchBarContainer extends ConsumerWidget {
     return Container(
       width: double.infinity,
 
-      padding: EdgeInsets.symmetric(horizontal: 5.h, vertical: 5.h),
+      padding: EdgeInsets.only(left: 5),
       decoration: BoxDecoration(
         color: AppColors.appPrimaryColorLight,
         borderRadius: BorderRadius.circular(10),
@@ -46,7 +38,6 @@ class SearchBarContainer extends ConsumerWidget {
                         spotBillingController.updateState(isTextClear: false);
                       }
                     } else if (value.length > 1) {
-                    
                       spotBillingController.updateState(isTextClear: true);
                     }
                   },
@@ -87,8 +78,8 @@ class SearchBarContainer extends ConsumerWidget {
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),
-                  height: 50.h,
-                  width: 50.h,
+                  // height: 50,
+                  // width: 50,
                   decoration: BoxDecoration(
                     color: AppColors.appPrimaryColor,
                     borderRadius: BorderRadius.circular(8),

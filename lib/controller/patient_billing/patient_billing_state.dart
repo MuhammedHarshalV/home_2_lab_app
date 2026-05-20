@@ -13,7 +13,7 @@ class PatientBillingState {
   final TextEditingController abhaIdController;
   final TextEditingController passPortNumberController;
   final TextEditingController noteController;
-  final String age;
+  //final String age;
   final TextEditingController genderController;
   final TextEditingController addressController;
   final TextEditingController referredByController;
@@ -35,7 +35,7 @@ class PatientBillingState {
   final GlobalKey<FormState> formKey;
 
   PatientBillingState({
-    this.age = '',
+   // this.age = '',
     required this.formKey,
     this.searchPatientList = const [],
     this.doneByAccountListApi = const [],
@@ -76,7 +76,7 @@ class PatientBillingState {
     TextEditingController? abhaIdController,
     TextEditingController? passPortNumberController,
     TextEditingController? noteController,
-    String? age,
+   // String? age,
     TextEditingController? genderController,
     TextEditingController? ageController,
 
@@ -117,7 +117,7 @@ class PatientBillingState {
       passPortNumberController:
           passPortNumberController ?? this.passPortNumberController,
       noteController: noteController ?? this.noteController,
-      age: age ?? this.age,
+      //age: age ?? this.age,
       genderController: genderController ?? this.genderController,
       addressController: addressController ?? this.addressController,
       referredByController: referredByController ?? this.referredByController,

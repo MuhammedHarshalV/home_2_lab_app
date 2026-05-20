@@ -11,6 +11,13 @@ class SplashNotifierController extends StateNotifier<SplashState> {
   SplashNotifierController() : super(const SplashState()) {
     _initialize();
   }
+  @override
+  void dispose() {
+    log(
+      'Splash controller disposed---------------------------------------------------------',
+    );
+    super.dispose();
+  }
 
   Future<void> _initialize() async {
     await Future.wait([checkInitialRoute()]);
@@ -46,14 +53,15 @@ class SplashNotifierController extends StateNotifier<SplashState> {
   }
 }
 
+final splashDisposeProvider =
+    StateNotifierProvider<SplashNotifierController, SplashState>((ref) {
+      return SplashNotifierController();
+    });
 final splashProvider =
     StateNotifierProvider<SplashNotifierController, SplashState>((ref) {
       return SplashNotifierController();
     });
-// final splashScreenProvider =
-//     StateNotifierProvider<SplashNotifierController, SplashState>((ref) {
-//       return SplashNotifierController();
-//     });
+
 final splashScreenProvider = Provider<SplashNavigationState>((ref) {
   return ref.watch(splashProvider).navigationScreen;
 });

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
-import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
+
 
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -20,9 +20,9 @@ class HomeScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final timerState = ref.watch(customTimerProvider);
-    final timerController = ref.read(customTimerProvider.notifier);
-    final orderDetailScreenState = ref.watch(orderDetailsScreenProvider);
+    // final timerState = ref.watch(customTimerProvider);
+    // final timerController = ref.read(customTimerProvider.notifier);
+    
     final orderDetailScreenController = ref.read(
       orderDetailsScreenProvider.notifier,
     );

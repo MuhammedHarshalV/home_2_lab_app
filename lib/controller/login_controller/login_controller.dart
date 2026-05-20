@@ -15,9 +15,6 @@ import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 
-import 'package:icon_infoware/view/screens/pin_setting_screen.dart';
-import 'package:icon_infoware/view/screens/sign_in_screen.dart';
-
 import 'package:path_provider/path_provider.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
@@ -40,6 +37,14 @@ class LoginController extends StateNotifier<LoginState> {
     readData();
     // readBaseUrl(); // like initState
   }
+  @override
+  void dispose() {
+    log(
+      'Login controller disposed----------------------------------------------------',
+    );
+    super.dispose();
+  }
+
   Future<void> baseUrlAndBranchcheck({
     required BuildContext context,
     required String baseUrl,
@@ -61,7 +66,7 @@ class LoginController extends StateNotifier<LoginState> {
       } else if (status != null && status.isNotEmpty) {
         await storeBaseUrl(baseUrl: baseUrl);
         await storeImage(image: status);
-        context.goNamed(AppRouteNames.signInScreen.route);
+        context.goNamed(AppRouteNames.signInScreen.name);
 
         state = state.copyWith(isSubmitted: false);
       } else if (status == null) {
@@ -92,7 +97,7 @@ class LoginController extends StateNotifier<LoginState> {
       );
       log("signin response :  ${status ?? 'Fail in sign in'}");
       if (status == "true") {
-        context.goNamed(AppRouteNames.pinSettingScreen.route);
+        context.goNamed(AppRouteNames.pinSettingScreen.name);
       } else if (status == 'false') {
         AppMessage.show(context, 'Invalid username or password');
       }

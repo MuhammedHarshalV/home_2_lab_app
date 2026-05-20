@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
@@ -12,7 +12,7 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
-import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/screen/spot_billing_test_add_screen.dart';
+
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/date_of_birth_container.dart';
 import 'package:icon_infoware/view/widgets/spot_billing_popup.dart';
@@ -114,16 +114,16 @@ class SpotBillingScreen extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TopText(heading: 'Patient Search'),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
 
                   SearchBarContainer(
                     textController: spotBillingState.patientSearchController,
                   ),
 
-                  SizedBox(height: 16.h),
+                  SizedBox(height: 16),
 
                   TopText(heading: 'Patient Details'),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   // ShowMenu(heading: 'Ms'),
                   ShowMenu(
                     heading:
@@ -138,7 +138,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       spotBillingState.patientDetailsController.text = value;
                     },
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
 
                   TopText(heading: 'Patient Name *'),
                   SizedBox(height: 7),
@@ -155,7 +155,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     icon: Icons.phone,
                     controller: spotBillingState.patientPhoneController,
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 20),
 
                   //SizedBox(height: 8),
                   CommonTextField(
@@ -164,7 +164,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     icon: Icons.email,
                     controller: spotBillingState.patientEmailController,
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 20),
 
                   // SizedBox(height: 8.h),
                   DateOfBirthContainer(
@@ -187,11 +187,9 @@ class SpotBillingScreen extends ConsumerWidget {
 
                       spotBillingState.ageController.text = age.toString();
                       log(dob.year.toString());
-
-                      log(spotBillingState.age);
                     },
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
 
                   Row(
                     children: [
@@ -213,7 +211,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       ),
                     ],
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
 
                   TypeTextFormField(
                     hintText: 'Gender *',
@@ -224,7 +222,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       spotBillingState.genderController.text = p0;
                     },
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
 
                   CommonTextField(
                     label: 'Address',
@@ -232,7 +230,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     icon: Icons.home,
                     controller: spotBillingState.addressController,
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
 
                   Focus(
                     onFocusChange: (hasFocus) {
@@ -377,7 +375,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       Text('Add additional info.'),
                     ],
                   ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   if (spotBillingState.isAdditional == true)
                     ListView(
                       physics: NeverScrollableScrollPhysics(),
@@ -404,7 +402,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         ),
                       ],
                     ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 8),
                   Row(
                     children: [
                       InkWell(
@@ -497,7 +495,7 @@ class ShowMenu extends StatelessWidget {
         _showMore(context, details.globalPosition);
       },
       child: Container(
-        height: 60.h,
+        height: 60,
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 
 class TypeContainer extends StatelessWidget {
   final String hintText;
@@ -35,7 +34,7 @@ class TypeContainer extends StatelessWidget {
               Expanded(
                 child: TextField(
                   // onChanged:(textController) {
-                    
+
                   // },
                   controller: textController,
                   keyboardType: isNumbers
@@ -68,37 +67,5 @@ class TypeContainer extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _showMore(BuildContext context, Offset tapPosition) async {
-    final screenSize = MediaQuery.of(context).size;
-
-    final selected = await showMenu<String>(
-      context: context,
-      color: AppColors.appWhite,
-      constraints: BoxConstraints(
-        minWidth: screenSize.width,
-        maxHeight: screenSize.height / 2,
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      position: RelativeRect.fromLTRB(
-        0, // full width
-        tapPosition.dy,
-        0,
-        screenSize.height - tapPosition.dy,
-      ),
-      items: items
-          .map(
-            (item) => PopupMenuItem<String>(
-              value: item,
-              child: Align(alignment: Alignment.centerLeft, child: Text(item)),
-            ),
-          )
-          .toList(),
-    );
-
-    // if (selected != null) {
-    //   onSelected(selected); // callback
-    // }
   }
 }

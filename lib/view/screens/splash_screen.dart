@@ -24,6 +24,7 @@ class SplashScreen extends ConsumerWidget {
       } else if (next == SplashNavigationState.signIn) {
         context.goNamed(AppRouteNames.signInScreen.name); // Navigate to login
       }
+      ref.invalidate(splashDisposeProvider);
     });
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(

@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
+import 'package:icon_infoware/controller/splash_controller/splash_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -232,6 +233,8 @@ class LoginScreen extends ConsumerWidget {
                               if (pinState.loginController.text.isNotEmpty) {
                                 if (pinState.loginController.text ==
                                     AppConstance.pin) {
+                                  ref.invalidate(loginProvider);
+                                  ref.invalidate(splashDisposeProvider);
                                   log(
                                     '${pinState.loginController.text} : ${pinState.pinNumber}',
                                   );
