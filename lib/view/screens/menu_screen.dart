@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:icon_infoware/core/api_constants/base64_image.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class MenuScreen extends ConsumerWidget {
@@ -56,7 +56,7 @@ class MenuScreen extends ConsumerWidget {
                           child: Image.file(
                             width: MediaQuery.of(context).size.width / 3,
                             fit: BoxFit.fill,
-                            File(Base64Image.base64Image),
+                            File(AppConstance.base64Image),
                           ),
                         ),
                       );

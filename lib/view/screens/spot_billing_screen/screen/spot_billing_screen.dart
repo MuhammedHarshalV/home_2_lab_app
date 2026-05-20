@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/core/api_constants/base64_image.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
@@ -48,14 +50,7 @@ class SpotBillingScreen extends ConsumerWidget {
       "Adv.",
       "Rev.fa",
     ];
-    // final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
 
-    // /// KEYBOARD CLOSED
-    // if (!isKeyboardOpen) {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     spotBillingController.updateState(isDoneByApi: false);
-    //   });
-    // }
     return PopScope(
       canPop: false, // Prevents the default back button behavior
       onPopInvokedWithResult: (didPop, result) async {
@@ -101,7 +96,7 @@ class SpotBillingScreen extends ConsumerWidget {
                 child: Image.file(
                   width: MediaQuery.of(context).size.width / 1.5,
                   fit: BoxFit.fill,
-                  File(Base64Image.base64Image),
+                  File(AppConstance.base64Image),
                 ),
               ),
             ],
@@ -443,11 +438,8 @@ class SpotBillingScreen extends ConsumerWidget {
                     onTap: () {
                       spotBillingController.updateState(isSubmitted: true);
                       if (spotBillingState.formKey.currentState!.validate()) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => SpotBillingTestAddScreen(),
-                          ),
+                        context.pushNamed(
+                          AppRouteNames.spotBillingTestAddScreen.name,
                         );
 
                         log("Success ");

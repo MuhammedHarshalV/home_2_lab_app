@@ -2,7 +2,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:icon_infoware/core/api_constants/api_constants.dart';
+import 'package:icon_infoware/core/constants/api_constants.dart';
 
 import 'package:icon_infoware/core/services/api_services/api_services.dart';
 import 'package:icon_infoware/models/sign_in/login_response_model.dart';

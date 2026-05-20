@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/login_screen.dart';
+
 import 'package:icon_infoware/view/widgets/otp_field.dart';
 
 class PinSettingScreen extends ConsumerWidget {
@@ -109,12 +111,8 @@ class PinSettingScreen extends ConsumerWidget {
                                     pinController.storePIN(
                                       pin: pinState.pinOneController.text,
                                     );
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => LoginScreen(),
-                                      ),
-                                      (route) => false,
+                                    context.goNamed(
+                                      AppRouteNames.loginScreen.name,
                                     );
                                   } else {
                                     showDialog(

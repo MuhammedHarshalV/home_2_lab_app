@@ -1,14 +1,15 @@
-import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
-import 'package:icon_infoware/core/api_constants/base64_image.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
+
 import 'package:icon_infoware/view/widgets/otp_field.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -19,10 +20,10 @@ class LoginScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final pinState = ref.watch(loginProvider);
-    final pinController = ref.read(loginProvider.notifier);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent, // 🔴 your red
+        statusBarColor: Colors.transparent, //  your red
         statusBarIconBrightness: Brightness.light, // icons = white
         statusBarBrightness: Brightness.dark, // for iOS
       ),
@@ -230,18 +231,13 @@ class LoginScreen extends ConsumerWidget {
                               // submit logic
                               if (pinState.loginController.text.isNotEmpty) {
                                 if (pinState.loginController.text ==
-                                    Base64Image.pin) {
+                                    AppConstance.pin) {
                                   log(
                                     '${pinState.loginController.text} : ${pinState.pinNumber}',
                                   );
-                                  Navigator.pushAndRemoveUntil(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => BottomNavScreen(),
-                                    ),
-                                    (route) => false,
+                                  context.goNamed(
+                                    AppRouteNames.bottomNavScreen.name,
                                   );
-                                  
                                 } else {
                                   showDialog(
                                     context: context,

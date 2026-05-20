@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/oder_details_screen.dart';
+
 
 class NewOrderDetailsScreen extends ConsumerWidget {
   const NewOrderDetailsScreen({super.key});

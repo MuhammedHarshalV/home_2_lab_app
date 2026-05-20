@@ -5,19 +5,20 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/apis/base_url_checking.dart';
 import 'package:icon_infoware/apis/sign_in_checking.dart';
 
 import 'package:icon_infoware/controller/login_controller/login_state.dart';
-import 'package:icon_infoware/core/api_constants/api_constants.dart';
-import 'package:icon_infoware/core/api_constants/base64_image.dart';
+import 'package:icon_infoware/core/constants/api_constants.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 
 import 'package:icon_infoware/view/screens/pin_setting_screen.dart';
 import 'package:icon_infoware/view/screens/sign_in_screen.dart';
 
 import 'package:path_provider/path_provider.dart';
-
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -60,11 +61,8 @@ class LoginController extends StateNotifier<LoginState> {
       } else if (status != null && status.isNotEmpty) {
         await storeBaseUrl(baseUrl: baseUrl);
         await storeImage(image: status);
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => SignInScreen()),
-          (route) => false,
-        );
+        context.goNamed(AppRouteNames.signInScreen.route);
+
         state = state.copyWith(isSubmitted: false);
       } else if (status == null) {
         AppMessage.show(
@@ -94,11 +92,7 @@ class LoginController extends StateNotifier<LoginState> {
       );
       log("signin response :  ${status ?? 'Fail in sign in'}");
       if (status == "true") {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => PinSettingScreen()),
-          (route) => false,
-        );
+        context.goNamed(AppRouteNames.pinSettingScreen.route);
       } else if (status == 'false') {
         AppMessage.show(context, 'Invalid username or password');
       }
@@ -118,7 +112,7 @@ class LoginController extends StateNotifier<LoginState> {
   Future<void> storePIN({required String pin}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('PIN', pin);
-    Base64Image.pin = pin;
+    AppConstance.pin = pin;
     log('PIN storing $pin');
   } //Image storing to phone
 
@@ -129,7 +123,7 @@ class LoginController extends StateNotifier<LoginState> {
     if (image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
       state = state.copyWith(imageBase64: imagePath);
-      Base64Image.base64Image = image;
+      AppConstance.base64Image = image;
     }
   } //baseurl storing to phone
 
@@ -149,7 +143,7 @@ class LoginController extends StateNotifier<LoginState> {
     log('Readed Image :$image');
     if (image != null && image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
-      Base64Image.base64Image = imagePath;
+      AppConstance.base64Image = imagePath;
 
       state = state.copyWith(imageBase64: imagePath);
     }
@@ -186,7 +180,7 @@ class LoginController extends StateNotifier<LoginState> {
 
     if (pin != null && pin.isNotEmpty) {
       state = state.copyWith(pinNumber: pin);
-      Base64Image.pin = pin;
+      AppConstance.pin = pin;
     }
     await readBaseUrl();
     await readImage();

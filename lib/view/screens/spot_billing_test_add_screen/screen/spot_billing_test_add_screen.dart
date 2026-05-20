@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
-import 'package:icon_infoware/core/api_constants/base64_image.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_below_card.dart';
@@ -63,7 +63,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               child: Image.file(
                 width: MediaQuery.of(context).size.width / 1.5,
                 fit: BoxFit.fill,
-                File(Base64Image.base64Image),
+                File(AppConstance.base64Image),
               ),
             ),
           ],

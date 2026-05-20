@@ -3,15 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
-import 'package:icon_infoware/controller/timer_controller/timer_state.dart';
-import 'package:icon_infoware/core/api_constants/base64_image.dart';
+
+import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/oder_details_screen.dart';
 import 'package:icon_infoware/view/widgets/active_schedule_card.dart';
 import 'package:icon_infoware/view/widgets/active_section_card.dart';
 import 'package:icon_infoware/view/widgets/new_orders_card.dart';
-import 'package:icon_infoware/view/widgets/timer_card.dart';
+
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class HomeScreen extends ConsumerWidget {
@@ -21,6 +22,10 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final timerState = ref.watch(customTimerProvider);
     final timerController = ref.read(customTimerProvider.notifier);
+    final orderDetailScreenState = ref.watch(orderDetailsScreenProvider);
+    final orderDetailScreenController = ref.read(
+      orderDetailsScreenProvider.notifier,
+    );
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -43,7 +48,7 @@ class HomeScreen extends ConsumerWidget {
                   child: Image.file(
                     width: MediaQuery.of(context).size.width / 1.5,
                     fit: BoxFit.fill,
-                    File(Base64Image.base64Image),
+                    File(AppConstance.base64Image),
                   ),
                 ),
               ],
@@ -71,13 +76,16 @@ class HomeScreen extends ConsumerWidget {
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           focusColor: Colors.transparent,
-                          onTap: () => PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: const OrderDashboardScreen(initialIndex: 0),
-                            withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
-                            pageTransitionAnimation:
-                                PageTransitionAnimation.cupertino,
-                          ),
+                          onTap: () {
+                            orderDetailScreenController.changeTab(0);
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: const OderDetailsScreen(),
+                              withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          },
                           child: NewOrdersStatCard(
                             icon: Icons.add_box_outlined,
                             category: 'New Orders',
@@ -92,13 +100,17 @@ class HomeScreen extends ConsumerWidget {
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           focusColor: Colors.transparent,
-                          onTap: () => PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: const OrderDashboardScreen(initialIndex: 1),
-                            withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
-                            pageTransitionAnimation:
-                                PageTransitionAnimation.cupertino,
-                          ),
+                          onTap: () {
+                            orderDetailScreenController.changeTab(1);
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: const OderDetailsScreen(),
+                              withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          },
+
                           child: NewOrdersStatCard(
                             icon: Icons.assignment_ind_outlined,
                             category: 'Assigned to me',
@@ -118,13 +130,17 @@ class HomeScreen extends ConsumerWidget {
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           focusColor: Colors.transparent,
-                          onTap: () => PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: const OrderDashboardScreen(initialIndex: 2),
-                            withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
-                            pageTransitionAnimation:
-                                PageTransitionAnimation.cupertino,
-                          ),
+                          onTap: () {
+                            orderDetailScreenController.changeTab(2);
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: const OderDetailsScreen(),
+                              withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          },
+
                           child: NewOrdersStatCard(
                             icon: Icons.check_circle_outline,
                             category: 'Completed',
@@ -140,13 +156,17 @@ class HomeScreen extends ConsumerWidget {
                           highlightColor: Colors.transparent,
                           hoverColor: Colors.transparent,
                           focusColor: Colors.transparent,
-                          onTap: () => PersistentNavBarNavigator.pushNewScreen(
-                            context,
-                            screen: const OrderDashboardScreen(initialIndex: 3),
-                            withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
-                            pageTransitionAnimation:
-                                PageTransitionAnimation.cupertino,
-                          ),
+                          onTap: () {
+                            orderDetailScreenController.changeTab(3);
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: const OderDetailsScreen(),
+                              withNavBar: false, // 🔥 THIS HIDES BOTTOM NAV
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          },
+
                           child: NewOrdersStatCard(
                             icon: Icons.receipt_long_outlined,
                             category: 'Pending Invoice',

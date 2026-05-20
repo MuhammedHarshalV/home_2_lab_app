@@ -5,11 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
-import 'package:icon_infoware/controller/login_controller/login_state.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/login_screen.dart';
-import 'package:icon_infoware/view/screens/pin_setting_screen.dart';
-import 'package:icon_infoware/view/widgets/top_texts.dart';
+
 import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
 
 class SignInScreen extends ConsumerWidget {

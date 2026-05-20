@@ -46,11 +46,7 @@ class SearchBarContainer extends ConsumerWidget {
                         spotBillingController.updateState(isTextClear: false);
                       }
                     } else if (value.length > 1) {
-                      // spotBillingController.updateState(searchPatientList: []);
-                      // await spotBillingController.searchPatient(
-                      //   context: context,
-                      //   body: value,
-                      // );
+                    
                       spotBillingController.updateState(isTextClear: true);
                     }
                   },

@@ -1,14 +1,13 @@
 import 'dart:developer';
-import 'dart:io';
+
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
-import 'package:icon_infoware/core/api_constants/api_constants.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/sign_in_screen.dart';
-import 'package:icon_infoware/view/widgets/top_texts.dart';
+
 import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
 
 class BaseUrlScreen extends ConsumerWidget {
@@ -124,15 +123,7 @@ class BaseUrlScreen extends ConsumerWidget {
                             );
                           }
 
-                          // await signInController.storeBaseUrl(
-                          //   baseUrl: signInState.baseUrlController.text,
-                          // );
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => SignInScreen(),
-                          //   ),
-                          // );
+                        
                         }
                         // submit logic
                       },
