@@ -4,4 +4,5 @@ class ApiConstants {
   static String loginApi = '/Login';
   static String searchApi = '/SearchPatient';
   static String doneBySearchApi = '/Account_Heads';
+  static String testMaster = 'TestMaster';
 }

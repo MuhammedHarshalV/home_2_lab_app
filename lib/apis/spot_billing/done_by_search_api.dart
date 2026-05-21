@@ -23,16 +23,7 @@ class DoneBySearchApi {
           doneBySearchResponseModelFromJson(response);
 
       log('===============response :${responseBody.accountsList}');
-      // List<AccountsList> newAccountList = [];
 
-      // for (var item in responseBody.accountsList ?? []) {
-      //   final account = AccountsList.fromJson(item);
-
-      //   if (account.type == "Staff") {
-      //     newAccountList.add(account);
-      //   }
-      // }
-      // log('>>>>>>>>>>>new list : $newAccountList');
       return responseBody.accountsList ?? [];
     } catch (e) {
       log("++++++++++++ catch log ${e.toString()}");

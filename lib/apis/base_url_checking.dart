@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:icon_infoware/core/constants/api_constants.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/services/device_details_picking/device_id_picking.dart';
 import 'package:icon_infoware/core/services/api_services/api_services.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseUrlChecking {
   static Future<String?> baseUrlRegister({
@@ -13,6 +15,17 @@ class BaseUrlChecking {
     required String branchID,
   }) async {
     String deviceID = await DeviceIdPicking.getDeviceId();
+
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('DeviceID', deviceID);
+    await prefs.setString('BranchID', branchID);
+    ApiConstants.baseUrl = baseUrl;
+    AppConstance.deviceID = deviceID;
+    AppConstance.branchID = branchID;
+
+    log('storing device ID :$deviceID');
+    log('storing branch ID :$branchID');
+
     log(deviceID);
 
     try {

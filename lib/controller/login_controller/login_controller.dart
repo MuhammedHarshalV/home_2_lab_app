@@ -181,11 +181,20 @@ class LoginController extends StateNotifier<LoginState> {
   Future<void> readData() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? pin = prefs.getString('PIN');
+    final String? deviceID = prefs.getString('DeviceID');
+    final String? branchID = prefs.getString('BranchID');
+
     log('Readed pin :$pin');
 
+    if (deviceID != null && deviceID.isNotEmpty) {
+      AppConstance.deviceID = deviceID;
+    }
     if (pin != null && pin.isNotEmpty) {
       state = state.copyWith(pinNumber: pin);
       AppConstance.pin = pin;
+    }
+    if (branchID != null && branchID.isNotEmpty) {
+      AppConstance.branchID = branchID;
     }
     await readBaseUrl();
     await readImage();

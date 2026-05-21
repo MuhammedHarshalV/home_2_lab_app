@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -17,6 +18,8 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final testMasterState = ref.watch(addTestScreenProvider);
+    final testMasterController = ref.read(addTestScreenProvider.notifier);
     final List<TestModel> testList = [
       TestModel(name: "ALDOLASE", amount: 10000),
       TestModel(name: "4 BASE CARE L", amount: 3000),

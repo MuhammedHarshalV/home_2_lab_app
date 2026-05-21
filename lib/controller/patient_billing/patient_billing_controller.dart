@@ -4,13 +4,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/apis/spot_billing/done_by_search_api.dart';
 import 'package:icon_infoware/apis/spot_billing/search_patient_api.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_state.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 
 class PatientBillingController extends StateNotifier<PatientBillingState> {
-  PatientBillingController()
+  final Ref ref;
+
+  PatientBillingController(this.ref)
     : super(
         PatientBillingState(
           formKey: GlobalKey<FormState>(),
@@ -25,7 +28,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           addressController: TextEditingController(),
           referredByController: TextEditingController(),
           assignedByController: TextEditingController(),
-          doneByController: TextEditingController(),
+          doneByController: TextEditingController(text: 'Sumesh'),
           abhaIdController: TextEditingController(),
           passPortNumberController: TextEditingController(),
           noteController: TextEditingController(),
@@ -62,12 +65,58 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
       final response = await DoneBySearchApi.doneBySearch(context: context);
       log('00000000000${response.toString()}');
       List<AccountsList> newAccountList = [];
-
-      for (var item in response) {
+      List<AccountsList> specialSchemeList = [];
+      final jsonData = [
+        {"Key": 1, "Name": "ABRAHAM", "Type": "Staff", "SchemeId": 0},
+        {"Key": 6, "Name": "MERLIN", "Type": "Staff", "SchemeId": 0},
+        {
+          "Key": 7,
+          "Name": "JYOTHI LAB PULPALLY",
+          "Type": "AccHd",
+          "SchemeId": 0,
+        },
+        {"Key": 27, "Name": "ASWINI", "Type": "AccHd", "SchemeId": 1339},
+        {"Key": 28, "Name": "AMANA", "Type": "AccHd", "SchemeId": 1339},
+        {"Key": 29, "Name": "SHILPA", "Type": "AccHd", "SchemeId": 1339},
+        {"Key": 41, "Name": "THAHIR", "Type": "Staff", "SchemeId": 0},
+        {
+          "Key": 260,
+          "Name": "LIFE CARE LAB MEPPADI",
+          "Type": "AccHd",
+          "SchemeId": 0,
+        },
+        {
+          "Key": 270,
+          "Name": "SOUKYA LAB AMBALAVAYAL",
+          "Type": "AccHd",
+          "SchemeId": 0,
+        },
+        {
+          "Key": 274,
+          "Name": "LIFE CARE SULTHAN BATHERY",
+          "Type": "AccHd",
+          "SchemeId": 0,
+        },
+        {"Key": 284, "Name": "MUKALEL MEERA", "Type": "AccHd", "SchemeId": 0},
+      ];
+      final List<AccountsList> newlist = jsonData
+          .map((e) => AccountsList.fromJson(e))
+          .toList();
+      //  for (var item in response)
+      for (var item in newlist) {
         final account = item;
 
         if (account.type == "Staff") {
           newAccountList.add(account);
+        } else if (account.type == 'Hosp' || account.type == 'AccHd') {
+          specialSchemeList.add(account);
+          // log('new special scheme list : $scpecialSchemeList');
+          ref
+              .read(addTestScreenProvider.notifier)
+              .updatestate(specialSchemeList: specialSchemeList);
+          log(
+            'new special scheme list : ${specialSchemeList.map((e) => e.name).toList()}',
+          );
         }
       }
       log('>>>>>>>>>>>new list : $newAccountList');
@@ -163,7 +212,11 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   }
 }
 
+// final patientBillingProvider =
+//     StateNotifierProvider<PatientBillingController, PatientBillingState>((ref) {
+//       return PatientBillingController();
+//     });
 final patientBillingProvider =
     StateNotifierProvider<PatientBillingController, PatientBillingState>((ref) {
-      return PatientBillingController();
+      return PatientBillingController(ref);
     });

@@ -22,6 +22,7 @@ class PatientBillingState {
 
   final List<PatientsList> searchPatientList;
   final List<AccountsList> doneByAccountListApi;
+ // final List<AccountsList> doneByAccountListApi;
   final List<String> doneByAccountListSearch;
 
   final bool isSubmitted;
