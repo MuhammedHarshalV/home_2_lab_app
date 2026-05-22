@@ -33,7 +33,11 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           passPortNumberController: TextEditingController(),
           noteController: TextEditingController(),
         ),
-      );
+      ) {
+    Future.microtask(() {
+      doneBySearch(searchText: '');
+    });
+  }
 
   //Update state
 
@@ -57,53 +61,14 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   }
 
   //Search done by api
-  Future<void> doneBySearch({
-    required String searchText,
-    required BuildContext context,
-  }) async {
+  Future<void> doneBySearch({required String searchText}) async {
     if (state.doneByAccountListApi.isEmpty) {
-      final response = await DoneBySearchApi.doneBySearch(context: context);
+      final response = await DoneBySearchApi.doneBySearch();
       log('00000000000${response.toString()}');
       List<AccountsList> newAccountList = [];
       List<AccountsList> specialSchemeList = [];
-      final jsonData = [
-        {"Key": 1, "Name": "ABRAHAM", "Type": "Staff", "SchemeId": 0},
-        {"Key": 6, "Name": "MERLIN", "Type": "Staff", "SchemeId": 0},
-        {
-          "Key": 7,
-          "Name": "JYOTHI LAB PULPALLY",
-          "Type": "AccHd",
-          "SchemeId": 0,
-        },
-        {"Key": 27, "Name": "ASWINI", "Type": "AccHd", "SchemeId": 1339},
-        {"Key": 28, "Name": "AMANA", "Type": "AccHd", "SchemeId": 1339},
-        {"Key": 29, "Name": "SHILPA", "Type": "AccHd", "SchemeId": 1339},
-        {"Key": 41, "Name": "THAHIR", "Type": "Staff", "SchemeId": 0},
-        {
-          "Key": 260,
-          "Name": "LIFE CARE LAB MEPPADI",
-          "Type": "AccHd",
-          "SchemeId": 0,
-        },
-        {
-          "Key": 270,
-          "Name": "SOUKYA LAB AMBALAVAYAL",
-          "Type": "AccHd",
-          "SchemeId": 0,
-        },
-        {
-          "Key": 274,
-          "Name": "LIFE CARE SULTHAN BATHERY",
-          "Type": "AccHd",
-          "SchemeId": 0,
-        },
-        {"Key": 284, "Name": "MUKALEL MEERA", "Type": "AccHd", "SchemeId": 0},
-      ];
-      final List<AccountsList> newlist = jsonData
-          .map((e) => AccountsList.fromJson(e))
-          .toList();
-      //  for (var item in response)
-      for (var item in newlist) {
+
+      for (var item in response) {
         final account = item;
 
         if (account.type == "Staff") {

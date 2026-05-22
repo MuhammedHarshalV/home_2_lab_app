@@ -5,4 +5,5 @@ class ApiConstants {
   static String searchApi = '/SearchPatient';
   static String doneBySearchApi = '/Account_Heads';
   static String testMaster = 'TestMaster';
+  static String specialSchemeRates = '/SplScheemaRates';
 }

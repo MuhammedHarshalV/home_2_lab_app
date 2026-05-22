@@ -38,7 +38,7 @@ class AccountsList {
   num? key;
   String? name;
   String? type;
-  num? schemeId;
+  int? schemeId;
 
   AccountsList({this.key, this.name, this.type, this.schemeId});
 

@@ -1,6 +1,11 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
+import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
 
 class TestAddSearchValueContainer extends ConsumerWidget {
   final TextEditingController textController;
@@ -8,6 +13,8 @@ class TestAddSearchValueContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final testAddState = ref.watch(addTestScreenProvider);
+    final testAddController = ref.read(addTestScreenProvider.notifier);
     return Container(
       width: double.infinity,
 
@@ -25,7 +32,40 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                 child: TextField(
                   controller: textController,
                   keyboardType: TextInputType.text,
-                  onChanged: (value) async {},
+                  onChanged: (value) {
+                    // if(value.isEmpty){ final newSearchList = testAddState.testMasterList
+                    //     .where(
+                    //       (item) => (item.testName ?? '')
+                    //           .toLowerCase()
+                    //           .contains(''),
+                    //     )
+                    //     .toList();}
+                    final search = value.toLowerCase();
+
+                    final newSearchList = testAddState.testMasterList
+                        .where(
+                          (item) => (item.testName ?? '')
+                              .toLowerCase()
+                              .contains(search),
+                        )
+                        .toList();
+                    final List<TestMasterSelected> selectedList = newSearchList
+                        .map((item) {
+                          return TestMasterSelected(
+                            testKey: item.testKey,
+                            testRate: item.testRate,
+                            testShortCode: item.testShortCode,
+                            testName: item.testName,
+                            testSelected: false, // initial value
+                          );
+                        })
+                        .toList();
+
+                    testAddController.searchTestMaster(selectedList);
+
+                    log("Found : ${newSearchList.length}");
+                  },
+
                   decoration: const InputDecoration(
                     hintText: "Select value",
                     border: InputBorder.none,
@@ -39,45 +79,10 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 focusColor: Colors.transparent,
-                onTap: () {
-                  // spotBillingState.patientSearchController.clear();
-                  // spotBillingController.updateState(
-                  //   isTextClear: false,
-
-                  //   // patientSearchController: TextEditingController(text: ''),
-                  //   searchPatientList: [],
-                  // );
-                },
+                onTap: () {},
                 child: Icon(Icons.close),
               ),
               SizedBox(width: 5),
-
-              /// SEARCH BUTTON
-              GestureDetector(
-                onTap: () async {
-                  // spotBillingController.updateState(searchPatientList: []);
-                  // await spotBillingController.searchPatient(
-                  //   context: context,
-                  //   body: textController.text.toString(),
-                  // );
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  // height: 50,
-                  // width: 50,
-                  decoration: BoxDecoration(
-                    color: AppColors.appPrimaryColor,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: Center(
-                    child: Icon(
-                      Icons.arrow_drop_down,
-                      color: AppColors.appWhite,
-                    ),
-                  ),
-                  // : Icon(Icons.search, color: AppColors.appWhite),
-                ),
-              ),
             ],
           ),
           // if (spotBillingState.searchPatientList.isNotEmpty)
@@ -86,7 +91,7 @@ class TestAddSearchValueContainer extends ConsumerWidget {
           /// SEARCH LIST
           // if (spotBillingState.searchPatientList.isNotEmpty)
           Container(
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 5,
             width: double.infinity,
             decoration: BoxDecoration(
               color: const Color.fromARGB(255, 238, 240, 238),
@@ -95,37 +100,84 @@ class TestAddSearchValueContainer extends ConsumerWidget {
             ),
             child: ListView.builder(
               padding: const EdgeInsets.all(8),
-              itemCount: 10,
+              itemCount: testAddState.testMasterListSeeing.length,
               itemBuilder: (context, index) {
-                return InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  onTap: () {},
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 6),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(
-                                "patient.patNa",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            child: Text(
+                              testAddState
+                                      .testMasterListSeeing[index]
+                                      .testName ??
+                                  'No Name',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 13,
                               ),
                             ),
-                            //Spacer(),
-                            Icon(Icons.check_box_outline_blank),
-                          ],
-                        ),
-                      ],
-                    ),
+                          ),
+                          //Spacer(),
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            onTap: () {
+                              //                         if (testAddState
+                              //                                 .testMasterListSeeing[index]
+                              //                                 .testKey ==
+                              //                             1165) {
+                              //                                final updatedList = [...testAddState.testMasterListSeeing];
+                              //                                 final itemIndex = updatedList.indexWhere((item) => item.testKey == 1165);
+
+                              // if (itemIndex >= 0) {
+                              //   final item = updatedList[itemIndex];
+
+                              //   updatedList[itemIndex] = TestMasterSelected(
+                              //     testKey: item.testKey,
+                              //     testRate:testAddState.specialSchemeRalesList[],
+                              //     testShortCode: item.testShortCode,
+                              //     testName: item.testName,
+                              //     testSelected: false,
+                              //   );
+                              // }
+                              // final selectedList = updatedList
+                              //     .where((item) => item.testSelected == true)
+                              //     .toList();
+                              // num totalPrice = state.totalPrice - updatedList[itemIndex].testRate!;
+
+                              // state = state.copyWith(
+                              //   testMasterListSeeing: updatedList,
+                              //   testMasterListSelected: selectedList,
+                              //   totalPrice: totalPrice,
+                              // );
+
+                              // } else {
+
+                              testAddController.updateSelectedTest(
+                                index: index,
+                                name: null,
+                              );
+                              //}
+                            },
+                            child: Icon(
+                              testAddState
+                                          .testMasterListSeeing[index]
+                                          .testSelected ==
+                                      true
+                                  ? Icons.check_box_outlined
+                                  : Icons.check_box_outline_blank,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 );
               },

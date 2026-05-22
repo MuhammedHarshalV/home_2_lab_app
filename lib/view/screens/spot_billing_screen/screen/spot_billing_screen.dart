@@ -257,10 +257,7 @@ class SpotBillingScreen extends ConsumerWidget {
                             doneByAccountListSearch: newSearchList,
                           );
                         } else {
-                          spotBillingController.doneBySearch(
-                            searchText: value,
-                            context: context,
-                          );
+                          spotBillingController.doneBySearch(searchText: value);
                         }
                         // spotBillingController.doneBySearch(
                         //   searchText: value,
@@ -269,8 +266,9 @@ class SpotBillingScreen extends ConsumerWidget {
                       },
                     ),
                   ),
-                  if (spotBillingState.doneByAccountListSearch.isNotEmpty ||
-                      spotBillingState.isDoneByApi == true)
+                  if ((spotBillingState.doneByAccountListSearch.isNotEmpty ||
+                          spotBillingState.isDoneByApi == true) &&
+                      spotBillingState.doneByController.text.isNotEmpty)
                     Container(
                       height: 70,
                       width: double.infinity,

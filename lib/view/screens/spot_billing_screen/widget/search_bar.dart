@@ -102,6 +102,10 @@ class SearchBarContainer extends ConsumerWidget {
           ),
           if (spotBillingState.searchPatientList.isNotEmpty)
             SizedBox(height: 10),
+          // if (spotBillingState.searchPatientList.isEmpty &&
+          //     // spotBillingState.isLoading == false &&
+          //     spotBillingState.patientSearchController.text.isNotEmpty)
+          //   SizedBox(height: 30, child: Center(child: Text('No data found.'))),
 
           /// SEARCH LIST
           if (spotBillingState.searchPatientList.isNotEmpty)
@@ -114,9 +118,13 @@ class SearchBarContainer extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               child: spotBillingState.isLoading == true
-                  ? Center(
-                      child: CircularProgressIndicator(
-                        color: AppColors.appBlack,
+                  ? SizedBox(
+                      height: 30,
+                      child: Center(
+                        child: CircularProgressIndicator(
+                          strokeWidth: .5,
+                          color: AppColors.appBlack,
+                        ),
                       ),
                     )
                   : ListView.builder(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class PatientDetailsBelowCard extends ConsumerWidget {
@@ -7,6 +8,8 @@ class PatientDetailsBelowCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final testAddState = ref.watch(addTestScreenProvider);
+    final testAddController = ref.read(addTestScreenProvider.notifier);
     return Column(
       children: [
         Divider(color: Colors.grey, thickness: 2),
@@ -57,7 +60,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '₹ 110000.00',
+                  '₹ ${testAddState.totalPrice}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),
@@ -77,7 +80,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '₹ 110000.00',
+                  '₹ ${testAddState.totalPrice}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),

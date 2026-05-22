@@ -12,16 +12,6 @@ class PatientDetailsCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    List<String> corporateList = [
-      "Amana",
-      "Sruti",
-      "Akshay",
-      "Megha",
-      "Amana",
-      "Sruti",
-      "Akshay",
-      "Megha",
-    ];
     final addTestController = ref.read(addTestScreenProvider.notifier);
     final addTestState = ref.watch(addTestScreenProvider);
     return Container(
@@ -199,7 +189,12 @@ class PatientDetailsCard extends ConsumerWidget {
                             menuHeight: MediaQuery.of(context).size.height / 3,
                             menuStyle: MenuStyle(
                               backgroundColor: WidgetStatePropertyAll(
-                                AppColors.appWhite, // dropdown background
+                                const Color.fromARGB(
+                                  255,
+                                  230,
+                                  227,
+                                  227,
+                                ), // dropdown background
                               ),
                               surfaceTintColor: WidgetStatePropertyAll(
                                 Colors.transparent,
@@ -313,8 +308,9 @@ class PatientDetailsCard extends ConsumerWidget {
                             onSelected: (value) {
                               //  print(value);
                               log(value!.name.toString());
-                              log(value.key.toString());
-                              log(value.type.toString());
+                              addTestController.updatestate(
+                                schemeIDSelected: value.schemeId,
+                              );
                               log(value.schemeId.toString());
 
                               // Riverpod update example
