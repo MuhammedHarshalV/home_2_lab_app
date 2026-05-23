@@ -11,6 +11,7 @@ class AddTestScreenState {
   final List<TestMasterSelected> testMasterListSelected;
   final List<SchemeRateList> specialSchemeRalesList;
   final TextEditingController searchController;
+  final List<String> checkedTestes;
   final num totalPrice;
   final int schemeIDSelected;
 
@@ -22,6 +23,7 @@ class AddTestScreenState {
     this.testMasterList = const [],
     this.testMasterListSeeing = const [],
     this.testMasterListSelected = const [],
+    this.checkedTestes = const [],
     this.totalPrice = 0,
     this.schemeIDSelected = 0,
     this.isCorporateBilling = false,
@@ -35,6 +37,7 @@ class AddTestScreenState {
     List<TestMasterSelected>? testMasterListSelected,
     TextEditingController? searchController,
     List<SchemeRateList>? specialSchemeRalesList,
+    List<String>? checkedTestes,
     int? schemeIDSelected,
     num? totalPrice,
     bool? isCorporateBilling,
@@ -50,6 +53,7 @@ class AddTestScreenState {
           specialSchemeRalesList ?? this.specialSchemeRalesList,
       testMasterListSelected:
           testMasterListSelected ?? this.testMasterListSelected,
+      checkedTestes: checkedTestes ?? this.checkedTestes,
       totalPrice: totalPrice ?? this.totalPrice,
       isCorporateBilling: isCorporateBilling ?? this.isCorporateBilling,
       isSpecialschemeOpen: isSpecialschemeOpen ?? this.isSpecialschemeOpen,

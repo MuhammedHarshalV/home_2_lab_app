@@ -314,9 +314,6 @@ class PatientDetailsCard extends ConsumerWidget {
                               log(value.schemeId.toString());
 
                               // Riverpod update example
-                              // addTestController.updateState(
-                              //    selectedScheme: value
-                              // );
                             },
                           ),
                         ),

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
@@ -27,6 +28,8 @@ class SpotBillingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final testMasterState = ref.watch(addTestScreenProvider);
+    final testMasterController = ref.read(addTestScreenProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
@@ -268,7 +271,7 @@ class SpotBillingScreen extends ConsumerWidget {
                   ),
                   if ((spotBillingState.doneByAccountListSearch.isNotEmpty ||
                           spotBillingState.isDoneByApi == true) &&
-                      spotBillingState.doneByController.text.isNotEmpty)
+                      spotBillingState.doneByController.text != 'Sumesh')
                     Container(
                       height: 70,
                       width: double.infinity,
@@ -437,6 +440,8 @@ class SpotBillingScreen extends ConsumerWidget {
                     onTap: () {
                       spotBillingController.updateState(isSubmitted: true);
                       if (spotBillingState.formKey.currentState!.validate()) {
+                        testMasterController.testMasterCalling();
+                        testMasterController.specialRatesFetch();
                         context.pushNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,
                         );

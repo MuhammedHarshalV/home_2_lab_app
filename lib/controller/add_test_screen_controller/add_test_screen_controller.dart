@@ -43,6 +43,22 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     }
   }
 
+  Future<void> checkedList(String testName) async {
+    final exists = state.checkedTestes.any((item) => item == testName);
+
+    if (!exists) {
+      state = state.copyWith(checkedTestes: [...state.checkedTestes, testName]);
+    }
+  }
+
+  void checkedListRemoval(String testName) {
+    state = state.copyWith(
+      checkedTestes: state.checkedTestes
+          .where((item) => item != testName)
+          .toList(),
+    );
+  }
+
   Future<void> testMasterCalling() async {
     try {
       final response = await TestMasterApi.testMasterApi();
