@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 
 class TestAddSearchValueContainer extends ConsumerWidget {
@@ -33,13 +34,25 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                   controller: textController,
                   keyboardType: TextInputType.text,
                   onChanged: (value) {
-                    // if(value.isEmpty){ final newSearchList = testAddState.testMasterList
-                    //     .where(
-                    //       (item) => (item.testName ?? '')
-                    //           .toLowerCase()
-                    //           .contains(''),
-                    //     )
-                    //     .toList();}
+                    if (value.isEmpty) {
+                      final newSearchList = testAddState.testMasterList;
+                      final List<TestMasterSelected> selectedList =
+                          newSearchList.map((item) {
+                            final isSelected = testAddState.checkedTestes
+                                .contains(item.testName);
+
+                            return TestMasterSelected(
+                              testKey: item.testKey,
+                              testRate: item.testRate,
+                              testShortCode: item.testShortCode,
+                              testName: item.testName,
+                              testSelected: isSelected,
+                            );
+                          }).toList();
+
+                      testAddController.searchTestMaster(selectedList);
+                    }
+
                     final search = value.toLowerCase();
 
                     final newSearchList = testAddState.testMasterList
@@ -76,16 +89,36 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                 ),
               ),
 
-              // if (spotBillingState.isTextClear == true)
-              // InkWell(
-              //   splashColor: Colors.transparent,
-              //   highlightColor: Colors.transparent,
-              //   hoverColor: Colors.transparent,
-              //   focusColor: Colors.transparent,
-              //   onTap: () {},
-              //   child: Icon(Icons.close),
-              // ),
-              // SizedBox(width: 5),
+              //   if (testAddState.isTextClear == true)
+              InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: () {
+                  textController.clear();
+                  final newSearchList = testAddState.testMasterList;
+                  final List<TestMasterSelected> selectedList = newSearchList
+                      .map((item) {
+                        final isSelected = testAddState.checkedTestes.contains(
+                          item.testName,
+                        );
+
+                        return TestMasterSelected(
+                          testKey: item.testKey,
+                          testRate: item.testRate,
+                          testShortCode: item.testShortCode,
+                          testName: item.testName,
+                          testSelected: isSelected,
+                        );
+                      })
+                      .toList();
+
+                  testAddController.searchTestMaster(selectedList);
+                },
+                child: Icon(Icons.close),
+              ),
+              SizedBox(width: 5),
             ],
           ),
           // if (spotBillingState.searchPatientList.isNotEmpty)
@@ -134,40 +167,120 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                                   hoverColor: Colors.transparent,
                                   focusColor: Colors.transparent,
                                   onTap: () async {
-                                    //                         if (testAddState
-                                    //                                 .testMasterListSeeing[index]
-                                    //                                 .testKey ==
-                                    //                             1165) {
-                                    //                                final updatedList = [...testAddState.testMasterListSeeing];
-                                    //                                 final itemIndex = updatedList.indexWhere((item) => item.testKey == 1165);
-
-                                    // if (itemIndex >= 0) {
-                                    //   final item = updatedList[itemIndex];
-
-                                    //   updatedList[itemIndex] = TestMasterSelected(
-                                    //     testKey: item.testKey,
-                                    //     testRate:testAddState.specialSchemeRalesList[],
-                                    //     testShortCode: item.testShortCode,
-                                    //     testName: item.testName,
-                                    //     testSelected: false,
-                                    //   );
-                                    // }
-                                    // final selectedList = updatedList
-                                    //     .where((item) => item.testSelected == true)
-                                    //     .toList();
-                                    // num totalPrice = state.totalPrice - updatedList[itemIndex].testRate!;
-
-                                    // state = state.copyWith(
-                                    //   testMasterListSeeing: updatedList,
-                                    //   testMasterListSelected: selectedList,
-                                    //   totalPrice: totalPrice,
-                                    // );
-
-                                    // } else {
                                     if (testAddState
                                             .testMasterListSeeing[index]
                                             .testSelected ==
                                         false) {
+                                      log(
+                                        "schemeIDSelected: ${testAddState.schemeIDSelected}",
+                                      );
+                                      log(
+                                        "testKey: ${testAddState.testMasterListSeeing[index].testKey}",
+                                      );
+                                      // testAddController
+                                      //     .updateSelectedTestsWithPrice(
+                                      //       testAddState
+                                      //           .testMasterListSeeing[index],
+                                      //     );
+                                      //discount price checking
+                                      if (testAddState.schemeIDSelected
+                                              .toString() ==
+                                          testAddState
+                                              .testMasterListSeeing[index]
+                                              .testKey!
+                                              .toString()) {
+                                        log('harshal 1');
+                                        final filteredList = testAddState
+                                            .specialSchemeRatesList
+                                            .where(
+                                              (item) =>
+                                                  item.schRTstid!.toString() ==
+                                                  testAddState.schemeIDSelected
+                                                      .toString(),
+                                            )
+                                            .toList();
+                                        log(
+                                          'harshal 2: ${filteredList.toList()}',
+                                        );
+                                        log(
+                                          filteredList
+                                              .map(
+                                                (e) =>
+                                                    "${e.schRTstid} - ${e.schRate}",
+                                              )
+                                              .toList()
+                                              .toString(),
+                                        );
+                                        final matchedItem =
+                                            filteredList.isNotEmpty
+                                            ? filteredList.first
+                                            : null;
+                                        final TestMasterSelected
+                                        list = TestMasterSelected(
+                                          testKey: testAddState
+                                              .testMasterListSeeing[index]
+                                              .testKey,
+                                          testRate:
+                                              matchedItem?.schRate ??
+                                              testAddState
+                                                  .testMasterListSeeing[index]
+                                                  .testRate,
+                                          testShortCode: testAddState
+                                              .testMasterListSeeing[index]
+                                              .testShortCode,
+                                          testName: testAddState
+                                              .testMasterListSeeing[index]
+                                              .testName,
+                                          testSelected: testAddState
+                                              .testMasterListSeeing[index]
+                                              .testSelected,
+                                        );
+
+                                        testAddController
+                                            .updateSpecialRateNewPriceList(
+                                              list,
+                                            );
+                                        log('mmmm:${list.toString()}');
+
+                                        log(
+                                          'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm: ${testAddState.testMasterListSelectedNewPrice.length}',
+                                        );
+                                      } else {
+                                        testAddController
+                                            .updateSpecialRateNewPriceList(
+                                              testAddState
+                                                  .testMasterListSeeing[index],
+                                            );
+                                        log(
+                                          'mmmm:${testAddState.testMasterListSeeing[index].toString()}',
+                                        );
+
+                                        log(
+                                          'mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm: ${testAddState.testMasterListSelectedNewPrice.length}',
+                                        );
+                                      }
+
+                                      // final newSearchList =
+                                      //     testAddState.specialSchemeRatesList;
+                                      // final List<TestMasterSelected>
+                                      // selectedList = newSearchList.map((
+                                      //   item,
+                                      // ) {
+                                      //   final num price = testAddState
+                                      //       .testMasterListSeeing[index]
+                                      //       .testKey
+
+                                      //.contains(item.testName);
+
+                                      //   return TestMasterSelected(
+                                      //     testKey: item.testKey,
+                                      //     testRate: item.testRate,
+                                      //     testShortCode: item.testShortCode,
+                                      //     testName: item.testName,
+                                      //     testSelected: isSelected,
+                                      //   );
+                                      // }).toList();
+
                                       await testAddController.checkedList(
                                         testAddState
                                             .testMasterListSeeing[index]
@@ -181,6 +294,16 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                                         testAddState
                                             .testMasterListSeeing[index]
                                             .testName!,
+                                      );
+
+                                      testAddController
+                                          .removalSpecialRateNewPriceList(
+                                            testAddState
+                                                .testMasterListSeeing[index]
+                                                .testName!,
+                                          );
+                                      log(
+                                        'mmmmmmm: ${testAddState.testMasterListSelectedNewPrice.toString()}',
                                       );
                                       log(
                                         testAddState.checkedTestes.toString(),

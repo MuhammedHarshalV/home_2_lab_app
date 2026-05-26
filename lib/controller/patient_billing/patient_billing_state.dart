@@ -13,6 +13,7 @@ class PatientBillingState {
   final TextEditingController abhaIdController;
   final TextEditingController passPortNumberController;
   final TextEditingController noteController;
+  final String ageByYear;
   //final String age;
   final TextEditingController genderController;
   final TextEditingController addressController;
@@ -22,7 +23,7 @@ class PatientBillingState {
 
   final List<PatientsList> searchPatientList;
   final List<AccountsList> doneByAccountListApi;
- // final List<AccountsList> doneByAccountListApi;
+  // final List<AccountsList> doneByAccountListApi;
   final List<String> doneByAccountListSearch;
 
   final bool isSubmitted;
@@ -36,12 +37,12 @@ class PatientBillingState {
   final GlobalKey<FormState> formKey;
 
   PatientBillingState({
-   // this.age = '',
+    // this.age = '',
     required this.formKey,
     this.searchPatientList = const [],
     this.doneByAccountListApi = const [],
     this.doneByAccountListSearch = const [],
-
+    this.ageByYear = 'Years',
     this.isSubmitted = false,
     this.isAge = false,
     this.isLoading = false,
@@ -77,7 +78,7 @@ class PatientBillingState {
     TextEditingController? abhaIdController,
     TextEditingController? passPortNumberController,
     TextEditingController? noteController,
-   // String? age,
+    String? ageByYear,
     TextEditingController? genderController,
     TextEditingController? ageController,
 
@@ -118,7 +119,7 @@ class PatientBillingState {
       passPortNumberController:
           passPortNumberController ?? this.passPortNumberController,
       noteController: noteController ?? this.noteController,
-      //age: age ?? this.age,
+      ageByYear: ageByYear ?? this.ageByYear,
       genderController: genderController ?? this.genderController,
       addressController: addressController ?? this.addressController,
       referredByController: referredByController ?? this.referredByController,

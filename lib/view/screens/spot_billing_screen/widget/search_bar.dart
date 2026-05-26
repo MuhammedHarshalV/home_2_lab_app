@@ -71,10 +71,12 @@ class SearchBarContainer extends ConsumerWidget {
               GestureDetector(
                 onTap: () async {
                   spotBillingController.updateState(searchPatientList: []);
-                  await spotBillingController.searchPatient(
-                    context: context,
-                    body: textController.text.toString(),
-                  );
+                  if (textController.text.length > 2) {
+                    await spotBillingController.searchPatient(
+                      context: context,
+                      body: textController.text.toString(),
+                    );
+                  }
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),

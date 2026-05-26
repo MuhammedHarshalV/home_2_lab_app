@@ -132,7 +132,7 @@ class SpotBillingScreen extends ConsumerWidget {
                   CommonTapPossitionDropdown(
                     heading:
                         spotBillingState.patientDetailsController.text.isEmpty
-                        ? 'Patient Details'
+                        ? 'Prefix'
                         : spotBillingState.patientDetailsController.text,
                     items: List.generate(
                       patientTitles.length,
@@ -208,9 +208,11 @@ class SpotBillingScreen extends ConsumerWidget {
                       SizedBox(width: 10),
                       Expanded(
                         child: CommonTapPossitionDropdown(
-                          heading: 'Years',
+                          heading: spotBillingState.ageByYear,
                           items: ['Year', 'Month', 'Week', 'Day'],
-                          onSelected: (p0) {},
+                          onSelected: (p0) {
+                            spotBillingController.updateState(ageByYear: p0);
+                          },
                         ),
                       ),
                     ],

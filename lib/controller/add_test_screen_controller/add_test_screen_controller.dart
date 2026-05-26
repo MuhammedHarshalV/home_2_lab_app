@@ -11,7 +11,13 @@ import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 
 class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   AddTestScreenController()
-    : super(AddTestScreenState(searchController: TextEditingController())) {
+    : super(
+        AddTestScreenState(
+          searchController: TextEditingController(),
+          specialSchemeController: TextEditingController(),
+          specialSchemeFocusNode: FocusNode(),
+        ),
+      ) {
     Future.microtask(() {
       testMasterCalling();
       specialRatesFetch();
@@ -21,7 +27,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   void updatestate({
     List<AccountsList>? specialSchemeList,
     List<TestMasterSelected>? testMasterListSeeing,
-    int? schemeIDSelected,
+    num? schemeIDSelected,
     bool? isCorporateBilling,
     bool? isSpecialschemeOpen,
   }) {
@@ -34,13 +40,86 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     );
   }
 
+  void updateSpecialSchemePrice() {
+    final updatedList = state.finalListNewPrice.map((test) {
+      num price = test.testRate ?? 0;
+      log(
+        'controller schemeid selected  :${state.schemeIDSelected.toString()}',
+      );
+      // first check testKey == selectedSchemeId
+      if (test.testKey == state.schemeIDSelected) {
+        log(
+          'controller schemeid selected if:${state.schemeIDSelected.toString()}',
+        );
+        // then check matching scheme rate
+        final matchedItem = state.specialSchemeRatesList
+            .where((item) => item.schRTstid == state.schemeIDSelected)
+            .first;
+
+        price = matchedItem.schRate ?? price;
+      }
+
+      return TestMasterSelected(
+        testKey: test.testKey,
+        testRate: price,
+        testShortCode: test.testShortCode,
+        testName: test.testName,
+        testSelected: test.testSelected,
+      );
+    }).toList();
+
+    num totalPrice = 0;
+    List<TestMasterSelected> getSelectedTests = updatedList;
+
+    for (TestMasterSelected n in getSelectedTests) {
+      totalPrice += n.testRate ?? 0;
+    }
+
+    state = state.copyWith(
+      finalListNewPrice: updatedList,
+      totalPrice: totalPrice,
+    );
+    log('new final list ${state.finalListNewPrice.toList()}');
+    log('new total price :${state.totalPrice.toString()}');
+  }
+
   Future<void> specialRatesFetch() async {
     try {
       final response = await SpecialSchemeRatesApi.specialSchemesApi();
-      state = state.copyWith(specialSchemeRalesList: response);
+      state = state.copyWith(specialSchemeRatesList: response);
     } catch (e) {
       log('conntroller catch : ${e.toString()}');
     }
+  }
+
+  Future<void> updateSpecialRateNewPriceList(TestMasterSelected list) async {
+    final exists = state.testMasterListSelectedNewPrice.any(
+      (item) => item == list,
+    );
+    if (!exists) {
+      state = state.copyWith(
+        testMasterListSelectedNewPrice: [
+          ...state.testMasterListSelectedNewPrice,
+          list,
+        ],
+      );
+    }
+  }
+
+  Future<void> removalSpecialRateNewPriceList(String name) async {
+    state = state.copyWith(
+      testMasterListSelectedNewPrice: state.testMasterListSelectedNewPrice
+          .where((item) => item.testName != name)
+          .toList(),
+    );
+  }
+
+  Future<void> removalFinalList(String name) async {
+    state = state.copyWith(
+      finalListNewPrice: state.finalListNewPrice
+          .where((item) => item.testName != name)
+          .toList(),
+    );
   }
 
   Future<void> checkedList(String testName) async {
@@ -77,7 +156,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           testRate: item.testRate,
           testShortCode: item.testShortCode,
           testName: item.testName,
-          testSelected: false, // initial value
+          testSelected: state.checkedTestes.contains(item.testName),
         );
       }).toList();
       state = state.copyWith(
@@ -103,6 +182,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
 
   void updateSelectedTest({required int? index, required String? name}) {
     final updatedList = [...state.testMasterListSeeing];
+    final updatedListPrice = [...state.finalListNewPrice];
 
     if (index != null) {
       updatedList[index] = TestMasterSelected(
@@ -114,9 +194,11 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       );
     }
     if (name != null) {
+      log('detetting name :$name');
       final itemIndex = updatedList.indexWhere((item) => item.testName == name);
 
       if (itemIndex >= 0) {
+        log('detetting name :$name');
         final item = updatedList[itemIndex];
 
         updatedList[itemIndex] = TestMasterSelected(
@@ -130,7 +212,13 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       final selectedList = updatedList
           .where((item) => item.testSelected == true)
           .toList();
-      num totalPrice = state.totalPrice - updatedList[itemIndex].testRate!;
+      num totalPrice =
+          state.totalPrice -
+          (updatedListPrice
+                  .where((e) => e.testName == name)
+                  .firstOrNull
+                  ?.testRate ??
+              0);
 
       state = state.copyWith(
         testMasterListSeeing: updatedList,
@@ -140,6 +228,33 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     }
 
     state = state.copyWith(testMasterListSeeing: updatedList);
+  }
+
+  void updatefinalList() {
+    num totalPrice = 0;
+    // if (state.finalListNewPrice.isNotEmpty) {
+    //   List<TestMasterSelected> getSelectedTests =
+    //       state.testMasterListSelectedNewPrice;
+
+    //   for (TestMasterSelected n in getSelectedTests) {
+    //     totalPrice += n.testRate ?? 0;
+    //   }
+    //   state = state.copyWith(
+    //     totalPrice: totalPrice,
+    //     finalListNewPrice: getSelectedTests,
+    //   );
+    // } else {
+    List<TestMasterSelected> getSelectedTests =
+        state.testMasterListSelectedNewPrice;
+
+    for (TestMasterSelected n in getSelectedTests) {
+      totalPrice += n.testRate ?? 0;
+    }
+    state = state.copyWith(
+      totalPrice: totalPrice,
+      finalListNewPrice: getSelectedTests,
+    );
+    // }
   }
 
   void updateSelectedList() {

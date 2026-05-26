@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
 
 class PatientDetailsBelowCard extends ConsumerWidget {
   const PatientDetailsBelowCard({super.key});
@@ -90,21 +93,26 @@ class PatientDetailsBelowCard extends ConsumerWidget {
               ],
             ),
             Expanded(
-              child: Container(
-                // width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.appPrimaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Text(
-                      'Collect Payment',
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: AppColors.appWhite,
-                        fontWeight: FontWeight.bold, // Dark grey-blue
+              child: InkWell(
+                onTap: () {
+                  context.pushNamed(AppRouteNames.paymentCompletionScreen.name);
+                },
+                child: Container(
+                  // width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.appPrimaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Text(
+                        'Collect Payment',
+                        style: TextStyle(
+                          fontSize: 10,
+                          color: AppColors.appWhite,
+                          fontWeight: FontWeight.bold, // Dark grey-blue
+                        ),
                       ),
                     ),
                   ),

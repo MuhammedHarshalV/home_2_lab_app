@@ -71,7 +71,9 @@ class AddNewTestPopUp extends ConsumerWidget {
             Expanded(
               child: ElevatedButton(
                 onPressed: () {
-                  testMasterController.updateSelectedList();
+                  // testMasterController.updateSelectedList();
+                  testMasterController.updatefinalList();
+
                   context.pop();
                 },
                 style: ElevatedButton.styleFrom(

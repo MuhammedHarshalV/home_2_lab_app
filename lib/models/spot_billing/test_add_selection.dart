@@ -12,4 +12,15 @@ class TestMasterSelected {
     this.testName,
     this.testSelected = false,
   });
+
+  @override
+  String toString() {
+    return 'TestMasterSelected('
+        'testKey: $testKey, '
+        'testRate: $testRate, '
+        'testShortCode: $testShortCode, '
+        'testName: $testName, '
+        'testSelected: $testSelected'
+        ')';
+  }
 }

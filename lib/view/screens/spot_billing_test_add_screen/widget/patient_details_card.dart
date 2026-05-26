@@ -2,10 +2,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
-import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PatientDetailsCard extends ConsumerWidget {
   const PatientDetailsCard({super.key});
@@ -14,6 +17,8 @@ class PatientDetailsCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final addTestController = ref.read(addTestScreenProvider.notifier);
     final addTestState = ref.watch(addTestScreenProvider);
+    final patientBillingDetailsState = ref.watch(patientBillingProvider);
+
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -39,9 +44,9 @@ class PatientDetailsCard extends ConsumerWidget {
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'Mr. MUHAMMED HARSHAL',
+                    "${patientBillingDetailsState.patientDetailsController.text} ${patientBillingDetailsState.patientNameController.text}",
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w800,
@@ -52,7 +57,20 @@ class PatientDetailsCard extends ConsumerWidget {
                 ),
 
                 InkWell(
-                  onTap: () {},
+                  onTap: () async {
+                    final Uri url = Uri(
+                      scheme: 'tel',
+                      path: patientBillingDetailsState
+                          .patientPhoneController
+                          .text,
+                    );
+
+                    if (await canLaunchUrl(url)) {
+                      await launchUrl(url); // opens dialer safely
+                    } else {
+                      log('Could not launch dialer');
+                    }
+                  },
                   child: Icon(
                     Icons.phone_outlined,
                     color: const Color(0xFF1A2B4C),
@@ -74,7 +92,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  ' Male',
+                  ' ${patientBillingDetailsState.genderController.text}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F), // Dark grey-blue
@@ -90,7 +108,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  ' 20',
+                  ' ${patientBillingDetailsState.ageController.text}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F), // Dark grey-blue
@@ -113,7 +131,7 @@ class PatientDetailsCard extends ConsumerWidget {
                 ),
                 Expanded(
                   child: Text(
-                    ' Kochi Location (Kerala)hjgdkdjsaf sajfahsjh jkhjghsaj',
+                    ' ${patientBillingDetailsState.addressController.text}',
                     style: TextStyle(
                       fontSize: 12,
                       color: Color(0xFF37474F), // Dark grey-blue
@@ -125,7 +143,7 @@ class PatientDetailsCard extends ConsumerWidget {
 
             GestureDetector(
               onTap: () {
-                // Handle edit profile action
+                context.pushNamed(AppRouteNames.editSpotBillingScreen.name);
               },
               child: const Text(
                 'Edit Patient Info',
@@ -164,6 +182,20 @@ class PatientDetailsCard extends ConsumerWidget {
                       hoverColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       onTap: () {
+                        if (addTestState.isCorporateBilling == true) {
+                          log("corparate already clicked");
+                          addTestController.updatestate(schemeIDSelected: 0);
+                          addTestState.specialSchemeController.clear();
+                          addTestController.updateSpecialSchemePrice();
+                        } else {
+                          log(
+                            "Special scheme ID selected ${addTestState.schemeIDSelected.toString()}",
+                          );
+                          addTestController.updatestate(
+                            schemeIDSelected: addTestState.schemeIDSelected,
+                          );
+                          addTestController.updateSpecialSchemePrice();
+                        }
                         addTestController.updatestate(
                           isCorporateBilling: !addTestState.isCorporateBilling,
                         );
@@ -185,6 +217,8 @@ class PatientDetailsCard extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: DropdownMenu<AccountsList>(
+                            controller: addTestState.specialSchemeController,
+
                             width: MediaQuery.of(context).size.width / 2,
                             menuHeight: MediaQuery.of(context).size.height / 3,
                             menuStyle: MenuStyle(
@@ -206,9 +240,14 @@ class PatientDetailsCard extends ConsumerWidget {
 
                             enableFilter: true,
                             requestFocusOnTap: true,
-                            trailingIcon: SizedBox.shrink(),
-                            selectedTrailingIcon: SizedBox.shrink(),
+                            // trailingIcon: SizedBox.shrink(),
+
+                            // selectedTrailingIcon: SizedBox.shrink(),
                             inputDecorationTheme: InputDecorationTheme(
+                              suffixIconConstraints: BoxConstraints(
+                                minWidth: 20,
+                                minHeight: 20,
+                              ),
                               isDense: true,
                               border: InputBorder.none,
                               contentPadding: EdgeInsets.only(
@@ -228,7 +267,7 @@ class PatientDetailsCard extends ConsumerWidget {
                                     DropdownMenuEntry<AccountsList>(
                                       value: AccountsList(
                                         key: 0,
-                                        name: "",
+                                        name: "Items Not Found.",
                                         type: "",
                                         schemeId: 0,
                                       ),
@@ -309,8 +348,10 @@ class PatientDetailsCard extends ConsumerWidget {
                               //  print(value);
                               log(value!.name.toString());
                               addTestController.updatestate(
-                                schemeIDSelected: value.schemeId,
+                                schemeIDSelected: value.schemeId ?? 0,
                               );
+                              addTestController.updateSpecialSchemePrice();
+
                               log(value.schemeId.toString());
 
                               // Riverpod update example
@@ -380,89 +421,89 @@ class PatientDetailsCard extends ConsumerWidget {
   }
 }
 
-class SpecialSchemeDropDown extends StatelessWidget {
-  final List<String> items;
-  final Function(String) onSelected;
+// //class SpecialSchemeDropDown extends StatelessWidget {
+//   final List<String> items;
+//   final Function(String) onSelected;
 
-  const SpecialSchemeDropDown({
-    super.key,
+//   const SpecialSchemeDropDown({
+//     super.key,
 
-    required this.items,
-    required this.onSelected,
-  });
+//     required this.items,
+//     required this.onSelected,
+//   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
-        hoverColor: Colors.transparent,
-        focusColor: Colors.transparent,
-        onTapDown: (details) {
-          _showMore(context, details.globalPosition);
-        },
-        child: Container(
-          height: 30,
-          decoration: BoxDecoration(
-            color: AppColors.appPrimaryColorLight,
-            borderRadius: BorderRadius.circular(10),
-          ),
+//   @override
+//   Widget build(BuildContext context) {
+//     return Expanded(
+//       child: InkWell(
+//         splashColor: Colors.transparent,
+//         highlightColor: Colors.transparent,
+//         hoverColor: Colors.transparent,
+//         focusColor: Colors.transparent,
+//         onTapDown: (details) {
+//           _showMore(context, details.globalPosition);
+//         },
+//         child: Container(
+//           height: 30,
+//           decoration: BoxDecoration(
+//             color: AppColors.appPrimaryColorLight,
+//             borderRadius: BorderRadius.circular(10),
+//           ),
 
-          child: Center(
-            child: TextField(
-              onChanged: (value) {},
-              style: TextStyle(
-                fontSize: 12,
-                height: 1, // important
-              ),
-              textAlignVertical: TextAlignVertical.center,
-              decoration: InputDecoration(
-                isDense: true,
-                border: InputBorder.none,
-                hintText: 'Special Scheme',
-                hintStyle: TextStyle(fontSize: 12),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 0,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
+//           child: Center(
+//             child: TextField(
+//               onChanged: (value) {},
+//               style: TextStyle(
+//                 fontSize: 12,
+//                 height: 1, // important
+//               ),
+//               textAlignVertical: TextAlignVertical.center,
+//               decoration: InputDecoration(
+//                 isDense: true,
+//                 border: InputBorder.none,
+//                 hintText: 'Special Scheme',
+//                 hintStyle: TextStyle(fontSize: 12),
+//                 contentPadding: EdgeInsets.symmetric(
+//                   horizontal: 5,
+//                   vertical: 0,
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
 
-  void _showMore(BuildContext context, Offset tapPosition) async {
-    final screenSize = MediaQuery.of(context).size;
+//   void _showMore(BuildContext context, Offset tapPosition) async {
+//     final screenSize = MediaQuery.of(context).size;
 
-    final selected = await showMenu<String>(
-      context: context,
-      color: AppColors.appWhite,
-      constraints: BoxConstraints(
-        minWidth: screenSize.width / 2,
-        maxHeight: screenSize.height / 3,
-      ),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      position: RelativeRect.fromLTRB(
-        tapPosition.dx + 50, // move 50px to right
-        tapPosition.dy + 10, // 10px below
-        0,
-        screenSize.height - (tapPosition.dy + 10),
-      ),
-      items: items
-          .map(
-            (item) => PopupMenuItem<String>(
-              value: item,
-              child: Align(alignment: Alignment.centerLeft, child: Text(item)),
-            ),
-          )
-          .toList(),
-    );
+//     final selected = await showMenu<String>(
+//       context: context,
+//       color: AppColors.appWhite,
+//       constraints: BoxConstraints(
+//         minWidth: screenSize.width / 2,
+//         maxHeight: screenSize.height / 3,
+//       ),
+//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+//       position: RelativeRect.fromLTRB(
+//         tapPosition.dx + 50, // move 50px to right
+//         tapPosition.dy + 10, // 10px below
+//         0,
+//         screenSize.height - (tapPosition.dy + 10),
+//       ),
+//       items: items
+//           .map(
+//             (item) => PopupMenuItem<String>(
+//               value: item,
+//               child: Align(alignment: Alignment.centerLeft, child: Text(item)),
+//             ),
+//           )
+//           .toList(),
+//     );
 
-    if (selected != null) {
-      onSelected(selected); // callback
-    }
-  }
-}
+//     if (selected != null) {
+//       onSelected(selected); // callback
+//     }
+//   }
+// }

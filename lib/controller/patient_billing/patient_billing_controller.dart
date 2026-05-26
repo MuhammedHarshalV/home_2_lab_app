@@ -126,7 +126,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
     List<PatientsList>? searchPatientList,
     List<AccountsList>? doneByAccountListApi,
     List<String>? doneByAccountListSearch,
-
+    String? ageByYear,
     bool? isSubmitted,
     bool? isAge,
     bool? isLoading,
@@ -142,7 +142,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
       searchPatientList: searchPatientList,
       doneByAccountListApi: doneByAccountListApi,
       doneByAccountListSearch: doneByAccountListSearch,
-
+      ageByYear: ageByYear,
       isSubmitted: isSubmitted,
       isAge: isAge,
       isLoading: isLoading,
@@ -168,12 +168,30 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
             currentDate.day < birthDate.day)) {
       age--;
     }
+    int ageText;
+
+    if (age == 0) {
+      // Calculate total months
+      int months =
+          (currentDate.year - birthDate.year) * 12 +
+          (currentDate.month - birthDate.month);
+
+      // Adjust if day not reached
+      if (currentDate.day < birthDate.day) {
+        months--;
+      }
+      state = state.copyWith(ageByYear: 'Months');
+      ageText = months;
+    } else {
+      ageText = age;
+      state = state.copyWith(ageByYear: 'Years');
+    }
     state = state.copyWith(
-      ageController: TextEditingController(text: age.toString()),
+      ageController: TextEditingController(text: ageText.toString()),
     ); //after correction
 
-    log(age.toString());
-    return age;
+    log(ageText.toString());
+    return ageText;
   }
 }
 
