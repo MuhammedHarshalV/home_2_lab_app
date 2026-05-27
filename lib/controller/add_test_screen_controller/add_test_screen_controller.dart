@@ -7,6 +7,7 @@ import 'package:icon_infoware/apis/spot_billing/test_master_api.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_state.dart';
 
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
+import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 
 class AddTestScreenController extends StateNotifier<AddTestScreenState> {
@@ -24,6 +25,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     });
   }
 
+  //state updation function
   void updatestate({
     List<AccountsList>? specialSchemeList,
     List<TestMasterSelected>? testMasterListSeeing,
@@ -40,49 +42,66 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     );
   }
 
+  //update final list to see
   void updateSpecialSchemePrice() {
-    final updatedList = state.finalListNewPrice.map((test) {
-      num price = test.testRate ?? 0;
-      log(
-        'controller schemeid selected  :${state.schemeIDSelected.toString()}',
-      );
-      // first check testKey == selectedSchemeId
-      if (test.testKey == state.schemeIDSelected) {
-        log(
-          'controller schemeid selected if:${state.schemeIDSelected.toString()}',
-        );
-        // then check matching scheme rate
-        final matchedItem = state.specialSchemeRatesList
-            .where((item) => item.schRTstid == state.schemeIDSelected)
-            .first;
+    List<TestMasterSelected> updatedList = [];
+    testMasterCalling();
+    //specialRatesFetch();
 
-        price = matchedItem.schRate ?? price;
+    for (var test in state.finalListNewPrice) {
+      num price = test.testRate ?? 0;
+
+      log('controller schemeid selected: ${state.schemeIDSelected}');
+
+      if (test.testKey == state.schemeIDSelected) {
+        log('controller schemeid selected if: ${state.schemeIDSelected}');
+
+        for (var item in state.specialSchemeRatesList) {
+          if (item.schRTstid == state.schemeIDSelected) {
+            price = item.schRate ?? price;
+            break; // stop loop after first match
+          }
+        }
+      } else {
+        log('=======================================1');
+        for (var item in state.testMasterListSeeing) {
+          log('=======================================2');
+          if (item.testKey == test.testKey) {
+            log('=======================================3');
+            price = item.testRate ?? price;
+            log('=======================================$price');
+            break; // stop loop after first match
+          }
+        }
       }
 
-      return TestMasterSelected(
-        testKey: test.testKey,
-        testRate: price,
-        testShortCode: test.testShortCode,
-        testName: test.testName,
-        testSelected: test.testSelected,
+      updatedList.add(
+        TestMasterSelected(
+          testKey: test.testKey,
+          testRate: price,
+          testShortCode: test.testShortCode,
+          testName: test.testName,
+          testSelected: test.testSelected,
+        ),
       );
-    }).toList();
+    }
 
     num totalPrice = 0;
-    List<TestMasterSelected> getSelectedTests = updatedList;
 
-    for (TestMasterSelected n in getSelectedTests) {
-      totalPrice += n.testRate ?? 0;
+    for (var item in updatedList) {
+      totalPrice += item.testRate ?? 0;
     }
 
     state = state.copyWith(
       finalListNewPrice: updatedList,
       totalPrice: totalPrice,
     );
-    log('new final list ${state.finalListNewPrice.toList()}');
-    log('new total price :${state.totalPrice.toString()}');
+    log('new special schemeid not selected : ${updatedList.toString()}');
+    log('new final list ${state.finalListNewPrice}');
+    log('new total price ${state.totalPrice}');
   }
 
+  //special scheme rate fetch by api
   Future<void> specialRatesFetch() async {
     try {
       final response = await SpecialSchemeRatesApi.specialSchemesApi();
@@ -112,6 +131,9 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           .where((item) => item.testName != name)
           .toList(),
     );
+    log(
+      'new specialscheme new rate list :${state.testMasterListSelectedNewPrice.toString()}',
+    );
   }
 
   Future<void> removalFinalList(String name) async {
@@ -120,6 +142,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           .where((item) => item.testName != name)
           .toList(),
     );
+    log('new final new rate list :${state.finalListNewPrice.toString()}');
   }
 
   Future<void> checkedList(String testName) async {
@@ -136,6 +159,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           .where((item) => item != testName)
           .toList(),
     );
+    log('selected list');
   }
 
   Future<void> testMasterCalling() async {
@@ -183,6 +207,8 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   void updateSelectedTest({required int? index, required String? name}) {
     final updatedList = [...state.testMasterListSeeing];
     final updatedListPrice = [...state.finalListNewPrice];
+    log("Received name: $name");
+    log("Received index: $index");
 
     if (index != null) {
       updatedList[index] = TestMasterSelected(

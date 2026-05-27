@@ -64,7 +64,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   Future<void> doneBySearch({required String searchText}) async {
     if (state.doneByAccountListApi.isEmpty) {
       final response = await DoneBySearchApi.doneBySearch();
-      log('00000000000${response.toString()}');
+      log('done by api response in controller :${response.toString()}');
       List<AccountsList> newAccountList = [];
       List<AccountsList> specialSchemeList = [];
 
@@ -84,7 +84,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           );
         }
       }
-      log('>>>>>>>>>>>new list : $newAccountList');
+      log('done by account list : $newAccountList');
       state = state.copyWith(
         doneByAccountListApi: newAccountList,
         isDoneByApi: true,
@@ -103,7 +103,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           if (name.contains(searchTexts)) {
             newsearchList.add(item.name ?? '');
 
-            log('====================new search account list : $newsearchList');
+            log('done by search account list : $newsearchList');
           }
         }
 
@@ -113,11 +113,6 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
         );
       }
     }
-
-    // state = state.copyWith(
-    //   doneByAccountListApi: newAccountList,
-    //   isDoneByApi: true,
-    // );
   }
 
   /// COMMON UPDATE METHOD
@@ -155,13 +150,13 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
     );
   }
 
+  //age calcutation
   int calculateAge(DateTime birthDate) {
     final currentDate = DateTime.now();
     log('current year : ${currentDate.year}');
     log("${DateTime.now()}");
 
     int age = currentDate.year - birthDate.year;
-    // state=state.copyWith(age: age.toString());
 
     if (currentDate.month < birthDate.month ||
         (currentDate.month == birthDate.month &&
@@ -195,10 +190,6 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   }
 }
 
-// final patientBillingProvider =
-//     StateNotifierProvider<PatientBillingController, PatientBillingState>((ref) {
-//       return PatientBillingController();
-//     });
 final patientBillingProvider =
     StateNotifierProvider<PatientBillingController, PatientBillingState>((ref) {
       return PatientBillingController(ref);

@@ -45,6 +45,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
             focusColor: Colors.transparent,
             onTap: () {
               bottomNavController.setIndex(0);
+              testMasterState.searchController.clear();
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (context) => BottomNavScreen()),
@@ -217,6 +218,10 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                                     );
                                                 testMasterController
                                                     .removalFinalList(
+                                                      item.testName!,
+                                                    );
+                                                testMasterController
+                                                    .checkedListRemoval(
                                                       item.testName!,
                                                     );
                                               },

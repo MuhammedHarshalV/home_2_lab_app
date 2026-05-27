@@ -1,16 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/above_container_card.dart';
 
-class PaymentScreen extends StatelessWidget {
-  const PaymentScreen({super.key});
+class PaymentCompletionScreen extends ConsumerWidget {
+  const PaymentCompletionScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       backgroundColor: AppColors.appWhite,
       appBar: AppBar(
@@ -67,13 +68,21 @@ class PaymentScreen extends StatelessWidget {
                     label: 'Paying with',
                     value: 'MUHAMMED\nHARSHAL',
                   ),
-                  _VerticalDivider(),
+                  Container(
+                    height: 50,
+                    width: 0.5,
+                    color: AppColors.appPrimaryColor,
+                  ),
                   AboveContainerCard(
                     icon: Icons.calendar_today_outlined,
                     label: 'Paying Date',
                     value: 'May 26, 2026',
                   ),
-                  _VerticalDivider(),
+                  Container(
+                    height: 50,
+                    width: 0.5,
+                    color: AppColors.appPrimaryColor,
+                  ),
                   AboveContainerCard(
                     icon: Icons.qr_code_outlined,
                     label: 'Paying No',
@@ -269,13 +278,17 @@ class _BillRow extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 13, color: AppColors.appBlack),
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.black87,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           Row(
             children: [
               const Text(
                 ': ',
-                style: TextStyle(fontSize: 13, color: Colors.grey),
+                style: TextStyle(fontSize: 13, color: Colors.black87),
               ),
               if (isEditable)
                 const Icon(Icons.edit, size: 14, color: Color(0xFF639922)),

@@ -187,15 +187,16 @@ class PatientDetailsCard extends ConsumerWidget {
                           addTestController.updatestate(schemeIDSelected: 0);
                           addTestState.specialSchemeController.clear();
                           addTestController.updateSpecialSchemePrice();
-                        } else {
-                          log(
-                            "Special scheme ID selected ${addTestState.schemeIDSelected.toString()}",
-                          );
-                          addTestController.updatestate(
-                            schemeIDSelected: addTestState.schemeIDSelected,
-                          );
-                          addTestController.updateSpecialSchemePrice();
                         }
+                        //  else {
+                        //   log(
+                        //     "Special scheme ID selected ${addTestState.schemeIDSelected.toString()}",
+                        //   );
+                        //   addTestController.updatestate(
+                        //     schemeIDSelected: addTestState.schemeIDSelected,
+                        //   );
+                        //   addTestController.updateSpecialSchemePrice();
+                        // }
                         addTestController.updatestate(
                           isCorporateBilling: !addTestState.isCorporateBilling,
                         );
@@ -347,10 +348,13 @@ class PatientDetailsCard extends ConsumerWidget {
                             onSelected: (value) {
                               //  print(value);
                               log(value!.name.toString());
+                              final selectedSchemeId = value.schemeId ?? 0;
                               addTestController.updatestate(
-                                schemeIDSelected: value.schemeId ?? 0,
+                                schemeIDSelected: selectedSchemeId,
                               );
-                              addTestController.updateSpecialSchemePrice();
+                              addTestController.updateSpecialSchemePrice(
+                              
+                              );
 
                               log(value.schemeId.toString());
 
