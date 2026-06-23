@@ -6,7 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
@@ -18,17 +20,18 @@ import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/p
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/test_add_search_value_container.dart';
 
 class SpotBillingTestAddScreen extends ConsumerWidget {
-  const SpotBillingTestAddScreen({super.key});
+  final int? index;
+  const SpotBillingTestAddScreen({super.key, this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final testMasterState = ref.watch(addTestScreenProvider);
     final testMasterController = ref.read(addTestScreenProvider.notifier);
-
+    final homeState = ref.watch(homeScreenProvider);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
     log('final list :${testMasterState.finalListNewPrice.toString()}');
     log('final list :${testMasterState.finalListNewPrice.length}');
-    log('checked list :${testMasterState.checkedTestes.toString()}');
+    // log('checked list :${testMasterState.checkedTestes.toString()}');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       backgroundColor: AppColors.appWhite,
@@ -45,12 +48,14 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
             focusColor: Colors.transparent,
             onTap: () {
               bottomNavController.setIndex(0);
+              context.pushReplacementNamed(AppRouteNames.bottomNavScreen.name);
               testMasterState.searchController.clear();
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => BottomNavScreen()),
-                (route) => false,
-              );
+              // Navigator.pushAndRemoveUntil(
+              //   context,
+              //   MaterialPageRoute(builder: (context) => BottomNavScreen()),
+              //   (route) => false,
+              // );
+              // context.pop();
             },
             child: CircleAvatar(
               backgroundColor: AppColors.appPrimaryColor.withOpacity(0.2),
@@ -77,7 +82,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            PatientDetailsCard(),
+            PatientDetailsCard(index: index),
             SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(color: AppColors.appPrimaryColorLight),
@@ -135,7 +140,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      testMasterState.finalListNewPrice.isNotEmpty
+                      testMasterState.testMasterListSelectedNewPrice.isNotEmpty
                           ? Container(
                               decoration: BoxDecoration(
                                 color: AppColors.appWhite,
@@ -158,15 +163,20 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                 },
                                 children: [
                                   ...List.generate(
-                                    testMasterState.finalListNewPrice.length,
+                                    testMasterState
+                                        .testMasterListSelectedNewPrice
+                                        .length,
                                     (index) {
                                       final item = testMasterState
-                                          .finalListNewPrice[index];
+                                          .testMasterListSelectedNewPrice[index];
 
                                       return TableRow(
                                         children: [
                                           Padding(
-                                            padding: EdgeInsets.all(5),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10,
+                                              horizontal: 5,
+                                            ),
                                             child: Text(
                                               "${index + 1}.",
                                               style: TextStyle(
@@ -177,7 +187,10 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                           ),
 
                                           Padding(
-                                            padding: EdgeInsets.all(5),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10,
+                                              horizontal: 5,
+                                            ),
                                             child: Text(
                                               item.testName ?? '',
                                               style: TextStyle(
@@ -188,7 +201,10 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                           ),
 
                                           Padding(
-                                            padding: EdgeInsets.all(5),
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 10,
+                                              horizontal: 5,
+                                            ),
                                             child: Text(
                                               "${item.testRate}",
                                               style: TextStyle(
@@ -199,7 +215,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                           ),
 
                                           Padding(
-                                            padding: const EdgeInsets.all(5),
+                                            padding: const EdgeInsets.all(10),
                                             child: InkWell(
                                               splashColor: Colors.transparent,
                                               highlightColor:
@@ -207,28 +223,28 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                               hoverColor: Colors.transparent,
                                               focusColor: Colors.transparent,
                                               onTap: () {
-                                                testMasterController
-                                                    .updateSelectedTest(
-                                                      index: null,
-                                                      name: item.testName!,
-                                                    );
-                                                testMasterController
-                                                    .removalSpecialRateNewPriceList(
-                                                      item.testName!,
-                                                    );
-                                                testMasterController
-                                                    .removalFinalList(
-                                                      item.testName!,
-                                                    );
-                                                testMasterController
-                                                    .checkedListRemoval(
-                                                      item.testName!,
-                                                    );
+                                                // testMasterController
+                                                //     .updateSelectedTest(
+                                                //       index: null,
+                                                //       name: item.testName!,
+                                                //     );
+                                                // testMasterController
+                                                //     .removalSpecialRateNewPriceList(
+                                                //       item.testName!,
+                                                //     );
+                                                // testMasterController
+                                                //     .removalFinalList(
+                                                //       item.testName!,
+                                                //     );
+                                                // testMasterController
+                                                //     .checkedListRemoval(
+                                                //       item.testName!,
+                                                //     );
                                               },
                                               child: Icon(
                                                 Icons.delete,
                                                 color: Colors.red,
-                                                size: 20,
+                                                size: 25,
                                               ),
                                             ),
                                           ),
@@ -249,7 +265,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
             Align(
               alignment: Alignment.centerRight,
               child: Text(
-                'Total Tests: ${testMasterState.finalListNewPrice.length}',
+                'Total Tests: ${testMasterState.testMasterListSelectedNewPrice.length}',
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
               ),
             ),
@@ -259,10 +275,18 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
               onTap: () {
-                showDialog(
-                  context: context,
-                  builder: (context) => AddNewTestPopUp(),
-                );
+                int indexget = homeState.patientBookingList.length - 1;
+                if (index == null) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AddNewTestPopUp(index: indexget),
+                  );
+                } else {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AddNewTestPopUp(index: index!),
+                  );
+                }
               },
               child: Container(
                 decoration: BoxDecoration(

@@ -6,14 +6,14 @@ import 'package:icon_infoware/core/services/api_services/api_services.dart';
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 
 class SearchPatientApi {
-  static Future<List<PatientsList>> searchPatientApi({
+  static Future<dynamic> searchPatientApi({
     required BuildContext context,
     required String body,
   }) async {
     try {
-      final response = await PostApiService.callApi(
+      final response = await PostApiServices.callApi(
         context: context,
-        url: '${ApiConstants.baseUrl}${ApiConstants.searchApi}',
+        url: ApiConstants.searchApi,
         body: {"SrchVal": body},
       );
       log('+++++++++++++++++++++${response.toString()}');
@@ -21,10 +21,9 @@ class SearchPatientApi {
         log('======Response :${response.toString()}');
         return [];
       }
-      SearchPatientResponseModel responseBody =
-          searchPatientResponseModelFromJson(response);
-      log('===============response :${responseBody.patientsList}');
-      return responseBody.patientsList ?? [];
+
+      return SearchPatientResponseModel.fromJson(response);
+      ;
     } catch (e) {
       log("++++++++++++ catch log ${e.toString()}");
       return [];

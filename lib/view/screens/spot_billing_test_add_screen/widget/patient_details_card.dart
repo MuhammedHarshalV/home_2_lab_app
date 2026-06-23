@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -11,13 +12,15 @@ import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.
 import 'package:url_launcher/url_launcher.dart';
 
 class PatientDetailsCard extends ConsumerWidget {
-  const PatientDetailsCard({super.key});
+  final int? index;
+  const PatientDetailsCard({super.key, required this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addTestController = ref.read(addTestScreenProvider.notifier);
     final addTestState = ref.watch(addTestScreenProvider);
     final patientBillingDetailsState = ref.watch(patientBillingProvider);
+    final homeState = ref.watch(homeScreenProvider);
 
     return Container(
       width: double.infinity,
@@ -71,10 +74,21 @@ class PatientDetailsCard extends ConsumerWidget {
                       log('Could not launch dialer');
                     }
                   },
-                  child: Icon(
-                    Icons.phone_outlined,
-                    color: const Color(0xFF1A2B4C),
-                    size: 20,
+                  child: Container(
+                    // margin: EdgeInsets.only(left: 8),
+                    // padding: EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      color: AppColors.appPrimaryColorLight,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        Icons.phone_outlined,
+                        color: const Color(0xFF1A2B4C),
+                        size: 25,
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -143,7 +157,18 @@ class PatientDetailsCard extends ConsumerWidget {
 
             GestureDetector(
               onTap: () {
-                context.pushNamed(AppRouteNames.editSpotBillingScreen.name);
+                if (index == null) {
+                  int indexNot = homeState.patientBookingList.length - 1;
+                  context.pushNamed(
+                    AppRouteNames.editSpotBillingScreen.name,
+                    pathParameters: {'index': indexNot.toString()},
+                  );
+                } else {
+                  context.pushNamed(
+                    AppRouteNames.editSpotBillingScreen.name,
+                    pathParameters: {'index': index.toString()},
+                  );
+                }
               },
               child: const Text(
                 'Edit Patient Info',
@@ -186,7 +211,7 @@ class PatientDetailsCard extends ConsumerWidget {
                           log("corparate already clicked");
                           addTestController.updatestate(schemeIDSelected: 0);
                           addTestState.specialSchemeController.clear();
-                          addTestController.updateSpecialSchemePrice();
+                         // addTestController.updateSpecialSchemePrice();
                         }
                         //  else {
                         //   log(
@@ -213,208 +238,162 @@ class PatientDetailsCard extends ConsumerWidget {
                     ? Expanded(
                         child: Container(
                           height: 30,
+                          margin: const EdgeInsets.only(left: 8),
                           decoration: BoxDecoration(
                             color: AppColors.appPrimaryColorLight,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          child: DropdownMenu<AccountsList>(
-                            controller: addTestState.specialSchemeController,
-
-                            width: MediaQuery.of(context).size.width / 2,
-                            menuHeight: MediaQuery.of(context).size.height / 3,
-                            menuStyle: MenuStyle(
-                              backgroundColor: WidgetStatePropertyAll(
-                                const Color.fromARGB(
-                                  255,
-                                  230,
-                                  227,
-                                  227,
-                                ), // dropdown background
-                              ),
-                              surfaceTintColor: WidgetStatePropertyAll(
-                                Colors.transparent,
-                              ),
-                              shadowColor: WidgetStatePropertyAll(
-                                Colors.transparent,
-                              ),
-                            ),
-
-                            enableFilter: true,
-                            requestFocusOnTap: true,
-                            // trailingIcon: SizedBox.shrink(),
-
-                            // selectedTrailingIcon: SizedBox.shrink(),
-                            inputDecorationTheme: InputDecorationTheme(
-                              suffixIconConstraints: BoxConstraints(
-                                minWidth: 20,
-                                minHeight: 20,
-                              ),
-                              isDense: true,
-                              border: InputBorder.none,
-                              contentPadding: EdgeInsets.only(
-                                left: 5,
-                                bottom: 25,
-                              ),
-                              hintStyle: TextStyle(fontSize: 12),
-                            ),
-
-                            hintText: 'Special Scheme',
-
-                            textStyle: const TextStyle(fontSize: 12),
-
-                            dropdownMenuEntries:
-                                addTestState.specialSchemeList.isEmpty
-                                ? [
-                                    DropdownMenuEntry<AccountsList>(
-                                      value: AccountsList(
-                                        key: 0,
-                                        name: "Items Not Found.",
-                                        type: "",
-                                        schemeId: 0,
-                                      ),
-                                      label: "Items Not Found.",
-                                      enabled: false,
-                                      style: ButtonStyle(
-                                        padding: WidgetStatePropertyAll(
-                                          const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 0,
-                                          ),
-                                        ),
-                                        backgroundColor:
-                                            WidgetStateProperty.resolveWith((
-                                              states,
-                                            ) {
-                                              return Colors
-                                                  .transparent; // remove hover color
-                                            }),
-
-                                        overlayColor:
-                                            WidgetStateProperty.resolveWith((
-                                              states,
-                                            ) {
-                                              return Colors
-                                                  .transparent; // remove ripple/hover effect
-                                            }),
-                                        textStyle: WidgetStatePropertyAll(
-                                          TextStyle(
-                                            fontSize: 11,
-                                            fontWeight: FontWeight.bold,
-                                          ), // item text size
-                                        ),
-                                      ),
+                          child: LayoutBuilder(
+                            builder: (context, constraints) {
+                              return TapRegion(
+                                onTapOutside: (_) {
+                                  FocusManager.instance.primaryFocus?.unfocus();
+                                },
+                                child: DropdownMenu<AccountsList>(
+                                  controller:
+                                      addTestState.specialSchemeController,
+                                  width: constraints.maxWidth,
+                                  menuHeight:
+                                      MediaQuery.of(context).size.height / 3,
+                                  menuStyle: MenuStyle(
+                                    backgroundColor: WidgetStatePropertyAll(
+                                      const Color.fromARGB(
+                                        255,
+                                        230,
+                                        227,
+                                        227,
+                                      ), // dropdown background
                                     ),
-                                  ]
-                                : addTestState.specialSchemeList
-                                      .map(
-                                        (
-                                          item,
-                                        ) => DropdownMenuEntry<AccountsList>(
-                                          value: item,
-                                          label: item.name ?? '',
-                                          style: ButtonStyle(
-                                            padding: WidgetStatePropertyAll(
-                                              const EdgeInsets.symmetric(
-                                                horizontal: 8,
-                                                vertical: 0,
+                                    surfaceTintColor: WidgetStatePropertyAll(
+                                      Colors.transparent,
+                                    ),
+                                    shadowColor: WidgetStatePropertyAll(
+                                      Colors.transparent,
+                                    ),
+                                  ),
+                                  enableFilter: true,
+                                  requestFocusOnTap: true,
+                                  trailingIcon: const Icon(
+                                    Icons.arrow_drop_down,
+                                  ),
+                                  selectedTrailingIcon: const Icon(
+                                    Icons.arrow_drop_up,
+                                  ),
+                                  inputDecorationTheme:
+                                      const InputDecorationTheme(
+                                        isDense: true,
+                                        border: InputBorder.none,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10,
+                                          vertical: 0,
+                                        ),
+                                        constraints: BoxConstraints(
+                                          maxHeight: 30,
+                                          minHeight: 30,
+                                        ),
+                                        hintStyle: TextStyle(fontSize: 12),
+                                      ),
+                                  hintText: 'Special Scheme',
+                                  textStyle: const TextStyle(fontSize: 12),
+                                  dropdownMenuEntries:
+                                      addTestState.specialSchemeList.isEmpty
+                                      ? [
+                                          DropdownMenuEntry<AccountsList>(
+                                            value: AccountsList(
+                                              key: 0,
+                                              name: "Items Not Found.",
+                                              type: "",
+                                              schemeId: 0,
+                                            ),
+                                            label: "Items Not Found.",
+                                            enabled: false,
+                                            style: ButtonStyle(
+                                              padding: WidgetStatePropertyAll(
+                                                const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 0,
+                                                ),
+                                              ),
+                                              backgroundColor:
+                                                  WidgetStateProperty.resolveWith((
+                                                    states,
+                                                  ) {
+                                                    return Colors
+                                                        .transparent; // remove hover color
+                                                  }),
+                                              overlayColor:
+                                                  WidgetStateProperty.resolveWith((
+                                                    states,
+                                                  ) {
+                                                    return Colors
+                                                        .transparent; // remove ripple/hover effect
+                                                  }),
+                                              textStyle: WidgetStatePropertyAll(
+                                                TextStyle(
+                                                  fontSize: 11,
+                                                  fontWeight: FontWeight.bold,
+                                                ), // item text size
                                               ),
                                             ),
-                                            backgroundColor:
-                                                WidgetStateProperty.resolveWith((
-                                                  states,
-                                                ) {
-                                                  return Colors
-                                                      .transparent; // remove hover color
-                                                }),
-
-                                            overlayColor:
-                                                WidgetStateProperty.resolveWith((
-                                                  states,
-                                                ) {
-                                                  return Colors
-                                                      .transparent; // remove ripple/hover effect
-                                                }),
-                                            textStyle: WidgetStatePropertyAll(
-                                              TextStyle(
-                                                fontSize: 11,
-                                                fontWeight: FontWeight.bold,
-                                              ), // item text size
-                                            ),
                                           ),
-                                        ),
-                                      )
-                                      .toList(),
-
-                            onSelected: (value) {
-                              //  print(value);
-                              log(value!.name.toString());
-                              final selectedSchemeId = value.schemeId ?? 0;
-                              addTestController.updatestate(
-                                schemeIDSelected: selectedSchemeId,
+                                        ]
+                                      : addTestState.specialSchemeList
+                                            .map(
+                                              (
+                                                item,
+                                              ) => DropdownMenuEntry<AccountsList>(
+                                                value: item,
+                                                label: item.name ?? '',
+                                                style: ButtonStyle(
+                                                  padding: WidgetStatePropertyAll(
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8,
+                                                      vertical: 0,
+                                                    ),
+                                                  ),
+                                                  backgroundColor:
+                                                      WidgetStateProperty.resolveWith((
+                                                        states,
+                                                      ) {
+                                                        return Colors
+                                                            .transparent; // remove hover color
+                                                      }),
+                                                  overlayColor:
+                                                      WidgetStateProperty.resolveWith((
+                                                        states,
+                                                      ) {
+                                                        return Colors
+                                                            .transparent; // remove ripple/hover effect
+                                                      }),
+                                                  textStyle:
+                                                      WidgetStatePropertyAll(
+                                                        TextStyle(
+                                                          fontSize: 11,
+                                                          fontWeight:
+                                                              FontWeight.bold,
+                                                        ), // item text size
+                                                      ),
+                                                ),
+                                              ),
+                                            )
+                                            .toList(),
+                                  onSelected: (value) {
+                                    log(value!.name.toString());
+                                    final selectedSchemeId =
+                                        value.schemeId ?? 0;
+                                    addTestController.updatestate(
+                                      schemeIDSelected: selectedSchemeId,
+                                    );
+                                    // addTestController
+                                    //     .updateSpecialSchemePrice();
+                                    log(value.schemeId.toString());
+                                  },
+                                ),
                               );
-                              addTestController.updateSpecialSchemePrice(
-                              
-                              );
-
-                              log(value.schemeId.toString());
-
-                              // Riverpod update example
                             },
                           ),
                         ),
                       )
-                    // DropdownMenu<String>(
-                    //     menuHeight: MediaQuery.of(context).size.height / 3,
-                    //     enableFilter: true, // Key property for search
-                    //     requestFocusOnTap: true,
-                    //     //  label: const Text('Select Country'),
-                    //     dropdownMenuEntries: <String>['USA', 'UK', 'Canada']
-                    //         .map(
-                    //           (label) =>
-                    //               DropdownMenuEntry(value: label, label: label),
-                    //         )
-                    //         .toList(),
-                    //     onSelected: (value) => print('Selected: $value'),
-                    //   )
-                    // SpecialSchemeDropDown(
-                    //     items: corporateList,
-                    //     onSelected: (p0) {},
-                    //   )
-                    // Expanded(
-                    //     child: Container(
-                    //       height: 30,
-                    //       decoration: BoxDecoration(
-                    //         color: AppColors.appPrimaryColorLight,
-                    //         borderRadius: BorderRadius.circular(10),
-                    //       ),
-                    //       child: Center(
-                    //         child: TextField(
-                    //           onChanged: (value) {
-                    //             CommonTapPossitionDropdown(
-                    //               heading: '',
-                    //               items: corporateList,
-                    //               onSelected: (p0) {},
-                    //             );
-                    //           },
-                    //           style: TextStyle(
-                    //             fontSize: 12,
-                    //             height: 1, // important
-                    //           ),
-                    //           textAlignVertical: TextAlignVertical.center,
-                    //           decoration: InputDecoration(
-                    //             isDense: true,
-                    //             border: InputBorder.none,
-                    //             hintText: 'Special Scheme',
-                    //             hintStyle: TextStyle(fontSize: 12),
-                    //             contentPadding: EdgeInsets.symmetric(
-                    //               horizontal: 5,
-                    //               vertical: 0,
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   )
                     : SizedBox(height: 30),
               ],
             ),
@@ -424,90 +403,3 @@ class PatientDetailsCard extends ConsumerWidget {
     );
   }
 }
-
-// //class SpecialSchemeDropDown extends StatelessWidget {
-//   final List<String> items;
-//   final Function(String) onSelected;
-
-//   const SpecialSchemeDropDown({
-//     super.key,
-
-//     required this.items,
-//     required this.onSelected,
-//   });
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Expanded(
-//       child: InkWell(
-//         splashColor: Colors.transparent,
-//         highlightColor: Colors.transparent,
-//         hoverColor: Colors.transparent,
-//         focusColor: Colors.transparent,
-//         onTapDown: (details) {
-//           _showMore(context, details.globalPosition);
-//         },
-//         child: Container(
-//           height: 30,
-//           decoration: BoxDecoration(
-//             color: AppColors.appPrimaryColorLight,
-//             borderRadius: BorderRadius.circular(10),
-//           ),
-
-//           child: Center(
-//             child: TextField(
-//               onChanged: (value) {},
-//               style: TextStyle(
-//                 fontSize: 12,
-//                 height: 1, // important
-//               ),
-//               textAlignVertical: TextAlignVertical.center,
-//               decoration: InputDecoration(
-//                 isDense: true,
-//                 border: InputBorder.none,
-//                 hintText: 'Special Scheme',
-//                 hintStyle: TextStyle(fontSize: 12),
-//                 contentPadding: EdgeInsets.symmetric(
-//                   horizontal: 5,
-//                   vertical: 0,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-
-//   void _showMore(BuildContext context, Offset tapPosition) async {
-//     final screenSize = MediaQuery.of(context).size;
-
-//     final selected = await showMenu<String>(
-//       context: context,
-//       color: AppColors.appWhite,
-//       constraints: BoxConstraints(
-//         minWidth: screenSize.width / 2,
-//         maxHeight: screenSize.height / 3,
-//       ),
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-//       position: RelativeRect.fromLTRB(
-//         tapPosition.dx + 50, // move 50px to right
-//         tapPosition.dy + 10, // 10px below
-//         0,
-//         screenSize.height - (tapPosition.dy + 10),
-//       ),
-//       items: items
-//           .map(
-//             (item) => PopupMenuItem<String>(
-//               value: item,
-//               child: Align(alignment: Alignment.centerLeft, child: Text(item)),
-//             ),
-//           )
-//           .toList(),
-//     );
-
-//     if (selected != null) {
-//       onSelected(selected); // callback
-//     }
-//   }
-// }

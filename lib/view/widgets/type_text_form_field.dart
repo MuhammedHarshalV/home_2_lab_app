@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class TypeTextFormField extends StatelessWidget {
@@ -6,7 +7,7 @@ class TypeTextFormField extends StatelessWidget {
   final TextEditingController textController;
   final bool isSuffix;
   final bool isPreffix;
-
+  final bool isNumberInput;
   final bool isReadOnly;
   final Function(String)? onChanged;
   final Function(Function)? onChangedFunction;
@@ -17,7 +18,7 @@ class TypeTextFormField extends StatelessWidget {
     required this.textController,
     this.isSuffix = false,
     this.isPreffix = false,
-
+    this.isNumberInput = false,
     this.isReadOnly = false,
     this.onChanged,
     this.onChangedFunction,
@@ -31,6 +32,9 @@ class TypeTextFormField extends StatelessWidget {
         readOnly: isReadOnly ? true : false,
         controller: textController,
         onChanged: onChanged,
+        onTapOutside: (_) {
+          FocusManager.instance.primaryFocus?.unfocus();
+        },
         // VALIDATION ONLY HERE
         validator: (value) {
           if (value == null || value.isEmpty) {
@@ -38,7 +42,10 @@ class TypeTextFormField extends StatelessWidget {
           }
           return null;
         },
-
+        keyboardType: isNumberInput ? TextInputType.number : TextInputType.text,
+        inputFormatters: isNumberInput
+            ? [FilteringTextInputFormatter.digitsOnly]
+            : null,
         decoration: InputDecoration(
           prefixIcon: isPreffix
               ? Icon(Icons.person_2_outlined, color: AppColors.appPrimaryColor)

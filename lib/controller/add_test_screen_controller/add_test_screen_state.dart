@@ -16,9 +16,9 @@ class AddTestScreenState {
 
   final List<SchemeRateList> specialSchemeRatesList;
   final TextEditingController searchController;
-  final List<String> checkedTestes;
+ // final List<String> checkedTestes;
   final num totalPrice;
-  final num schemeIDSelected;
+  final int schemeIDSelected;
   final FocusNode specialSchemeFocusNode;
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
@@ -28,7 +28,7 @@ class AddTestScreenState {
     this.testMasterList = const [],
     this.testMasterListSeeing = const [],
     this.testMasterListSelected = const [],
-    this.checkedTestes = const [],
+   // this.checkedTestes = const [],
     this.testMasterListSelectedNewPrice = const [],
     this.finalListNewPrice = const [],
 
@@ -51,8 +51,8 @@ class AddTestScreenState {
     TextEditingController? searchController,
     TextEditingController? specialSchemeController,
     List<SchemeRateList>? specialSchemeRatesList,
-    List<String>? checkedTestes,
-    num? schemeIDSelected,
+   // List<String>? checkedTestes,
+    int? schemeIDSelected,
     num? totalPrice,
     bool? isCorporateBilling,
     bool? isSpecialschemeOpen,
@@ -74,7 +74,7 @@ class AddTestScreenState {
           testMasterListSelectedNewPrice ?? this.testMasterListSelectedNewPrice,
       testMasterListSelected:
           testMasterListSelected ?? this.testMasterListSelected,
-      checkedTestes: checkedTestes ?? this.checkedTestes,
+      //checkedTestes: checkedTestes ?? this.checkedTestes,
       totalPrice: totalPrice ?? this.totalPrice,
       isCorporateBilling: isCorporateBilling ?? this.isCorporateBilling,
       isSpecialschemeOpen: isSpecialschemeOpen ?? this.isSpecialschemeOpen,

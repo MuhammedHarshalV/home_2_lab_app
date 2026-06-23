@@ -2,29 +2,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/home_screen.dart';
+import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/view/screens/menu_screen.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/screen/spot_billing_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class BottomNavScreen extends ConsumerWidget {
-  const BottomNavScreen({Key? key}) : super(key: key);
+  const BottomNavScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final controller = ref.watch(tabControllerProvider);
     final bottomNavState = ref.watch(bottomNavProvider);
     final bottomNavNotifier = ref.read(bottomNavProvider.notifier);
+    final spotBillingState = ref.watch(patientBillingProvider);
+    final spotBillingController = ref.read(patientBillingProvider.notifier);
 
     return PopScope(
       canPop: false,
       onPopInvoked: (didPop) async {
         if (bottomNavState.currentIndex == 0) {
-          // 🔥 Exit app
+          //  Exit app
           SystemNavigator.pop();
         } else {
-          // 🔥 Go to Home tab
+          //  Go to Home tab
           controller.jumpToTab(0);
           bottomNavNotifier.setIndex(0);
         }
@@ -46,12 +49,33 @@ class BottomNavScreen extends ConsumerWidget {
         onItemSelected: (index) {
           if (index == 1) {
             bottomNavNotifier.setIndex(0);
+            spotBillingState.patientDetailsController.clear();
+            spotBillingState.patientNameController.clear();
+            spotBillingState.patientPhoneController.clear();
+            spotBillingState.patientEmailController.clear();
+            spotBillingState.patientDateOfBirthController.clear();
+            spotBillingState.ageController.clear();
+            spotBillingState.abhaIdController.clear();
+            spotBillingState.noteController.clear();
+            spotBillingState.genderController.clear();
+            spotBillingState.addressController.clear();
+            spotBillingState.referredByController.clear();
+            spotBillingState.assignedByController.clear();
+            spotBillingState.doneByController.text = 'Sumesh';
+            spotBillingState.patientEmailController.clear();
+            spotBillingState.passPortNumberController.clear();
+            spotBillingState.patientDetailsController.clear();
+            spotBillingState.patientSearchController.clear();
 
+            spotBillingController.updateState(
+              ageByYear: 'Year',
+              isUrgent: false,
+            );
             controller.jumpToTab(0);
             PersistentNavBarNavigator.pushNewScreen(
               context,
               screen: SpotBillingScreen(),
-              withNavBar: false, // 🔥 hide bottom nav
+              withNavBar: false, //  hide bottom nav
               pageTransitionAnimation: PageTransitionAnimation.cupertino,
             );
           } else {
@@ -70,7 +94,7 @@ class BottomNavScreen extends ConsumerWidget {
   }
 
   List<Widget> _buildScreens() {
-    return [HomeScreen(), SizedBox(), MenuScreen()];
+    return [HomeScreen(), SpotBillingScreen(), MenuScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems(BuildContext context) {

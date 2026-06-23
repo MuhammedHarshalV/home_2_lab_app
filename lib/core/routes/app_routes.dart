@@ -5,7 +5,7 @@ import 'package:icon_infoware/models/spot_billing/search_patient_response_model.
 import 'package:icon_infoware/view/screens/base_URL.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
 import 'package:icon_infoware/view/screens/edit_spot_billing_screen.dart/edit_spot_billing_screen.dart';
-import 'package:icon_infoware/view/screens/home_screen.dart';
+import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/view/screens/login_screen.dart';
 import 'package:icon_infoware/view/screens/menu_screen.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
@@ -77,7 +77,7 @@ final GoRouter router = GoRouter(
       path: AppRouteNames.spotBillingScreen.route,
       name: AppRouteNames.spotBillingScreen.name,
       builder: (BuildContext context, GoRouterState state) {
-        return const SpotBillingScreen();
+        return  SpotBillingScreen();
       },
     ),
     GoRoute(
@@ -91,14 +91,18 @@ final GoRouter router = GoRouter(
       path: AppRouteNames.spotBillingTestAddScreen.route,
       name: AppRouteNames.spotBillingTestAddScreen.name,
       builder: (BuildContext context, GoRouterState state) {
-        return SpotBillingTestAddScreen();
+        final int? index = state.extra as int?;
+
+        return SpotBillingTestAddScreen(index: index);
       },
     ),
     GoRoute(
-      path: AppRouteNames.editSpotBillingScreen.route,
+      path: '${AppRouteNames.editSpotBillingScreen.route}/:index',
       name: AppRouteNames.editSpotBillingScreen.name,
       builder: (BuildContext context, GoRouterState state) {
-        return EditSpotBillingScreen();
+        final index = int.parse(state.pathParameters['index']!);
+
+        return EditSpotBillingScreen(index: index);
       },
     ),
     GoRoute(

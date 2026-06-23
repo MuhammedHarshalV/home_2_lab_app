@@ -17,7 +17,7 @@ class ActiveSessionCard extends ConsumerWidget {
       decoration: BoxDecoration(
         color: AppColors.appWhite,
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.appPrimaryColor, width: 2),
+        border: Border.all(color: AppColors.appBlack.withOpacity(.2), width: 2),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),

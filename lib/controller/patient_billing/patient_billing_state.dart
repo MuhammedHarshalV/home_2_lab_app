@@ -34,11 +34,11 @@ class PatientBillingState {
   final bool isDoneByApi;
 
   final bool isUrgent;
-  final GlobalKey<FormState> formKey;
+  
 
   PatientBillingState({
     // this.age = '',
-    required this.formKey,
+   
     this.searchPatientList = const [],
     this.doneByAccountListApi = const [],
     this.doneByAccountListSearch = const [],
@@ -98,10 +98,10 @@ class PatientBillingState {
 
     bool? isAdditional,
     bool? isUrgent,
-    GlobalKey<FormState>? formKey,
+  
   }) {
     return PatientBillingState(
-      formKey: formKey ?? this.formKey,
+     
       patientSearchController:
           patientSearchController ?? this.patientSearchController,
       ageController: ageController ?? this.ageController,

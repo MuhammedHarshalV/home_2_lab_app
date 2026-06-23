@@ -7,10 +7,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/models/home_screen/booking_patient_response_model.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
 import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
@@ -24,7 +27,8 @@ import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
 import 'package:intl/intl.dart';
 
 class SpotBillingScreen extends ConsumerWidget {
-  const SpotBillingScreen({super.key});
+  SpotBillingScreen({super.key});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -110,7 +114,7 @@ class SpotBillingScreen extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Form(
-              key: spotBillingState.formKey,
+              key: formKey,
               autovalidateMode: spotBillingState.isSubmitted
                   ? AutovalidateMode.onUserInteraction
                   : AutovalidateMode.disabled,
@@ -157,6 +161,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     label: 'Phone',
                     hint: 'Phone Number',
                     icon: Icons.phone,
+                    isNumberInput: true,
                     controller: spotBillingState.patientPhoneController,
                   ),
                   SizedBox(height: 20),
@@ -200,7 +205,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       Expanded(
                         child: TypeTextFormField(
                           hintText: 'Age *',
-
+                          isNumberInput: true,
                           textController: spotBillingState.ageController,
                           //isReadOnly: true,
                         ),
@@ -212,6 +217,7 @@ class SpotBillingScreen extends ConsumerWidget {
                           items: ['Year', 'Month', 'Week', 'Day'],
                           onSelected: (p0) {
                             spotBillingController.updateState(ageByYear: p0);
+                            log(p0);
                           },
                         ),
                       ),
@@ -338,6 +344,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
                     onSelected: (value) {
                       spotBillingState.referredByController.text = value;
+                      spotBillingController.updateState();
                     },
                   ),
                   SizedBox(height: 18),
@@ -346,9 +353,10 @@ class SpotBillingScreen extends ConsumerWidget {
                     heading: spotBillingState.assignedByController.text.isEmpty
                         ? 'Assigned to.'
                         : spotBillingState.assignedByController.text,
-                    items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
+                    items: ['Icon Infoware', 'Dummy'],
                     onSelected: (value) {
                       spotBillingState.assignedByController.text = value;
+                      spotBillingController.updateState();
                     },
                   ),
                   SizedBox(height: 18),
@@ -439,16 +447,47 @@ class SpotBillingScreen extends ConsumerWidget {
                     highlightColor: Colors.transparent,
                     hoverColor: Colors.transparent,
                     focusColor: Colors.transparent,
-                    onTap: () {
+                    onTap: () async {
                       spotBillingController.updateState(isSubmitted: true);
-                      if (spotBillingState.formKey.currentState!.validate()) {
-                        testMasterController.testMasterCalling();
+                      if (formKey.currentState!.validate()) {
+                        // testMasterController.testMasterCalling();
                         testMasterController.specialRatesFetch();
-                        context.pushNamed(
+                        context.pushReplacementNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,
                         );
+                        testMasterController.getTestMasterLists(null);
+                        String currentDate = DateFormat(
+                          'yyyy-MM-dd',
+                        ).format(DateTime.now());
+                        final patient = PatientHiveModel(
+                          patGender: spotBillingState.genderController.text,
+                          patAge: int.parse(
+                            spotBillingState.ageController.text,
+                          ),
+                          patAgehead: spotBillingState.ageByYear,
+                          patAddress: spotBillingState.addressController.text,
 
-                        log("Success ");
+                          currentDatetime: currentDate,
+                          bookTime: null,
+                          invNo: 0,
+                          patPhno: spotBillingState.patientPhoneController.text,
+
+                          patEmail:
+                              spotBillingState.patientEmailController.text,
+                          bookMapUrl: null,
+
+                          flag: "0",
+                          remarks: null,
+                          smplMode: 'Random',
+
+                          patId: 0,
+                          patName: spotBillingState.patientNameController.text,
+                          patMobno: '',
+                        );
+                        await ref
+                            .read(homeScreenProvider.notifier)
+                            .savePatient(patient);
+                        log("save to hive :$patient");
                         bottomNavController.setIndex(0);
                       } else {
                         log("Show errors ");

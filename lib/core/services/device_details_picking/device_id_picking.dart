@@ -11,7 +11,6 @@ class DeviceIdPicking {
       String serialid = androidInfo.serialNumber;
       String fingerPrint = androidInfo.fingerprint;
 
-      log("Device ID : ${androidInfo.toString()}");
       log("Device Serial ID : ${serialid.toString()}");
       log("Device fingerprint ID : ${fingerPrint.toString()}");
       log('===============${androidInfo.id.toString()}');

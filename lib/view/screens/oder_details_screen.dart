@@ -3,12 +3,14 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
+import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/new_order_details_screen.dart';
+import 'package:icon_infoware/view/screens/assigned_order_screen.dart';
 
 class OderDetailsScreen extends ConsumerWidget {
   const OderDetailsScreen({super.key});
@@ -17,6 +19,9 @@ class OderDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(orderDetailsScreenProvider);
     final controller = ref.read(orderDetailsScreenProvider.notifier);
+    final homeState = ref.watch(homeScreenProvider);
+    final spotBillingController = ref.read(patientBillingProvider.notifier);
+    final spotBillingState = ref.watch(patientBillingProvider);
 
     return DefaultTabController(
       initialIndex: state.selectedTabIndex,
@@ -106,17 +111,42 @@ class OderDetailsScreen extends ConsumerWidget {
               ),
             ),
 
-            body: TabBarView(
-              children: [
-                NewOrderDetailsScreen(),
-                Center(child: Text("Assigned Orders")),
-                Center(child: Text("Completed Orders")),
-                Center(child: Text("Pending Invoices")),
-              ],
+            body: Padding(
+              padding: const EdgeInsets.all(10),
+              child: TabBarView(
+                children: [
+                  Center(child: Text("Assigned Orders")),
+                  AssignedOrdersScreen(details: homeState.patientBookingList),
+                  Center(child: Text("Completed Orders")),
+                  Center(child: Text("Pending Invoices")),
+                ],
+              ),
             ),
 
             floatingActionButton: FloatingActionButton(
               onPressed: () {
+                spotBillingState.patientDetailsController.clear();
+                spotBillingState.patientNameController.clear();
+                spotBillingState.patientPhoneController.clear();
+                spotBillingState.patientEmailController.clear();
+                spotBillingState.patientDateOfBirthController.clear();
+                spotBillingState.ageController.clear();
+                spotBillingState.abhaIdController.clear();
+                spotBillingState.noteController.clear();
+                spotBillingState.genderController.clear();
+                spotBillingState.addressController.clear();
+                spotBillingState.referredByController.clear();
+                spotBillingState.assignedByController.clear();
+                spotBillingState.doneByController.text = 'Sumesh';
+                spotBillingState.patientEmailController.clear();
+                spotBillingState.passPortNumberController.clear();
+                spotBillingState.patientDetailsController.clear();
+                spotBillingState.patientSearchController.clear();
+
+                spotBillingController.updateState(
+                  ageByYear: 'Year',
+                  isUrgent: false,
+                );
                 context.pushNamed(AppRouteNames.spotBillingScreen.name);
               },
               backgroundColor: AppColors.appPrimaryColor,

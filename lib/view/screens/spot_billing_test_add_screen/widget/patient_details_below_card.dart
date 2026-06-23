@@ -2,16 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
+import 'package:icon_infoware/controller/patient_sync_complete_controller,dart/patient_sync_complete_controller.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
 
 class PatientDetailsBelowCard extends ConsumerWidget {
-  const PatientDetailsBelowCard({super.key});
+  final int? index;
+  const PatientDetailsBelowCard({super.key, this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final testAddState = ref.watch(addTestScreenProvider);
+    final homeState = ref.watch(homeScreenProvider);
+    final homeController = ref.read(homeScreenProvider.notifier);
+    final patientSyncCompleteController = ref.read(
+      patientSyncCompleteProvider.notifier,
+    );
     final testAddController = ref.read(addTestScreenProvider.notifier);
     return Column(
       children: [
@@ -126,36 +135,74 @@ class PatientDetailsBelowCard extends ConsumerWidget {
           spacing: 10,
           children: [
             Expanded(
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.appPrimaryColorLight,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    'Cancel visit',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.appPrimaryColor,
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: () async {
+                  if (index == null) {
+                    int indexGet = homeState.patientBookingList.length - 1;
+                    await homeController.deletePatient(indexGet);
+                    context.pop();
+                  } else {
+                    await homeController.deletePatient(index!);
+                    context.pop();
+                  }
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: AppColors.appPrimaryColorLight,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Cancel visit',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.appPrimaryColor,
+                      ),
                     ),
                   ),
                 ),
               ),
             ),
             Expanded(
-              child: Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: AppColors.appPrimaryColor,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Center(
-                  child: Text(
-                    'Complete',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.appWhite,
+              child: InkWell(
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                hoverColor: Colors.transparent,
+                focusColor: Colors.transparent,
+                onTap: () async {
+                  if (index == null) {
+                    int indexGet = homeState.patientBookingList.length - 1;
+                    patientSyncCompleteController.savePatient(
+                      homeState.patientBookingList[indexGet],
+                      'No',
+                    );
+                    context.pop();
+                  } else {
+                    await patientSyncCompleteController.savePatient(
+                      homeState.patientBookingList[index!],
+                      'No',
+                    );
+                    context.pop();
+                  }
+                },
+                child: Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: AppColors.appPrimaryColor,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Complete',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.appWhite,
+                      ),
                     ),
                   ),
                 ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -6,6 +7,7 @@ class CommonTextField extends StatelessWidget {
   final String? label;
   final String hint;
   final IconData icon;
+  final bool isNumberInput;
   final TextEditingController? controller;
 
   const CommonTextField({
@@ -14,6 +16,7 @@ class CommonTextField extends StatelessWidget {
     required this.hint,
     required this.icon,
     this.controller,
+    this.isNumberInput = false,
   });
 
   @override
@@ -33,16 +36,24 @@ class CommonTextField extends StatelessWidget {
         SizedBox(height: 8),
         TextField(
           controller: controller,
-
+          onTapOutside: (_) {
+            FocusManager.instance.primaryFocus?.unfocus();
+          },
+          keyboardType: isNumberInput
+              ? TextInputType.number
+              : TextInputType.text,
+          inputFormatters: isNumberInput
+              ? [FilteringTextInputFormatter.digitsOnly]
+              : null,
           decoration: InputDecoration(
             labelText: null,
-            focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(
-                color: AppColors.appBlack, // black border
-                width: 1,
-              ),
-            ),
+            // focusedBorder: OutlineInputBorder(
+            //   borderRadius: BorderRadius.circular(12),
+            //   borderSide: const BorderSide(
+            //     color: AppColors.appBlack, // black border
+            //     width: 1,
+            //   ),
+            // ),
             hintText: hint,
             hintStyle: TextStyle(
               color: AppColors.appBlack, // change to your color

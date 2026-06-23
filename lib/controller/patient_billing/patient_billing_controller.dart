@@ -16,7 +16,6 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   PatientBillingController(this.ref)
     : super(
         PatientBillingState(
-          formKey: GlobalKey<FormState>(),
           ageController: TextEditingController(),
           patientSearchController: TextEditingController(),
           patientDetailsController: TextEditingController(),
@@ -48,11 +47,13 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   }) async {
     try {
       state = state.copyWith(isLoading: true);
-      final List<PatientsList> response =
+      final SearchPatientResponseModel response =
           await SearchPatientApi.searchPatientApi(context: context, body: body);
       log("response in controller :${response.toString()}");
-      log(response.length.toString());
-      state = state.copyWith(searchPatientList: response);
+      if (response.patientsList != null) {
+        log(response.patientsList!.length.toString());
+        state = state.copyWith(searchPatientList: response.patientsList ?? []);
+      }
     } catch (e) {
       log('conntroller catch : ${e.toString()}');
     } finally {
@@ -65,13 +66,17 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
     if (state.doneByAccountListApi.isEmpty) {
       final response = await DoneBySearchApi.doneBySearch();
       log('done by api response in controller :${response.toString()}');
+      if (response == null || response is! DoneBySearchResponseModel) {
+        return;
+      }
       List<AccountsList> newAccountList = [];
       List<AccountsList> specialSchemeList = [];
 
-      for (var item in response) {
+      for (var item in response.accountsList ?? []) {
         final account = item;
 
         if (account.type == "Staff") {
+          log("staffs : ready");
           newAccountList.add(account);
         } else if (account.type == 'Hosp' || account.type == 'AccHd') {
           specialSchemeList.add(account);
@@ -79,9 +84,9 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           ref
               .read(addTestScreenProvider.notifier)
               .updatestate(specialSchemeList: specialSchemeList);
-          log(
-            'new special scheme list : ${specialSchemeList.map((e) => e.name).toList()}',
-          );
+          // log(
+          //   'new special scheme list : ${specialSchemeList.map((e) => e.name).toList()}',
+          // );
         }
       }
       log('done by account list : $newAccountList');
@@ -146,7 +151,6 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
 
       isAdditional: isAdditional,
       isUrgent: isUrgent,
-      formKey: formKey,
     );
   }
 

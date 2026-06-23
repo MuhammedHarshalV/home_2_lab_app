@@ -14,6 +14,7 @@ import 'package:icon_infoware/core/constants/api_constants.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/models/sign_in/login_response_model.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -57,7 +58,7 @@ class LoginController extends StateNotifier<LoginState> {
         baseUrl: baseUrl,
         branchID: branchID,
       );
-      log("Response: $status");
+    //  log("Response: $status");
       if (status != null && status.isNotEmpty && status == 'fail') {
         AppMessage.show(
           context,
@@ -91,14 +92,14 @@ class LoginController extends StateNotifier<LoginState> {
   }) async {
     state = state.copyWith(isCheckBaseUrl: true);
     try {
-      final String? status = await SignInChecking.signInChecking(
+      final LoginResponeModel? response = await SignInChecking.signInChecking(
         context: context,
         body: {"UsrName": userName, "Password": password},
       );
-      log("signin response :  ${status ?? 'Fail in sign in'}");
-      if (status == "true") {
+      log("signin response :  ${response ?? 'Fail in sign in'}");
+      if (response?.success == true) {
         context.goNamed(AppRouteNames.pinSettingScreen.name);
-      } else if (status == 'false') {
+      } else if (response?.success == false) {
         AppMessage.show(context, 'Invalid username or password');
       }
     } catch (e) {

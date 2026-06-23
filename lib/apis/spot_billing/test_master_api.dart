@@ -7,23 +7,20 @@ import 'package:icon_infoware/core/services/api_services/api_services.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
 
 class TestMasterApi {
-  static Future<List<TestMaster>> testMasterApi() async {
+  static Future<dynamic> testMasterApi() async {
     String deviceID = await DeviceIdPicking.getDeviceId();
     log(deviceID);
 
     try {
-      final response = await PostApiService.callApi(
-        url:
-            "${ApiConstants.baseUrl}/${ApiConstants.testMaster}?Branchid=${AppConstance.branchID}",
+      final response = await PostApiServices.callApi(
+        url: "/${ApiConstants.testMaster}",
+        queryParams: {"Branchid": AppConstance.branchID},
       );
 
       if (response.toString().isEmpty || response == null) {
         return [];
       } else {
-        TestMasterResponseModel responseBody = testMasterResponseModelFromJson(
-          response,
-        );
-        return responseBody.tests ?? [];
+        return TestMasterResponseModel.fromJson(response);
       }
     } catch (e) {
       log('-------------');

@@ -29,11 +29,11 @@ class BaseUrlChecking {
     log(deviceID);
 
     try {
-      final response = await GetApiService.callApi(
+      final response = await GetApiServices.callApi(
         context: context,
 
-        url:
-            "$baseUrl${ApiConstants.baseUrlChecking}BrnchCode=$branchID&UniqueId=$deviceID",
+        url: ApiConstants.baseUrlChecking,
+        queryParams: {"BrnchCode": branchID, "UniqueId": deviceID},
       );
 
       if (response.toString().isEmpty || response == null) {

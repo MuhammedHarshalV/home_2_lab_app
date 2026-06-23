@@ -7,12 +7,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
 import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
 
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
@@ -24,8 +24,9 @@ import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
 import 'package:intl/intl.dart';
 
 class EditSpotBillingScreen extends ConsumerWidget {
-  const EditSpotBillingScreen({super.key});
-
+  final int index;
+  EditSpotBillingScreen({super.key, required this.index});
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final testMasterState = ref.watch(addTestScreenProvider);
@@ -33,6 +34,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
+    final homeController = ref.read(homeScreenProvider.notifier);
     log('initial');
     log(spotBillingState.searchPatientList.length.toString());
     final List<String> patientTitles = [
@@ -110,7 +112,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: Form(
-              key: spotBillingState.formKey,
+              key: formKey,
               autovalidateMode: spotBillingState.isSubmitted
                   ? AutovalidateMode.onUserInteraction
                   : AutovalidateMode.disabled,
@@ -147,6 +149,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                   CommonTextField(
                     label: 'Phone',
                     hint: 'Phone Number',
+                    isNumberInput: true,
                     icon: Icons.phone,
                     controller: spotBillingState.patientPhoneController,
                   ),
@@ -191,7 +194,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                       Expanded(
                         child: TypeTextFormField(
                           hintText: 'Age *',
-
+                          isNumberInput: true,
                           textController: spotBillingState.ageController,
                           //isReadOnly: true,
                         ),
@@ -408,10 +411,28 @@ class EditSpotBillingScreen extends ConsumerWidget {
                     focusColor: Colors.transparent,
                     onTap: () {
                       spotBillingController.updateState(isSubmitted: true);
-                      if (spotBillingState.formKey.currentState!.validate()) {
-                        testMasterController.testMasterCalling();
-                        testMasterController.specialRatesFetch();
-                        context.pushNamed(
+                      if (formKey.currentState!.validate()) {
+                        homeController.updatePatient(
+                          index: index,
+                          namePrefix:
+                              spotBillingState.patientDetailsController.text,
+                          patName: spotBillingState.patientNameController.text,
+                          patPhno: spotBillingState.patientPhoneController.text,
+                          patEmail:
+                              spotBillingState.patientEmailController.text,
+                          dob: spotBillingState
+                              .patientDateOfBirthController
+                              .text,
+                          patAge: int.parse(
+                            spotBillingState.ageController.text,
+                          ),
+                          patAgehead: spotBillingState.ageByYear,
+                          patGender: spotBillingState.genderController.text,
+                          patAddress: spotBillingState.addressController.text,
+                          passport:
+                              spotBillingState.passPortNumberController.text,
+                        );
+                        context.pushReplacementNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,
                         );
 

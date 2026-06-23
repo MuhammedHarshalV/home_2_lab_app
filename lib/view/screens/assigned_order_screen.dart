@@ -1,60 +1,79 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/models/home_screen/booking_patient_response_model.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
+import 'package:icon_infoware/view/screens/home_screen/widget/patient_details_card.dart';
 
+class AssignedOrdersScreen extends ConsumerWidget {
+  final List<PatientHiveModel> details;
 
-class NewOrderDetailsScreen extends ConsumerWidget {
-  const NewOrderDetailsScreen({super.key});
+  const AssignedOrdersScreen({super.key, required this.details});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListView(
-      padding: EdgeInsets.all(16),
-      children: [
-        PatientOrderCard(
-          name: "Aarav Mehta",
-          testType: "CBC + Vitamin D",
-          time: "10:30 AM",
-          orderId: "#001",
-          initials: "AM",
-        ),
-        PatientOrderCard(
-          name: "Sneha Kapoor",
-          testType: "Lipid Profile",
-          time: "11:00 AM",
-          orderId: "#002",
-          initials: "SK",
-        ),
-        PatientOrderCard(
-          name: "Rohit Verma",
-          testType: "HbA1c",
-          time: "11:45 AM",
-          orderId: "#003",
-          initials: "RV",
-        ),
-        PatientOrderCard(
-          name: "Rohit Verma",
-          testType: "HbA1c",
-          time: "11:45 AM",
-          orderId: "#003",
-          initials: "RV",
-        ),
-        PatientOrderCard(
-          name: "Rohit Verma",
-          testType: "HbA1c",
-          time: "11:45 AM",
-          orderId: "#003",
-          initials: "RV",
-        ),
-        PatientOrderCard(
-          name: "Rohit Verma",
-          testType: "HbA1c",
-          time: "11:45 AM",
-          orderId: "#003",
-          initials: "RV",
-        ),
-      ],
+    return ListView.separated(
+      itemBuilder: (context, index) {
+        return PatientContactCard(patient: details[index], index: index);
+        //    PatientOrderCard(
+        //   name: details[index].bookName ?? '',
+        //   testType:details[index] .bookAddr??'',
+        //   time:details[index] .bookTime??'',
+        //   orderId: orderId,
+        //   initials: initials,
+        // );
+      },
+      separatorBuilder: (context, index) => SizedBox(height: 10),
+      itemCount: details.length,
     );
+
+    // ListView(
+    //   padding: EdgeInsets.all(16),
+    //   children: [
+    //     PatientOrderCard(
+    //       name: "Aarav Mehta",
+    //       testType: "CBC + Vitamin D",
+    //       time: "10:30 AM",
+    //       orderId: "#001",
+    //       initials: "AM",
+    //     ),
+    //     PatientOrderCard(
+    //       name: "Sneha Kapoor",
+    //       testType: "Lipid Profile",
+    //       time: "11:00 AM",
+    //       orderId: "#002",
+    //       initials: "SK",
+    //     ),
+    //     PatientOrderCard(
+    //       name: "Rohit Verma",
+    //       testType: "HbA1c",
+    //       time: "11:45 AM",
+    //       orderId: "#003",
+    //       initials: "RV",
+    //     ),
+    //     PatientOrderCard(
+    //       name: "Rohit Verma",
+    //       testType: "HbA1c",
+    //       time: "11:45 AM",
+    //       orderId: "#003",
+    //       initials: "RV",
+    //     ),
+    //     PatientOrderCard(
+    //       name: "Rohit Verma",
+    //       testType: "HbA1c",
+    //       time: "11:45 AM",
+    //       orderId: "#003",
+    //       initials: "RV",
+    //     ),
+    //     PatientOrderCard(
+    //       name: "Rohit Verma",
+    //       testType: "HbA1c",
+    //       time: "11:45 AM",
+    //       orderId: "#003",
+    //       initials: "RV",
+    //     ),
+    //   ],
+    // );
   }
 }
 

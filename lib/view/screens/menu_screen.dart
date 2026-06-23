@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -171,11 +172,50 @@ class MenuScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      buildSettingsItem(Icons.sync, "Test Sync"),
-                      buildSettingsItem(Icons.receipt_long, "Invoice Sync"),
-                      buildSettingsItem(Icons.grid_view, "Booking Sync"),
-                      buildSettingsItem(Icons.edit_note, "Log modify Sync"),
-                      buildSettingsItem(Icons.payments, "Cash closing"),
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.sync,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Test Sync",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.receipt_long_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Invoice Sync",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.calendar_month_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Booking Sync",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.manage_history_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Log Modify Sync",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.payments_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Cash Closing",
+                      ),
 
                       const SizedBox(height: 24),
 
@@ -189,16 +229,92 @@ class MenuScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      buildSettingsItem(Icons.receipt_long, "All Invoices"),
-                      buildSettingsItem(Icons.print_rounded, "Switch Printer"),
-                      buildSettingsItem(Icons.grid_view, "Change Paper Size"),
-                      buildSettingsItem(Icons.edit, "Seasonal Message"),
-                      buildSettingsItem(Icons.money_sharp, "Service Charge"),
-                      buildSettingsItem(Icons.wallet, "Set Whatsapp Content"),
-                      buildSettingsItem(Icons.email, "Set Email Content"),
-                      buildSettingsItem(Icons.tablet_mac, "Bill Title"),
-                      buildSettingsItem(Icons.gpp_maybe, "Change UPI ID"),
-                      buildSettingsItem(Icons.bakery_dining, "Switch Bank"),
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.receipt_long_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "All Invoices",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.print_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Switch Printer",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.description_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Paper Size",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.message_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Seasonal Message",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.payments_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Service Charge",
+                      ),
+                      buildSettingsItem(
+                        FaIcon(
+                          FontAwesomeIcons.whatsapp,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Set Whatsapp Content",
+                      ),
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.mark_email_read_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Email Content",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.receipt_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Bill Title",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.payments_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Change UPI ID",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.account_balance_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Switch Bank",
+                      ),
 
                       const SizedBox(height: 24),
                       const Text(
@@ -211,13 +327,41 @@ class MenuScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      buildSettingsItem(Icons.sync, "Help and Support"),
                       buildSettingsItem(
-                        Icons.receipt_long,
+                        const Icon(
+                          Icons.support_agent_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Help and Support",
+                      ),
+
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.description_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
                         "Terms and Conditions",
                       ),
-                      buildSettingsItem(Icons.grid_view, "Privacy Policy"),
 
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.privacy_tip_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Privacy Policy",
+                      ),
+                      SizedBox(height: 20),
+                      buildSettingsItem(
+                        const Icon(
+                          Icons.logout_outlined,
+                          size: 20,
+                          color: AppColors.appPrimaryColor,
+                        ),
+                        "Logout",
+                      ),
                       const SizedBox(height: 70),
                     ],
                   ),
@@ -316,7 +460,7 @@ class StatItem extends StatelessWidget {
 }
 
 //
-Widget buildSettingsItem(IconData icon, String title) {
+Widget buildSettingsItem(Widget icon, String title) {
   return Container(
     margin: const EdgeInsets.only(bottom: 12),
     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -333,7 +477,7 @@ Widget buildSettingsItem(IconData icon, String title) {
             color: AppColors.appLightGreen,
             borderRadius: BorderRadius.circular(10),
           ),
-          child: Icon(icon, color: AppColors.appPrimaryColor, size: 20),
+          child: icon,
         ),
         const SizedBox(width: 16),
         Text(
