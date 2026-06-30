@@ -1,7 +1,7 @@
-import 'package:icon_infoware/models/patient_bill_syncing_model/patient_sync_complete_model.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 class PatientSyncState {
-  final List<PatientSyncCompleteModel> patientBookingListCompleted;
+  final List<PatientHiveModel> patientBookingListCompleted;
   final bool isLoading;
 
   const PatientSyncState({
@@ -10,7 +10,7 @@ class PatientSyncState {
   });
 
   PatientSyncState copyWith({
-    List<PatientSyncCompleteModel>? patientBookingListCompleted,
+    List<PatientHiveModel>? patientBookingListCompleted,
     bool? isLoading,
   }) {
     return PatientSyncState(

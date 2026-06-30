@@ -5,7 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_state.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-import 'package:icon_infoware/models/patient_bill_syncing_model/patient_sync_complete_model.dart';
+
 
 class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
   PatientSyncCompleteController() : super(PatientSyncState()) {
@@ -18,8 +18,8 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
       await Future.delayed(Duration(seconds: 1));
       final box = await Hive.openBox('patient_completed');
       if (box.isNotEmpty) {
-        final completedList = box.values.map<PatientSyncCompleteModel>((item) {
-          return PatientSyncCompleteModel(
+        final completedList = box.values.map<PatientHiveModel>((item) {
+          return PatientHiveModel(
             patId: item['patId'],
             namePrefix: item['namePrefix'],
             patName: item['patName'],
@@ -54,12 +54,14 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
             paymentType: item['paymentType'],
             insid: item['insid'],
             insNo: item['insNo'],
+            isCompleted: item['isCompleted'],
+            isSync: item['isSync'],
+
             testlists: item['testlists'] != null
                 ? (item['testlists'] as List)
                       .map((e) => Map<String, dynamic>.from(e))
                       .toList()
                 : [],
-            completed: item['completed'],
           );
         }).toList();
 
@@ -73,10 +75,7 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
   }
 
   //store patient details to hive
-  Future<void> savePatientToCompletetion(
-    PatientHiveModel patient,
-    String isCompleted,
-  ) async {
+  Future<void> savePatientToCompletetion(PatientHiveModel patient) async {
     final box = await Hive.openBox('patient_completed');
 
     await box.add({
@@ -118,8 +117,9 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
       'paymentType': patient.paymentType ?? '',
       'insid': patient.insid ?? '',
       'insNo': patient.insNo ?? '',
+      'isSync': patient.isSync ?? '',
+      'isCompleted': patient.isCompleted ?? '',
       'testlists': patient.testlists ?? <Map<String, dynamic>>[],
-      'completed': isCompleted,
     });
     await getCompletedBillingDetails();
   }
@@ -165,7 +165,8 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
     String? insid,
     String? insNo,
     List<Map<String, dynamic>>? testlists,
-    String? completed,
+    String? isCompleted,
+    String? issync,
   }) async {
     final box = await Hive.openBox('patient_booking');
 
@@ -209,7 +210,9 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
     oldData['insid'] = insid ?? oldData['insid'];
     oldData['insNo'] = insNo ?? oldData['insNo'];
     oldData['testlists'] = testlists ?? [];
-    oldData['completed'] = completed ?? oldData['completed'];
+    oldData['isCompleted'] = isCompleted ?? oldData['isCompleted'];
+    oldData['isSync'] = issync ?? oldData['isSync'];
+
     log('Before save: ${oldData['testlists']}');
     log('New testlists: $testlists');
 

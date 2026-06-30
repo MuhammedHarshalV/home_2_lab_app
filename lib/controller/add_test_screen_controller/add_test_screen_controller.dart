@@ -238,6 +238,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       state.discountPercentageController.text = discountPercentage.toString();
 
       state.discountAmountController.text = amount.toStringAsFixed(2);
+      state = state.copyWith(netAmount: state.netAmount - amount);
     }
     // Amount -> Percentage
     else if (discountAmount != null) {
@@ -246,6 +247,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       state.discountAmountController.text = discountAmount.toString();
 
       state.discountPercentageController.text = percentage.toStringAsFixed(2);
+      state = state.copyWith(netAmount: state.netAmount - discountAmount);
     }
   }
 
@@ -354,6 +356,10 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     int? schemeIDSelected,
     bool? isCorporateBilling,
     bool? isSpecialschemeOpen,
+    num? balanceAmount,
+    num? amountPaid,
+    num? netAmount,
+    num? grosAmount,
   }) {
     state = state.copyWith(
       specialSchemeList: specialSchemeList,
@@ -361,6 +367,33 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       schemeIDSelected: schemeIDSelected,
       isCorporateBilling: isCorporateBilling,
       isSpecialschemeOpen: isCorporateBilling,
+      balanceAmount: balanceAmount,
+      amountPaid: amountPaid,
+      netAmount: netAmount,
+      totalPrice: grosAmount,
+    );
+  }
+
+  //update net amount and balance amount
+  void uodateNetandBalanceAmount() {
+    final discount = num.tryParse(state.discountAmountController.text) ?? 0;
+
+    final totalAmount = state.testMasterListSelected.fold<num>(
+      0,
+      (sum, test) => sum + (test.testRate ?? 0),
+    );
+
+    final netAmount = totalAmount - discount;
+    final balanceAmount = netAmount - state.amountPaid;
+    log('length of list :${state.testMasterListSelectedNewPrice.length}');
+    log("totalAmount :$totalAmount");
+    log("netAmount :$netAmount");
+    log("balanceAmount :$balanceAmount");
+
+    state = state.copyWith(
+      totalPrice: totalAmount,
+      netAmount: netAmount,
+      balanceAmount: balanceAmount,
     );
   }
 
@@ -461,7 +494,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     );
   }
 
-//remove tests from final list
+  //remove tests from final list
   Future<void> removalFinalList(String name) async {
     state = state.copyWith(
       testMasterListSelectedNewPrice: state.testMasterListSelectedNewPrice

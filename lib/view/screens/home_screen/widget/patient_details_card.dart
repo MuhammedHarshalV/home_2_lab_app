@@ -51,6 +51,15 @@ class PatientContactCard extends ConsumerWidget {
             patient.patAddress ?? '';
         patientBillingDetailsState.referredByController.text = '';
         patientBillingDetailsState.assignedByController.text = '';
+        testAddState.discountAmountController.text = patient.discAmt.toString();
+        testAddState.discountPercentageController.text =
+            ((patient.discAmt! / patient.grossAmt!) * 100).toString();
+        testAddController.updatestate(
+          balanceAmount: patient.balance ?? 0,
+          amountPaid: patient.paidAmt ?? 0,
+          netAmount: patient.netAmt ?? 0,
+          grosAmount: patient.grossAmt ?? 0,
+        );
 
         patientBillingController.updateState(
           ageByYear: patient.patAgehead ?? '',

@@ -10,10 +10,10 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-import 'package:icon_infoware/models/patient_bill_syncing_model/patient_sync_complete_model.dart';
+
 
 class PatientCompletedCard extends ConsumerWidget {
-  final PatientSyncCompleteModel patient;
+  final PatientHiveModel patient;
   final int index;
   const PatientCompletedCard({
     super.key,

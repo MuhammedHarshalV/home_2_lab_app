@@ -1,10 +1,10 @@
 import 'package:icon_infoware/models/home_screen/booking_patient_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-import 'package:icon_infoware/models/patient_bill_syncing_model/patient_sync_complete_model.dart';
+
 
 class HomeScreenState {
   final List<PatientHiveModel> patientBookingList;
-  final List<PatientSyncCompleteModel> patientBookingListCompleted;
+  final List<PatientHiveModel> patientBookingListCompleted;
   final List<PatientHiveModel> patientBookingListPending;
 
   final bool isLoading;
@@ -17,7 +17,7 @@ class HomeScreenState {
   });
   HomeScreenState copyWith({
     List<PatientHiveModel>? patientBookingList,
-    List<PatientSyncCompleteModel>? patientBookingListCompleted,
+    List<PatientHiveModel>? patientBookingListCompleted,
     List<PatientHiveModel>? patientBookingListPending,
 
     bool? isLoading,

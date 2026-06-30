@@ -10,14 +10,14 @@ import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syn
 
 class HomeScreenController extends StateNotifier<HomeScreenState> {
   HomeScreenController() : super(HomeScreenState()) {
-    getPatientBookingDetails();
+    getPatientBookingDetails(null);
   }
-  Future<void> getPatientBookingDetails() async {
+  Future<void> getPatientBookingDetails(bool? isApiCall) async {
     bool isConnected = await InternetChecker.hasConnection();
     try {
       state = state.copyWith(isLoading: true);
       await Future.delayed(Duration(seconds: 1));
-      if (isConnected == true) {
+      if (isConnected == true && isApiCall == null) {
         final BookingDetailsResponseModel response =
             await PatientBookingDetails.patientBookingDetails(context: null);
         if (response.success == true && response.bookPatientDetails != null) {
@@ -87,7 +87,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           'paymentType': '',
           'insid': '',
           'insNo': '',
-
+          'isCompleted': 'No',
+          "isSync": 'No',
           // Save test list also
           'testlists': [
             {"TestId": '0'},
@@ -139,13 +140,14 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'paymentType': '',
       'insid': '',
       'insNo': '',
-
+      'isCompleted': patient.isCompleted ?? '',
+      "isSync": patient.isSync ?? '',
       // Save test list also
       'testlists': [
         {"TestId": '0'},
       ],
     });
-    await getPatientBookingDetails();
+    await getPatientBookingDetails(true);
   }
 
   //edit stored data
@@ -188,6 +190,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     String? paymentType,
     String? insid,
     String? insNo,
+    String? isCompleted,
+    String? isSync,
     List<Map<String, dynamic>>? testlists,
   }) async {
     final box = await Hive.openBox('patient_booking');
@@ -231,14 +235,17 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     oldData['paymentType'] = paymentType ?? oldData['paymentType'];
     oldData['insid'] = insid ?? oldData['insid'];
     oldData['insNo'] = insNo ?? oldData['insNo'];
+    oldData['isCompleted'] = isCompleted ?? oldData['isCompleted'];
+    oldData['isSync'] = isSync ?? oldData['isSync'];
     oldData['testlists'] = testlists ?? [];
+
     log('Before save: ${oldData['testlists']}');
     log('New testlists: $testlists');
-
+    log(oldData['isSync']);
     await box.putAt(index, oldData);
     final updated = box.getAt(index);
     log('After save: ${updated['testlists']}');
-    await getPatientBookingDetails();
+    await getPatientBookingDetails(true);
     // final updateda = box.getAt(index);
     // log('After save: ${updateda['testlists']}');
   }
@@ -286,6 +293,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         bookMapUrl: item['bookMapUrl'],
         smplMode: item['smplMode'],
         flag: item['flag'],
+        isCompleted: item['isCompleted'],
+        isSync: item['isSync'],
         testlists: item['testlists'] != null
             ? (item['testlists'] as List)
                   .map((e) => Map<String, dynamic>.from(e as Map))

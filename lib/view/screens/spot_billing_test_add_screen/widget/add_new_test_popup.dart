@@ -171,22 +171,33 @@ class AddNewTestPopUp extends ConsumerWidget {
                       log(
                         'selected lists : ${testList.toString()} \n length : ${testList.length}',
                       );
+                      final totalAmount = testMasterState.testMasterListSelected
+                          .fold<num>(
+                            0,
+                            (sum, test) => sum + (test.testRate ?? 0),
+                          );
+
+                      log("Total Amount: $totalAmount");
                       await homeController.updatePatient(
                         index: index,
                         testlists: testList,
+                        balance: totalAmount,
+                        netAmt: testMasterState.netAmount,
                       );
 
+                      testMasterController.uodateNetandBalanceAmount();
+                      log('hhhhhhhhhhhhhhhhhh');
                       // await homeController.getPatientsFromHive();
                       // await testMasterController.getTestsFromHive(
                       //   homestate.patientBookingList[index],
                       // );
-                      final updatedPatient = ref
-                          .read(homeScreenProvider)
-                          .patientBookingList[index];
+                      // final updatedPatient = ref
+                      //     .read(homeScreenProvider)
+                      //     .patientBookingList[index];
 
-                      await testMasterController.getTestsFromHive(
-                        updatedPatient,
-                      );
+                      // await testMasterController.getTestsFromHive(
+                      //   updatedPatient,
+                      // );
                       if (context.mounted) {
                         context.pop();
                       }

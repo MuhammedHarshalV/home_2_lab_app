@@ -493,7 +493,8 @@ class SpotBillingScreen extends ConsumerWidget {
                           flag: "0",
                           remarks: null,
                           smplMode: 'Random',
-
+                          isCompleted: 'No',
+                          isSync: 'No',
                           patId: 0,
                           patName: spotBillingState.patientNameController.text,
                           patMobno: '',
@@ -517,7 +518,10 @@ class SpotBillingScreen extends ConsumerWidget {
                       child: Center(
                         child: Text(
                           'Proceed',
-                          style: TextStyle(color: AppColors.appWhite),
+                          style: TextStyle(
+                            color: AppColors.appWhite,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),

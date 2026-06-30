@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
+import 'package:icon_infoware/controller/patient_pending_controller/patient_pending_controller.dart';
 import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -21,6 +22,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
     final patientSyncCompleteController = ref.read(
       patientSyncCompleteProvider.notifier,
     );
+    final patientPendingController = ref.read(patientPendingProvider.notifier);
     final testAddController = ref.read(addTestScreenProvider.notifier);
     return Column(
       children: [
@@ -72,7 +74,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '₹ ${testAddState.totalPrice}',
+                  '₹ ${testAddState.netAmount}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),
@@ -92,7 +94,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '₹ ${testAddState.totalPrice}',
+                  '₹ ${testAddState.balanceAmount}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),
@@ -101,10 +103,12 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 ),
               ],
             ),
+            
             Expanded(
               child: InkWell(
                 onTap: () {
                   testAddController.storingAndFetchingDiscount();
+
                   context.pushNamed(AppRouteNames.paymentCompletionScreen.name);
                 },
                 child: Container(
@@ -181,12 +185,21 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     if (testAddState
                         .testMasterListSelectedNewPrice
                         .isNotEmpty) {
-                      patientSyncCompleteController.savePatientToCompletetion(
-                        homeState.patientBookingList[indexGet],
-                        'No',
-                      );
-                      await homeController.deletePatient(indexGet);
-                      context.pop();
+                      if (testAddState.balanceAmount == 0) {
+                        //store to completion
+                        patientSyncCompleteController.savePatientToCompletetion(
+                          homeState.patientBookingList[indexGet],
+                        );
+                        await homeController.deletePatient(indexGet);
+                        context.pop();
+                      } else {
+                        //store to pending
+                        patientPendingController.savePatientToPending(
+                          homeState.patientBookingList[indexGet],
+                        );
+                        await homeController.deletePatient(indexGet);
+                        context.pop();
+                      }
                     } else {
                       showDialog(
                         context: context,
@@ -211,7 +224,6 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                       await patientSyncCompleteController
                           .savePatientToCompletetion(
                             homeState.patientBookingList[index!],
-                            'No',
                           );
                       await homeController.deletePatient(index!);
                       context.pop();

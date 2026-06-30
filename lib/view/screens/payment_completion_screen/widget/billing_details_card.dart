@@ -49,7 +49,10 @@ class BillDetailsCard extends ConsumerWidget {
             isEditable: true,
             isService: true,
           ),
-          _BillRow(label: 'Net Total', value: '10000.0'),
+          _BillRow(
+            label: 'Net Total',
+            value: addTeststate.netAmount.toString(),
+          ),
           _BillRow(label: 'Amount Paid', value: '110.00'),
           _BillRow(
             label: 'Balance',

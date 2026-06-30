@@ -1,11 +1,11 @@
 class PatientHiveModel {
-  int? patId;
+  num? patId;
   String? namePrefix;
   String? patName;
   String? patAddress;
-  int? invNo;
+  num? invNo;
   String? patGender;
-  int? patAge;
+  num? patAge;
   String? patAgehead;
   String? patPhno;
   String? patMobno;
@@ -17,25 +17,27 @@ class PatientHiveModel {
   String? outDr;
   String? flag;
   String? patEmail;
-  int? repEmail;
+  num? repEmail;
   String? smplMode;
-  int? repWhtapp;
+  num? repWhtapp;
   String? ipop;
   String? patImg;
-  int? urgent;
+  num? urgent;
   String? bookTime;
   String? dob;
   String? driverId;
   String? techId;
-  int? grossAmt;
-  int? discAmt;
-  int? servChrge;
-  int? netAmt;
-  int? paidAmt;
-  int? balance;
+  num? grossAmt;
+  num? discAmt;
+  num? servChrge;
+  num? netAmt;
+  num? paidAmt;
+  num? balance;
   String? paymentType;
   String? insid;
   String? insNo;
+  String? isCompleted;
+  String? isSync;
   List<Map<String, dynamic>>? testlists;
 
   PatientHiveModel({
@@ -76,6 +78,8 @@ class PatientHiveModel {
     this.paymentType,
     this.insid,
     this.insNo,
+    this.isCompleted,
+    this.isSync,
     this.testlists,
   });
 
@@ -118,6 +122,9 @@ class PatientHiveModel {
       paymentType: map['paymentType'] ?? '',
       insid: map['insid'] ?? '',
       insNo: map['insNo'] ?? '',
+      isCompleted: map['isCompleted'] ?? "",
+      isSync: map['isSync'] ?? "",
+
       testlists: map['testlists'] != null
           ? (map['testlists'] as List)
                 .map((e) => Map<String, dynamic>.from(e as Map))
@@ -165,6 +172,8 @@ class PatientHiveModel {
       'paymentType': paymentType,
       'insid': insid,
       'insNo': insNo,
+      'isCompleted': isCompleted,
+      'isSync': isSync,
       'testlists': testlists,
     };
   }

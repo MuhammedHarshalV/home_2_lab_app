@@ -71,7 +71,7 @@ class HomeScreen extends ConsumerWidget {
                   AppColors.appPrimaryColorLight, // circle background
               strokeWidth: 2,
               onRefresh: () async {
-                await homeController.getPatientBookingDetails();
+                await homeController.getPatientBookingDetails(null);
               },
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
