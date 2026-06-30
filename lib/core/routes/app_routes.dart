@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
 import 'package:icon_infoware/view/screens/base_URL.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
@@ -77,7 +78,7 @@ final GoRouter router = GoRouter(
       path: AppRouteNames.spotBillingScreen.route,
       name: AppRouteNames.spotBillingScreen.name,
       builder: (BuildContext context, GoRouterState state) {
-        return  SpotBillingScreen();
+        return SpotBillingScreen();
       },
     ),
     GoRoute(

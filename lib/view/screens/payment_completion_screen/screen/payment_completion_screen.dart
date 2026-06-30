@@ -3,15 +3,20 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/above_container_card.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/widget/billing_details_card.dart';
+import 'package:intl/intl.dart';
 
 class PaymentCompletionScreen extends ConsumerWidget {
   const PaymentCompletionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final patientBillingstate = ref.watch(patientBillingProvider);
     return Scaffold(
       backgroundColor: AppColors.appWhite,
       appBar: AppBar(
@@ -53,7 +58,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            // ✅ Header Info Card
+            //  Header Info Card
             // _HeaderInfoCard(),
             Container(
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
@@ -66,7 +71,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   AboveContainerCard(
                     icon: Icons.account_balance_wallet_outlined,
                     label: 'Paying with',
-                    value: 'MUHAMMED\nHARSHAL',
+                    value: patientBillingstate.patientNameController.text,
                   ),
                   Container(
                     height: 50,
@@ -76,7 +81,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   AboveContainerCard(
                     icon: Icons.calendar_today_outlined,
                     label: 'Paying Date',
-                    value: 'May 26, 2026',
+                    value: DateFormat('MMM d, yyyy').format(DateTime.now()),
                   ),
                   Container(
                     height: 50,
@@ -93,12 +98,12 @@ class PaymentCompletionScreen extends ConsumerWidget {
             ),
             const SizedBox(height: 16),
 
-            // ✅ Dashed Divider
+            // Dashed Divider
             _DashedDivider(),
             const SizedBox(height: 16),
 
-            // ✅ Bill Details Card
-            _BillDetailsCard(),
+            // Bill Details Card
+            BillDetailsCard(),
             const SizedBox(height: 16),
 
             // ✅ Total Amount Card
@@ -211,102 +216,6 @@ class _DashedDivider extends StatelessWidget {
           }),
         );
       },
-    );
-  }
-}
-
-// ══════════════════════════════════════════
-// BILL DETAILS CARD
-// ══════════════════════════════════════════
-class _BillDetailsCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE8E8E8)),
-      ),
-      child: Column(
-        children: [
-          _BillRow(label: 'Number of tests', value: '1'),
-          _BillRow(label: 'Gross Amount', value: '10000.0'),
-          _BillRow(label: 'Discount Amount', value: '0.00', isEditable: true),
-          _BillRow(label: 'Service Charge', value: '0.0', isEditable: true),
-          _BillRow(label: 'Net Total', value: '10000.0'),
-          _BillRow(label: 'Amount Paid', value: '110.00'),
-          _BillRow(
-            label: 'Balance',
-            value: '9890.00',
-            valueColor: const Color(0xFFA32D2D),
-          ),
-          Divider(color: AppColors.appPrimaryColor, height: 20),
-          _BillRow(
-            label: 'UPI Reference ID',
-            value: '',
-            isEditable: true,
-            showEditOnly: true,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _BillRow extends StatelessWidget {
-  final String label;
-  final String value;
-  final bool isEditable;
-  final bool showEditOnly;
-  final Color? valueColor;
-
-  const _BillRow({
-    required this.label,
-    required this.value,
-    this.isEditable = false,
-    this.showEditOnly = false,
-    this.valueColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Row(
-            children: [
-              const Text(
-                ': ',
-                style: TextStyle(fontSize: 13, color: Colors.black87),
-              ),
-              if (isEditable)
-                const Icon(Icons.edit, size: 14, color: Color(0xFF639922)),
-              if (!showEditOnly) ...[
-                const SizedBox(width: 4),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: valueColor ?? Colors.black87,
-                  ),
-                ),
-              ],
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

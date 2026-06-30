@@ -2,20 +2,69 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
-import 'package:icon_infoware/controller/patient_sync_complete_controller,dart/patient_sync_complete_state.dart';
+import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_state.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_sync_complete_model.dart';
 
 class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
   PatientSyncCompleteController() : super(PatientSyncState()) {
-    getPatientsFromHive();
+    getCompletedBillingDetails();
   }
   Future<void> getCompletedBillingDetails() async {
     bool isConnected = await InternetChecker.hasConnection();
     try {
       state = state.copyWith(isLoading: true);
       await Future.delayed(Duration(seconds: 1));
+      final box = await Hive.openBox('patient_completed');
+      if (box.isNotEmpty) {
+        final completedList = box.values.map<PatientSyncCompleteModel>((item) {
+          return PatientSyncCompleteModel(
+            patId: item['patId'],
+            namePrefix: item['namePrefix'],
+            patName: item['patName'],
+            patAddress: item['patAddress'],
+            invNo: item['invNo'],
+            patGender: item['patGender'],
+            patAge: item['patAge'],
+            patAgehead: item['patAgehead'],
+            patPhno: item['patPhno'],
+            patMobno: item['patMobno'],
+            drId: item['drId'],
+            bookTime: item['bookTime'],
+            bookMapUrl: item['bookMapUrl'],
+            remarks: item['remarks'],
+            passport: item['passport'],
+            outDr: item['outDr'],
+            flag: item['flag'],
+            patEmail: item['patEmail'],
+            smplMode: item['smplMode'],
+            ipop: item['ipop'],
+            patImg: item['patImg'],
+            urgent: item['urgent'],
+            dob: item['dob'],
+            driverId: item['driverId'],
+            techId: item['techId'],
+            grossAmt: item['grossAmt'],
+            discAmt: item['discAmt'],
+            servChrge: item['servChrge'],
+            netAmt: item['netAmt'],
+            paidAmt: item['paidAmt'],
+            balance: item['balance'],
+            paymentType: item['paymentType'],
+            insid: item['insid'],
+            insNo: item['insNo'],
+            testlists: item['testlists'] != null
+                ? (item['testlists'] as List)
+                      .map((e) => Map<String, dynamic>.from(e))
+                      .toList()
+                : [],
+            completed: item['completed'],
+          );
+        }).toList();
+
+        state = state.copyWith(patientBookingListCompleted: completedList);
+      }
     } catch (e) {
       log(e.toString());
     } finally {
@@ -24,7 +73,10 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
   }
 
   //store patient details to hive
-  Future<void> savePatient(PatientHiveModel patient, String isCompleted) async {
+  Future<void> savePatientToCompletetion(
+    PatientHiveModel patient,
+    String isCompleted,
+  ) async {
     final box = await Hive.openBox('patient_completed');
 
     await box.add({
@@ -69,11 +121,11 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
       'testlists': patient.testlists ?? <Map<String, dynamic>>[],
       'completed': isCompleted,
     });
-    //  await getPatientBookingDetails();
+    await getCompletedBillingDetails();
   }
 
   //edit stored data
-  Future<void> updatePatient({
+  Future<void> updatePatientCompleted({
     required int index,
     String? patId,
     String? namePrefix,
@@ -113,6 +165,7 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
     String? insid,
     String? insNo,
     List<Map<String, dynamic>>? testlists,
+    String? completed,
   }) async {
     final box = await Hive.openBox('patient_booking');
 
@@ -156,83 +209,84 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
     oldData['insid'] = insid ?? oldData['insid'];
     oldData['insNo'] = insNo ?? oldData['insNo'];
     oldData['testlists'] = testlists ?? [];
+    oldData['completed'] = completed ?? oldData['completed'];
     log('Before save: ${oldData['testlists']}');
     log('New testlists: $testlists');
 
     await box.putAt(index, oldData);
     final updated = box.getAt(index);
-    log('After save: ${updated['testlists']}');
-    // await getPatientBookingDetails();
-    final updateda = box.getAt(index);
-    log('After save: ${updateda['testlists']}');
+    log('After save: ${updated['completed']}');
+    await getCompletedBillingDetails();
+    // final updateda = box.getAt(index);
+    // log('After save: ${updateda['testlists']}');
   }
 
   //read patients details from hive
-  Future<void> getPatientsFromHive() async {
-    final box = await Hive.openBox('patient_completed');
+  // Future<void> getPatientsFromHive() async {
+  //   final box = await Hive.openBox('patient_completed');
 
-    final patients = box.values.map<PatientSyncCompleteModel>((item) {
-      return PatientSyncCompleteModel(
-        invNo: item['invNo'],
-        patId: item['patId'],
-        namePrefix: item['namePrefix'],
-        patName: item['patName'],
-        patAddress: item['patAddress'],
-        patGender: item['patGender'],
-        patAge: item['patAge'],
-        patAgehead: item['patAgehead'],
-        patPhno: item['patPhno'],
-        patMobno: item['patMobno'],
-        bookTime: item['bookTime'],
-        drId: item['drId'],
-        currentDatetime: item['currentDatetime'],
-        remarks: item['remarks'],
-        passport: item['passport'],
-        outDr: item['outDr'],
-        patEmail: item['patEmail'],
-        repEmail: item['repEmail'],
-        repWhtapp: item['repWhtapp'],
-        ipop: item['ipop'],
-        patImg: item['patImg'],
-        urgent: item['urgent'],
-        dob: item['dob'],
-        driverId: item['driverId'],
-        techId: item['techId'],
-        grossAmt: item['grossAmt'],
-        discAmt: item['discAmt'],
-        servChrge: item['servChrge'],
-        netAmt: item['netAmt'],
-        paidAmt: item['paidAmt'],
-        balance: item['balance'],
-        paymentType: item['paymentType'],
-        insid: item['insid'],
-        insNo: item['insNo'],
-        bookMapUrl: item['bookMapUrl'],
-        smplMode: item['smplMode'],
-        flag: item['flag'],
-        testlists: item['testlists'] != null
-            ? (item['testlists'] as List)
-                  .map((e) => Map<String, dynamic>.from(e as Map))
-                  .toList()
-            : [],
-        completed: item['completed'],
-      );
-    }).toList();
+  //   final patients = box.values.map<PatientSyncCompleteModel>((item) {
+  //     return PatientSyncCompleteModel(
+  //       invNo: item['invNo'],
+  //       patId: item['patId'],
+  //       namePrefix: item['namePrefix'],
+  //       patName: item['patName'],
+  //       patAddress: item['patAddress'],
+  //       patGender: item['patGender'],
+  //       patAge: item['patAge'],
+  //       patAgehead: item['patAgehead'],
+  //       patPhno: item['patPhno'],
+  //       patMobno: item['patMobno'],
+  //       bookTime: item['bookTime'],
+  //       drId: item['drId'],
+  //       currentDatetime: item['currentDatetime'],
+  //       remarks: item['remarks'],
+  //       passport: item['passport'],
+  //       outDr: item['outDr'],
+  //       patEmail: item['patEmail'],
+  //       repEmail: item['repEmail'],
+  //       repWhtapp: item['repWhtapp'],
+  //       ipop: item['ipop'],
+  //       patImg: item['patImg'],
+  //       urgent: item['urgent'],
+  //       dob: item['dob'],
+  //       driverId: item['driverId'],
+  //       techId: item['techId'],
+  //       grossAmt: item['grossAmt'],
+  //       discAmt: item['discAmt'],
+  //       servChrge: item['servChrge'],
+  //       netAmt: item['netAmt'],
+  //       paidAmt: item['paidAmt'],
+  //       balance: item['balance'],
+  //       paymentType: item['paymentType'],
+  //       insid: item['insid'],
+  //       insNo: item['insNo'],
+  //       bookMapUrl: item['bookMapUrl'],
+  //       smplMode: item['smplMode'],
+  //       flag: item['flag'],
+  //       testlists: item['testlists'] != null
+  //           ? (item['testlists'] as List)
+  //                 .map((e) => Map<String, dynamic>.from(e as Map))
+  //                 .toList()
+  //           : [],
+  //       completed: item['completed'],
+  //     );
+  //   }).toList();
 
-    //only for log
-    // for (num i = 0; i < patients.length; i++) {
-    //   final testLists = patients[i].testlists ?? [];
+  //only for log
+  // for (num i = 0; i < patients.length; i++) {
+  //   final testLists = patients[i].testlists ?? [];
 
-    //   if (testLists.isEmpty) {
-    //     log('Patient $i -> testlists: []');
-    //   } else {
-    //     log('Patient $i -> testlists: $testLists');
-    //   }
-    // }
+  //   if (testLists.isEmpty) {
+  //     log('Patient $i -> testlists: []');
+  //   } else {
+  //     log('Patient $i -> testlists: $testLists');
+  //   }
+  // }
 
-    //update state class
-    state = state.copyWith(patientBookingListCompleted: patients);
-  }
+  //update state class
+  // state = state.copyWith(patientBookingListCompleted: patients);
+  //}
 
   //delete entire patient details
   // Future<void> deletePatient(num index) async {

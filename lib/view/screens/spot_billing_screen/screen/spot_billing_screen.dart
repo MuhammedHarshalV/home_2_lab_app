@@ -132,20 +132,33 @@ class SpotBillingScreen extends ConsumerWidget {
 
                   TopText(heading: 'Patient Details'),
                   SizedBox(height: 8),
-                  // ShowMenu(heading: 'Ms'),
-                  CommonTapPossitionDropdown(
-                    heading:
+                  TypeTextFormField(
+                    hintText:
                         spotBillingState.patientDetailsController.text.isEmpty
                         ? 'Prefix'
                         : spotBillingState.patientDetailsController.text,
-                    items: List.generate(
-                      patientTitles.length,
-                      (index) => patientTitles[index],
-                    ),
-                    onSelected: (value) {
-                      spotBillingState.patientDetailsController.text = value;
+                    textController: spotBillingState.patientDetailsController,
+                    isSuffix: true,
+                    isReadOnly: true,
+                    dropDown: patientTitles,
+                    onChanged: (p0) {
+                      spotBillingState.patientDetailsController.text = p0;
                     },
                   ),
+                  // ShowMenu(heading: 'Ms'),
+                  // CommonTapPossitionDropdown(
+                  //   heading:
+                  //       spotBillingState.patientDetailsController.text.isEmpty
+                  //       ? 'Prefix'
+                  //       : spotBillingState.patientDetailsController.text,
+                  //   items: List.generate(
+                  //     patientTitles.length,
+                  //     (index) => patientTitles[index],
+                  //   ),
+                  //   onSelected: (value) {
+                  //     spotBillingState.patientDetailsController.text = value;
+                  //   },
+                  // ),
                   SizedBox(height: 8),
 
                   TopText(heading: 'Patient Name *'),
@@ -230,6 +243,7 @@ class SpotBillingScreen extends ConsumerWidget {
                     textController: spotBillingState.genderController,
                     isSuffix: true,
                     isReadOnly: true,
+                    dropDown: ['Men', 'Female', 'Other'],
                     onChanged: (p0) {
                       spotBillingState.genderController.text = p0;
                     },

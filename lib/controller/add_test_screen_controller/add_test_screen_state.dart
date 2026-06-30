@@ -1,36 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:icon_infoware/models/discount_reasons/discount_reasons_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
 
 class AddTestScreenState {
+  final List<String> discountList;
   final List<AccountsList> specialSchemeList;
   final List<TestMaster> testMasterList;
   final List<TestMasterSelected> testMasterListSeeing;
   final TextEditingController specialSchemeController;
   final List<TestMasterSelected> testMasterListSelected;
   final List<TestMasterSelected> testMasterListSelectedNewPrice;
- 
-  final List<TestMasterSelected> finalListNewPrice;
+  final TextEditingController discountAmountController;
+  final TextEditingController discountPercentageController;
+  final TextEditingController servicesnargeController;
+  final TextEditingController upiRefferenceIdController;
+  final TextEditingController primaryAmountContoller;
+  final TextEditingController secondaryAmountController;
+  final String secondaryType;
+  final TextEditingController discountReason;
+  final String primaryType;
+  final num netAmount;
+  final num amountPaid;
+  final num balanceAmount;
 
   final List<SchemeRateList> specialSchemeRatesList;
   final TextEditingController searchController;
- // final List<String> checkedTestes;
+  // final List<String> checkedTestes;
   final num totalPrice;
   final int schemeIDSelected;
   final FocusNode specialSchemeFocusNode;
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
   AddTestScreenState({
+   required this.discountReason,
+    this.discountList = const [],
     this.specialSchemeList = const [],
     this.specialSchemeRatesList = const [],
     this.testMasterList = const [],
     this.testMasterListSeeing = const [],
     this.testMasterListSelected = const [],
-   // this.checkedTestes = const [],
+    // this.checkedTestes = const [],
     this.testMasterListSelectedNewPrice = const [],
-    this.finalListNewPrice = const [],
 
     this.totalPrice = 0,
     this.schemeIDSelected = 0,
@@ -39,25 +52,50 @@ class AddTestScreenState {
     required this.searchController,
     required this.specialSchemeFocusNode,
     required this.specialSchemeController,
+    required this.discountAmountController,
+    required this.discountPercentageController,
+    required this.servicesnargeController,
+    required this.upiRefferenceIdController,
+    required this.primaryAmountContoller,
+    required this.secondaryAmountController,
+    this.secondaryType = 'UPI',
+    this.netAmount = 0,
+    this.amountPaid = 0,
+    this.balanceAmount = 0,
+    this.primaryType = 'Cash',
   });
   AddTestScreenState copyWith({
+    List<String>? discountList,
+    TextEditingController? discountReason,
     List<AccountsList>? specialSchemeList,
     List<TestMaster>? testMasterList,
     List<TestMasterSelected>? testMasterListSeeing,
     List<TestMasterSelected>? testMasterListSelected,
     List<TestMasterSelected>? testMasterListSelectedNewPrice,
-    List<TestMasterSelected>? finalListNewPrice,
+
     FocusNode? specialSchemeFocusNode,
     TextEditingController? searchController,
     TextEditingController? specialSchemeController,
+    TextEditingController? discountAmountController,
+    TextEditingController? discountPercentageController,
+    TextEditingController? servicesnargeController,
+    TextEditingController? upiRefferenceIdController,
+    TextEditingController? primaryAmountContoller,
+    TextEditingController? secondaryAmountController,
     List<SchemeRateList>? specialSchemeRatesList,
-   // List<String>? checkedTestes,
+    // List<String>? checkedTestes,
     int? schemeIDSelected,
     num? totalPrice,
+    num? netAmount,
+    num? amountPaid,
+    num? balanceAmount,
+    String? secondaryType,
+    String? primaryType,
     bool? isCorporateBilling,
     bool? isSpecialschemeOpen,
   }) {
     return AddTestScreenState(
+      discountList: discountList ?? this.discountList,
       specialSchemeList: specialSchemeList ?? this.specialSchemeList,
       testMasterList: testMasterList ?? this.testMasterList,
       searchController: searchController ?? this.searchController,
@@ -69,7 +107,7 @@ class AddTestScreenState {
           specialSchemeRatesList ?? this.specialSchemeRatesList,
       specialSchemeFocusNode:
           specialSchemeFocusNode ?? this.specialSchemeFocusNode,
-      finalListNewPrice: finalListNewPrice ?? this.finalListNewPrice,
+
       testMasterListSelectedNewPrice:
           testMasterListSelectedNewPrice ?? this.testMasterListSelectedNewPrice,
       testMasterListSelected:
@@ -78,6 +116,29 @@ class AddTestScreenState {
       totalPrice: totalPrice ?? this.totalPrice,
       isCorporateBilling: isCorporateBilling ?? this.isCorporateBilling,
       isSpecialschemeOpen: isSpecialschemeOpen ?? this.isSpecialschemeOpen,
+      discountAmountController:
+          discountAmountController ?? this.discountAmountController,
+
+      discountPercentageController:
+          discountPercentageController ?? this.discountPercentageController,
+
+      servicesnargeController:
+          servicesnargeController ?? this.servicesnargeController,
+
+      upiRefferenceIdController:
+          upiRefferenceIdController ?? this.upiRefferenceIdController,
+
+      primaryAmountContoller:
+          primaryAmountContoller ?? this.primaryAmountContoller,
+
+      secondaryAmountController:
+          secondaryAmountController ?? this.secondaryAmountController,
+      primaryType: primaryType ?? this.primaryType,
+      secondaryType: secondaryType ?? this.secondaryType,
+      balanceAmount: balanceAmount ?? this.balanceAmount,
+      amountPaid: amountPaid ?? this.amountPaid,
+      netAmount: netAmount ?? this.netAmount,
+      discountReason: discountReason ?? this.discountReason,
     );
   }
 }

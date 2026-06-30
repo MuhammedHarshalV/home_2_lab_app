@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
-import 'package:icon_infoware/controller/patient_sync_complete_controller,dart/patient_sync_complete_controller.dart';
+import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
@@ -104,6 +104,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
             Expanded(
               child: InkWell(
                 onTap: () {
+                  testAddController.storingAndFetchingDiscount();
                   context.pushNamed(AppRouteNames.paymentCompletionScreen.name);
                 },
                 child: Container(
@@ -177,17 +178,60 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 onTap: () async {
                   if (index == null) {
                     int indexGet = homeState.patientBookingList.length - 1;
-                    patientSyncCompleteController.savePatient(
-                      homeState.patientBookingList[indexGet],
-                      'No',
-                    );
-                    context.pop();
+                    if (testAddState
+                        .testMasterListSelectedNewPrice
+                        .isNotEmpty) {
+                      patientSyncCompleteController.savePatientToCompletetion(
+                        homeState.patientBookingList[indexGet],
+                        'No',
+                      );
+                      await homeController.deletePatient(indexGet);
+                      context.pop();
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: AppColors.appWhite,
+                            title: Center(
+                              child: Text(
+                                'Alert',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            content: Text('Please add at least one test.'),
+                          );
+                        },
+                      );
+                    }
                   } else {
-                    await patientSyncCompleteController.savePatient(
-                      homeState.patientBookingList[index!],
-                      'No',
-                    );
-                    context.pop();
+                    if (testAddState
+                        .testMasterListSelectedNewPrice
+                        .isNotEmpty) {
+                      await patientSyncCompleteController
+                          .savePatientToCompletetion(
+                            homeState.patientBookingList[index!],
+                            'No',
+                          );
+                      await homeController.deletePatient(index!);
+                      context.pop();
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (context) {
+                          return AlertDialog(
+                            backgroundColor: AppColors.appWhite,
+                            title: Center(
+                              child: Text(
+                                'Alert',
+                                style: TextStyle(fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                            content: Text('Please add at least one test.'),
+                          );
+                        },
+                      );
+                    }
                   }
                 },
                 child: Container(

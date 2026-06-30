@@ -9,14 +9,18 @@ class CommonTextField extends StatelessWidget {
   final IconData icon;
   final bool isNumberInput;
   final TextEditingController? controller;
+  final Function(String)? onchanger;
+  final bool focusNode;
 
   const CommonTextField({
     super.key,
+    this.focusNode = false,
     this.label = '',
     required this.hint,
     required this.icon,
     this.controller,
     this.isNumberInput = false,
+    this.onchanger,
   });
 
   @override
@@ -36,9 +40,12 @@ class CommonTextField extends StatelessWidget {
         SizedBox(height: 8),
         TextField(
           controller: controller,
-          onTapOutside: (_) {
-            FocusManager.instance.primaryFocus?.unfocus();
-          },
+          onTapOutside: focusNode == false
+              ? (_) {
+                  FocusManager.instance.primaryFocus?.unfocus();
+                }
+              : null,
+          onChanged: onchanger,
           keyboardType: isNumberInput
               ? TextInputType.number
               : TextInputType.text,

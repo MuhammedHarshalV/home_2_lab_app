@@ -45,8 +45,9 @@ void main() {
       final notifier = container.read(patientBillingProvider.notifier);
       
       final now = DateTime.now();
-      // Use exact year calculation to avoid leap-year day offset mismatches
-      final birthDate = DateTime(now.year - 30, now.month, now.day);
+      // Clamp day to 28 to avoid leap-year day offset roll-overs on non-leap years
+      final safeDay = now.day > 28 ? 28 : now.day;
+      final birthDate = DateTime(now.year - 30, now.month, safeDay);
       
       final age = notifier.calculateAge(birthDate);
       final state = container.read(patientBillingProvider);
@@ -60,8 +61,9 @@ void main() {
       final notifier = container.read(patientBillingProvider.notifier);
       
       final now = DateTime.now();
-      // Use exact month calculation to avoid calendar month length offsets
-      final birthDate = DateTime(now.year, now.month - 6, now.day);
+      // Clamp day to 28 to avoid calendar month length roll-overs (e.g. running on the 31st)
+      final safeDay = now.day > 28 ? 28 : now.day;
+      final birthDate = DateTime(now.year, now.month - 6, safeDay);
       
       final age = notifier.calculateAge(birthDate);
       final state = container.read(patientBillingProvider);

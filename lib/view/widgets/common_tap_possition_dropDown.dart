@@ -51,14 +51,14 @@ class CommonTapPossitionDropdown extends StatelessWidget {
       context: context,
       color: AppColors.appWhite,
       constraints: BoxConstraints(
-        minWidth: screenSize.width,
+        minWidth: screenSize.width / 7.5,
         maxHeight: screenSize.height / 2,
       ),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       position: RelativeRect.fromLTRB(
-        0, // full width
-        tapPosition.dy,
-        0,
+        screenSize.width, // left
+        tapPosition.dy, // top
+        screenSize.width, // right
         screenSize.height - tapPosition.dy,
       ),
       items: items

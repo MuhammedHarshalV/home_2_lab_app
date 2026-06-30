@@ -239,8 +239,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     final updated = box.getAt(index);
     log('After save: ${updated['testlists']}');
     await getPatientBookingDetails();
-    final updateda = box.getAt(index);
-    log('After save: ${updateda['testlists']}');
+    // final updateda = box.getAt(index);
+    // log('After save: ${updateda['testlists']}');
   }
 
   //read patients details from hive

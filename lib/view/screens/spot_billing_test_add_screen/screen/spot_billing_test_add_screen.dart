@@ -29,8 +29,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
     final testMasterController = ref.read(addTestScreenProvider.notifier);
     final homeState = ref.watch(homeScreenProvider);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
-    log('final list :${testMasterState.finalListNewPrice.toString()}');
-    log('final list :${testMasterState.finalListNewPrice.length}');
+
     // log('checked list :${testMasterState.checkedTestes.toString()}');
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -308,7 +307,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               ),
             ),
 
-            PatientDetailsBelowCard(),
+            PatientDetailsBelowCard(index: index),
           ],
         ),
       ),

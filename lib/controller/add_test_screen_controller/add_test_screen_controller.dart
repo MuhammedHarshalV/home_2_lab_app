@@ -3,10 +3,12 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
+import 'package:icon_infoware/apis/discount_fetching/discount_fetching_api.dart';
 import 'package:icon_infoware/apis/spot_billing/special_scheme_rates_api.dart';
 import 'package:icon_infoware/apis/spot_billing/test_master_api.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_state.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
+import 'package:icon_infoware/models/discount_reasons/discount_reasons_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
@@ -19,13 +21,20 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   AddTestScreenController()
     : super(
         AddTestScreenState(
+          discountReason: TextEditingController(),
           searchController: TextEditingController(),
           specialSchemeController: TextEditingController(),
           specialSchemeFocusNode: FocusNode(),
+          discountAmountController: TextEditingController(),
+          discountPercentageController: TextEditingController(),
+          servicesnargeController: TextEditingController(),
+          upiRefferenceIdController: TextEditingController(),
+          primaryAmountContoller: TextEditingController(),
+          secondaryAmountController: TextEditingController(),
         ),
       ) {
     Future.microtask(() async {
-       //  await getTestMasterLists();
+      //  await getTestMasterLists();
       // testMasterCalling();
       specialRatesFetch();
     });
@@ -88,7 +97,6 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     state = state.copyWith(
       testMasterListSelected: [],
       testMasterListSelectedNewPrice: [],
-      finalListNewPrice: [],
     );
     final tests = box.values.map<TestMaster>((item) {
       return TestMaster(
@@ -113,7 +121,6 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         );
       }).toList();
       state = state.copyWith(testMasterListSeeing: selectedList);
-      state = state.copyWith(finalListNewPrice: []);
     } //any one tests in already saved
     else {
       final List<TestMasterSelected> selectedList = state.testMasterList.map((
@@ -167,10 +174,79 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     }
   }
 
+  //stroring discount and fetching
+  Future<void> storingAndFetchingDiscount() async {
+    bool isConnected = await InternetChecker.hasConnection();
+    try {
+      await Future.delayed(Duration(seconds: 1));
+      final box = await Hive.openBox('Discount_reasons');
+      if (isConnected == true && box.isEmpty) {
+        final DiscountReasonResponseModel response =
+            await DiscountFetchingApi.discountFetchingApi();
+        if (response.success == true && response.discReasonList != null) {
+          await saveDiscountReasons(response.discReasonList ?? []);
+
+          // strore to hive
+          await getDiscountFromHive(); //read from hive and update state
+        } else {
+          await getDiscountFromHive(); //read from hive and update state
+        }
+      } else {
+        await getDiscountFromHive(); //read from hive and update state
+      }
+    } catch (e) {
+      log(e.toString());
+    }
+  }
+
+  //store tests to hive
+  Future<void> saveDiscountReasons(List<DiscReasonList> discount) async {
+    final box = await Hive.openBox('Discount_reasons');
+
+    for (final disc in discount) {
+      if (disc.mstType == 'DiscR') {
+        await box.add({'mstDesc': disc.mstDesc ?? ''});
+      }
+    }
+  }
+
+  //read discount reasons from hive
+  Future<void> getDiscountFromHive() async {
+    final box = await Hive.openBox('Discount_reasons');
+
+    final discount = box.values
+        .map<String>((item) => item['mstDesc'].toString())
+        .toList();
+    log('readed data from hive : ${discount.length}');
+    state = state.copyWith(discountList: discount);
+  }
+
   //clear hive
   Future<void> cleartests() async {
-    final box = await Hive.openBox('test_lists');
+    final box = await Hive.openBox('Discount_reasons');
     await box.clear();
+  }
+
+  //set discount amount or percentage
+  void discountCalculation({num? discountAmount, num? discountPercentage}) {
+    if (state.totalPrice <= 0) return;
+
+    // Percentage -> Amount
+    if (discountPercentage != null) {
+      final amount = (state.totalPrice * discountPercentage) / 100;
+
+      state.discountPercentageController.text = discountPercentage.toString();
+
+      state.discountAmountController.text = amount.toStringAsFixed(2);
+    }
+    // Amount -> Percentage
+    else if (discountAmount != null) {
+      final percentage = (discountAmount / state.totalPrice) * 100;
+
+      state.discountAmountController.text = discountAmount.toString();
+
+      state.discountPercentageController.text = percentage.toStringAsFixed(2);
+    }
   }
 
   //filter selectedresults
@@ -385,13 +461,16 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     );
   }
 
+//remove tests from final list
   Future<void> removalFinalList(String name) async {
     state = state.copyWith(
-      finalListNewPrice: state.finalListNewPrice
+      testMasterListSelectedNewPrice: state.testMasterListSelectedNewPrice
           .where((item) => item.testName != name)
           .toList(),
     );
-    log('new final new rate list :${state.finalListNewPrice.toString()}');
+    log(
+      'new final new rate list :${state.testMasterListSelectedNewPrice.toString()}',
+    );
   }
 
   // Future<void> checkedList(String testName) async {
@@ -457,99 +536,99 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     state = state.copyWith(testMasterListSelected: updatedList);
   }
 
-  void updateSelectedTest({required int? index, required String? name}) {
-    final updatedList = [...state.testMasterListSeeing];
-    final updatedListPrice = [...state.finalListNewPrice];
-    log("Received name: $name");
-    log("Received index: $index");
+  // void updateSelectedTest({required int? index, required String? name}) {
+  //   final updatedList = [...state.testMasterListSeeing];
+  //   final updatedListPrice = [...state.finalListNewPrice];
+  //   log("Received name: $name");
+  //   log("Received index: $index");
 
-    if (index != null) {
-      updatedList[index] = TestMasterSelected(
-        testKey: updatedList[index].testKey,
-        testRate: updatedList[index].testRate,
-        testShortCode: updatedList[index].testShortCode,
-        testName: updatedList[index].testName,
-        testSelected: !updatedList[index].testSelected,
-      );
-    }
-    if (name != null) {
-      log('detetting name :$name');
-      final itemIndex = updatedList.indexWhere((item) => item.testName == name);
+  //   if (index != null) {
+  //     updatedList[index] = TestMasterSelected(
+  //       testKey: updatedList[index].testKey,
+  //       testRate: updatedList[index].testRate,
+  //       testShortCode: updatedList[index].testShortCode,
+  //       testName: updatedList[index].testName,
+  //       testSelected: !updatedList[index].testSelected,
+  //     );
+  //   }
+  //   if (name != null) {
+  //     log('detetting name :$name');
+  //     final itemIndex = updatedList.indexWhere((item) => item.testName == name);
 
-      if (itemIndex >= 0) {
-        log('detetting name :$name');
-        final item = updatedList[itemIndex];
+  //     if (itemIndex >= 0) {
+  //       log('detetting name :$name');
+  //       final item = updatedList[itemIndex];
 
-        updatedList[itemIndex] = TestMasterSelected(
-          testKey: item.testKey,
-          testRate: item.testRate,
-          testShortCode: item.testShortCode,
-          testName: item.testName,
-          testSelected: false,
-        );
-      }
-      final selectedList = updatedList
-          .where((item) => item.testSelected == true)
-          .toList();
-      num totalPrice =
-          state.totalPrice -
-          (updatedListPrice
-                  .where((e) => e.testName == name)
-                  .firstOrNull
-                  ?.testRate ??
-              0);
+  //       updatedList[itemIndex] = TestMasterSelected(
+  //         testKey: item.testKey,
+  //         testRate: item.testRate,
+  //         testShortCode: item.testShortCode,
+  //         testName: item.testName,
+  //         testSelected: false,
+  //       );
+  //     }
+  //     final selectedList = updatedList
+  //         .where((item) => item.testSelected == true)
+  //         .toList();
+  //     num totalPrice =
+  //         state.totalPrice -
+  //         (updatedListPrice
+  //                 .where((e) => e.testName == name)
+  //                 .firstOrNull
+  //                 ?.testRate ??
+  //             0);
 
-      state = state.copyWith(
-        testMasterListSeeing: updatedList,
-        testMasterListSelected: selectedList,
-        totalPrice: totalPrice,
-      );
-    }
+  //     state = state.copyWith(
+  //       testMasterListSeeing: updatedList,
+  //       testMasterListSelected: selectedList,
+  //       totalPrice: totalPrice,
+  //     );
+  //   }
 
-    state = state.copyWith(testMasterListSeeing: updatedList);
-  }
+  //   state = state.copyWith(testMasterListSeeing: updatedList);
+  // }
 
-  void updatefinalList(List<TestMasterSelected> tests) {
-    num totalPrice = 0;
-    state = state.copyWith(finalListNewPrice: tests);
-    // if (state.finalListNewPrice.isNotEmpty) {
-    //   List<TestMasterSelected> getSelectedTests =
-    //       state.testMasterListSelectedNewPrice;
+  // void updatefinalList(List<TestMasterSelected> tests) {
+  //   num totalPrice = 0;
+  //   state = state.copyWith(finalListNewPrice: tests);
+  //   // if (state.finalListNewPrice.isNotEmpty) {
+  //   //   List<TestMasterSelected> getSelectedTests =
+  //   //       state.testMasterListSelectedNewPrice;
 
-    //   for (TestMasterSelected n in getSelectedTests) {
-    //     totalPrice += n.testRate ?? 0;
-    //   }
-    //   state = state.copyWith(
-    //     totalPrice: totalPrice,
-    //     finalListNewPrice: getSelectedTests,
-    //   );
-    // } else {
-    List<TestMasterSelected> getSelectedTests =
-        state.testMasterListSelectedNewPrice;
+  //   //   for (TestMasterSelected n in getSelectedTests) {
+  //   //     totalPrice += n.testRate ?? 0;
+  //   //   }
+  //   //   state = state.copyWith(
+  //   //     totalPrice: totalPrice,
+  //   //     finalListNewPrice: getSelectedTests,
+  //   //   );
+  //   // } else {
+  //   List<TestMasterSelected> getSelectedTests =
+  //       state.testMasterListSelectedNewPrice;
 
-    for (TestMasterSelected n in getSelectedTests) {
-      totalPrice += n.testRate ?? 0;
-    }
-    state = state.copyWith(
-      totalPrice: totalPrice,
-      finalListNewPrice: getSelectedTests,
-    );
-    // }
-  }
+  //   for (TestMasterSelected n in getSelectedTests) {
+  //     totalPrice += n.testRate ?? 0;
+  //   }
+  //   state = state.copyWith(
+  //     totalPrice: totalPrice,
+  //     finalListNewPrice: getSelectedTests,
+  //   );
+  //   // }
+  // }
 
-  void updateSelectedList() {
-    num totalPrice = 0;
-    List<TestMasterSelected> getSelectedTests = state.testMasterListSeeing
-        .where((item) => item.testSelected == true)
-        .toList();
-    for (TestMasterSelected n in getSelectedTests) {
-      totalPrice += n.testRate ?? 0;
-    }
-    state = state.copyWith(
-      testMasterListSelected: getSelectedTests,
-      totalPrice: totalPrice,
-    );
-  }
+  // void updateSelectedList() {
+  //   num totalPrice = 0;
+  //   List<TestMasterSelected> getSelectedTests = state.testMasterListSeeing
+  //       .where((item) => item.testSelected == true)
+  //       .toList();
+  //   for (TestMasterSelected n in getSelectedTests) {
+  //     totalPrice += n.testRate ?? 0;
+  //   }
+  //   state = state.copyWith(
+  //     testMasterListSelected: getSelectedTests,
+  //     totalPrice: totalPrice,
+  //   );
+  // }
 }
 
 final addTestScreenProvider =

@@ -7,4 +7,5 @@ class ApiConstants {
   static String testMaster = 'TestMaster';
   static String specialSchemeRates = '/SplScheemaRates';
   static String patientBookingDetails = '/HomeCollList';
+  static String discountFetching = '/General_Master';
 }

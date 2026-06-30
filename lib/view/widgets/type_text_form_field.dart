@@ -9,11 +9,13 @@ class TypeTextFormField extends StatelessWidget {
   final bool isPreffix;
   final bool isNumberInput;
   final bool isReadOnly;
+  final List<String>? dropDown;
   final Function(String)? onChanged;
   final Function(Function)? onChangedFunction;
 
   const TypeTextFormField({
     super.key,
+
     required this.hintText,
     required this.textController,
     this.isSuffix = false,
@@ -22,6 +24,7 @@ class TypeTextFormField extends StatelessWidget {
     this.isReadOnly = false,
     this.onChanged,
     this.onChangedFunction,
+    this.dropDown,
   });
 
   @override
@@ -57,7 +60,7 @@ class TypeTextFormField extends StatelessWidget {
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
                   onTapDown: (details) {
-                    genderDropDown(context, details.globalPosition);
+                    showDropDown(context, details.globalPosition, dropDown!);
                   },
                   child: Icon(Icons.arrow_drop_down, color: AppColors.appBlack),
                 )
@@ -96,7 +99,11 @@ class TypeTextFormField extends StatelessWidget {
     );
   }
 
-  void genderDropDown(BuildContext context, Offset tapPosition) async {
+  void showDropDown(
+    BuildContext context,
+    Offset tapPosition,
+    List<String> items,
+  ) async {
     final screenSize = MediaQuery.of(context).size;
 
     final selected = await showMenu<String>(
@@ -108,17 +115,15 @@ class TypeTextFormField extends StatelessWidget {
         screenSize.width,
         screenSize.height - tapPosition.dy,
       ),
-      items: [
-        PopupMenuItem(value: 'Male', child: Text('Male')),
-        PopupMenuItem(value: 'Female', child: Text('Female')),
-        PopupMenuItem(value: 'Others', child: Text('Others')),
-      ],
+      items: items.map((item) {
+        return PopupMenuItem<String>(value: item, child: Text(item));
+      }).toList(),
+      constraints: BoxConstraints(maxHeight: screenSize.height / 2),
     );
 
     if (selected != null) {
       textController.text = selected;
 
-      // send value outside
       if (onChanged != null) {
         onChanged!(selected);
       }

@@ -56,6 +56,9 @@ class PatientContactCard extends ConsumerWidget {
           ageByYear: patient.patAgehead ?? '',
           isUrgent: false,
         );
+        if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
+          testAddState.testMasterListSelectedNewPrice.clear();
+        }
         testAddController.getTestMasterLists(patient);
         context.pushNamed(
           AppRouteNames.spotBillingTestAddScreen.name,
