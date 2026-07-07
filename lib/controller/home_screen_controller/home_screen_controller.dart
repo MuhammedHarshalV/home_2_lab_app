@@ -76,6 +76,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           'patImg': '',
           'urgent': 0,
           'dob': '',
+          'upiReferenceId': '',
           'driverId': '',
           'techId': '',
           'grossAmt': 0,
@@ -84,11 +85,16 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           'netAmt': 0,
           'paidAmt': 0,
           'balance': 0,
-          'paymentType': '',
+          'primaryType': '',
           'insid': '',
           'insNo': '',
           'isCompleted': 'No',
           "isSync": 'No',
+          "secondaryType": "",
+          "secondaryPaid": 0,
+          "primaryPaid": 0,
+          "timeToSave": '',
+          'dateToSave': '',
           // Save test list also
           'testlists': [
             {"TestId": '0'},
@@ -114,6 +120,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'patPhno': patient.patPhno ?? '',
       'patMobno': patient.patMobno ?? '',
       'drId': '',
+      'upiReferenceId': '',
       "bookTime": patient.bookTime ?? '',
       'bookMapUrl': '',
       'currentDatetime': '',
@@ -137,11 +144,16 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'netAmt': 0,
       'paidAmt': 0,
       'balance': 0,
-      'paymentType': '',
+      'primaryType': '',
       'insid': '',
       'insNo': '',
       'isCompleted': patient.isCompleted ?? '',
       "isSync": patient.isSync ?? '',
+      "secondaryType": "",
+      "secondaryPaid": 0,
+      "primaryPaid": 0,
+      "timeToSave": '',
+      'dateToSave': '',
       // Save test list also
       'testlists': [
         {"TestId": '0'},
@@ -187,11 +199,18 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     num? netAmt,
     num? paidAmt,
     num? balance,
-    String? paymentType,
+    num? secondaryPaid,
+    num? primaryPaid,
+    String? upiReferenceId,
+    String? secondaryType,
+    String? primaryType,
     String? insid,
     String? insNo,
     String? isCompleted,
     String? isSync,
+    String? timeToSave,
+    String? dateToSave,
+
     List<Map<String, dynamic>>? testlists,
   }) async {
     final box = await Hive.openBox('patient_booking');
@@ -221,6 +240,10 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     oldData['smplMode'] = smplMode ?? oldData['smplMode'];
     oldData['repWhtapp'] = repWhtapp ?? oldData['repWhtapp'];
     oldData['ipop'] = ipop ?? oldData['ipop'];
+    oldData['upiReferenceId'] = upiReferenceId ?? oldData['upiReferenceId'];
+    oldData['timeToSave'] = timeToSave ?? oldData['timeToSave'];
+    oldData['dateToSave'] = dateToSave ?? oldData['dateToSave'];
+
     oldData['patImg'] = patImg ?? oldData['patImg'];
     oldData['urgent'] = urgent ?? oldData['urgent'];
     oldData['dob'] = dob ?? oldData['dob'];
@@ -232,19 +255,77 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     oldData['netAmt'] = netAmt ?? oldData['netAmt'];
     oldData['paidAmt'] = paidAmt ?? oldData['paidAmt'];
     oldData['balance'] = balance ?? oldData['balance'];
-    oldData['paymentType'] = paymentType ?? oldData['paymentType'];
+    oldData['primaryType'] = primaryType ?? oldData['primaryType'];
     oldData['insid'] = insid ?? oldData['insid'];
     oldData['insNo'] = insNo ?? oldData['insNo'];
     oldData['isCompleted'] = isCompleted ?? oldData['isCompleted'];
     oldData['isSync'] = isSync ?? oldData['isSync'];
-    oldData['testlists'] = testlists ?? [];
+    oldData['secondaryType'] = secondaryType ?? oldData['secondaryType'];
+    oldData['secondaryPaid'] = secondaryPaid ?? oldData['secondaryPaid'];
+    oldData['primaryPaid'] = primaryPaid ?? oldData['primaryPaid'];
+
+    oldData['testlists'] = testlists ?? oldData['testlists'];
 
     log('Before save: ${oldData['testlists']}');
     log('New testlists: $testlists');
     log(oldData['isSync']);
+    final params = {
+      'index': index,
+      'patId': patId,
+      'namePrefix': namePrefix,
+      'patName': patName,
+      'patAddress': patAddress,
+      'invNo': invNo,
+      'patGender': patGender,
+      'patAge': patAge,
+      'patAgehead': patAgehead,
+      'patPhno': patPhno,
+      'patMobno': patMobno,
+      'drId': drId,
+      'bookTime': bookTime,
+      'bookMapUrl': bookMapUrl,
+      'currentDatetime': currentDatetime,
+      'remarks': remarks,
+      'passport': passport,
+      'outDr': outDr,
+      'flag': flag,
+      'patEmail': patEmail,
+      'repEmail': repEmail,
+      'smplMode': smplMode,
+      'repWhtapp': repWhtapp,
+      'ipop': ipop,
+      'patImg': patImg,
+      'urgent': urgent,
+      'dob': dob,
+      'driverId': driverId,
+      'techId': techId,
+      'grossAmt': grossAmt,
+      'discAmt': discAmt,
+      'servChrge': servChrge,
+      'netAmt': netAmt,
+      'paidAmt': paidAmt,
+      'balance': balance,
+      'primaryPaid': primaryPaid,
+      'secondaryPaid': secondaryPaid,
+      'primaryType': primaryType,
+      'secondaryType': secondaryType,
+      'upiReferenceId': upiReferenceId,
+      'insid': insid,
+      'insNo': insNo,
+      'isCompleted': isCompleted,
+      'isSync': isSync,
+      "dateToSave": dateToSave,
+      "timeToSave": timeToSave,
+      'testlists': testlists,
+    };
+
+    params.forEach((key, value) {
+      log('$key: $value');
+    });
     await box.putAt(index, oldData);
     final updated = box.getAt(index);
     log('After save: ${updated['testlists']}');
+
     await getPatientBookingDetails(true);
     // final updateda = box.getAt(index);
     // log('After save: ${updateda['testlists']}');
@@ -276,6 +357,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         repEmail: item['repEmail'],
         repWhtapp: item['repWhtapp'],
         ipop: item['ipop'],
+        upiReferenceId: item['upiReferenceId'],
         patImg: item['patImg'],
         urgent: item['urgent'],
         dob: item['dob'],
@@ -287,7 +369,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         netAmt: item['netAmt'],
         paidAmt: item['paidAmt'],
         balance: item['balance'],
-        paymentType: item['paymentType'],
+        primaryType: item['primaryType'],
         insid: item['insid'],
         insNo: item['insNo'],
         bookMapUrl: item['bookMapUrl'],
@@ -295,6 +377,12 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         flag: item['flag'],
         isCompleted: item['isCompleted'],
         isSync: item['isSync'],
+        secondaryPaid: item['secondaryPaid'],
+        secondaryType: item['secondaryType'],
+        primaryPaid: item['primaryPaid'],
+        timeToSave: item['timeToSave'],
+        dateToSave: item['dateToSave'],
+
         testlists: item['testlists'] != null
             ? (item['testlists'] as List)
                   .map((e) => Map<String, dynamic>.from(e as Map))

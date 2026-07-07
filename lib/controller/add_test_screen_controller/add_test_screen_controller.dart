@@ -238,7 +238,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       state.discountPercentageController.text = discountPercentage.toString();
 
       state.discountAmountController.text = amount.toStringAsFixed(2);
-      state = state.copyWith(netAmount: state.netAmount - amount);
+      // state = state.copyWith(netAmount: state.netAmount - amount);
     }
     // Amount -> Percentage
     else if (discountAmount != null) {
@@ -247,7 +247,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       state.discountAmountController.text = discountAmount.toString();
 
       state.discountPercentageController.text = percentage.toStringAsFixed(2);
-      state = state.copyWith(netAmount: state.netAmount - discountAmount);
+      // state = state.copyWith(netAmount: state.netAmount - discountAmount);
     }
   }
 
@@ -324,7 +324,9 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   }
 
   //remove temperary selected tests
-  void removeTestsToTemperary({required TestMasterSelected test}) {
+  Future<void> removeTestsToTemperary({
+    required TestMasterSelected test,
+  }) async {
     log("selected lists :${state.testMasterListSelected}");
     final selectedList = state.testMasterListSelected
         .where((e) => e.testKey != test.testKey)
@@ -347,19 +349,31 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       testMasterListSelected: selectedList,
       testMasterListSeeing: seeingList,
     );
+    log('5555555555555555555555');
+    log('qqqqqqqqqqqqqqqqqqq ${selectedList.toString()}');
+    log('5555555555555555555555');
+
+    // log(seeingList.toString());
   }
 
   //state updation function
   void updatestate({
+    String? isSync,
     List<AccountsList>? specialSchemeList,
     List<TestMasterSelected>? testMasterListSeeing,
+    List<TestMasterSelected>? testMasterListSelectedNewPrice,
+    String? cardName,
     int? schemeIDSelected,
     bool? isCorporateBilling,
     bool? isSpecialschemeOpen,
     num? balanceAmount,
     num? amountPaid,
+    num? primaryPaid,
+    num? secondaryPaid,
     num? netAmount,
     num? grosAmount,
+    String? primaryType,
+    String? secondaryType,
   }) {
     state = state.copyWith(
       specialSchemeList: specialSchemeList,
@@ -371,7 +385,44 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       amountPaid: amountPaid,
       netAmount: netAmount,
       totalPrice: grosAmount,
+      primaryPaid: primaryPaid,
+      secondaryPaid: secondaryPaid,
+      primaryType: primaryType,
+      secondaryType: secondaryType,
+      testMasterListSelectedNewPrice: testMasterListSelectedNewPrice,
+      isSync: isSync,
+      cardName: cardName,
     );
+  }
+
+  //netamount balance amount calculate
+  Future<void> updateNetBalanceAmounts() async {
+    final grossAmount = state.totalPrice;
+
+    final discountAmount =
+        num.tryParse(state.discountAmountController.text) ?? 0;
+
+    final serviceCharge = num.tryParse(state.servicesnargeController.text) ?? 0;
+
+    final paidAmount = state.amountPaid;
+
+    final netAmount1 = grossAmount - discountAmount;
+    final netAmount2 = netAmount1 + serviceCharge;
+
+    final balanceAmount = netAmount2 - paidAmount;
+
+    state = state.copyWith(netAmount: netAmount2, balanceAmount: balanceAmount);
+    log('========== BILL CALCULATION ==========');
+    log('Gross Amount      : $grossAmount');
+    log('Discount Amount   : $discountAmount');
+    log('Service Charge    : $serviceCharge');
+    log('Paid Amount       : $paidAmount');
+    log('--------------------------------------');
+    log(
+      'Net Amount        : $grossAmount - $discountAmount + $serviceCharge = $netAmount2',
+    );
+    log('Balance Amount    : $netAmount2 - $paidAmount = $balanceAmount');
+    log('======================================');
   }
 
   //update net amount and balance amount
@@ -662,6 +713,43 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   //     totalPrice: totalPrice,
   //   );
   // }
+  void clearState() {
+    // Clear controllers
+    state.searchController.clear();
+    state.specialSchemeController.clear();
+    state.discountAmountController.clear();
+    state.discountPercentageController.clear();
+    state.servicesnargeController.clear();
+    state.upiRefferenceIdController.clear();
+    state.primaryAmountContoller.clear();
+    state.secondaryAmountController.clear();
+    state.discountReason.clear();
+
+    // Remove focus
+    state.specialSchemeFocusNode.unfocus();
+
+    // Reset state values
+    state = state.copyWith(
+      discountList: [],
+      specialSchemeList: [],
+      testMasterList: [],
+      testMasterListSeeing: [],
+      testMasterListSelected: [],
+      testMasterListSelectedNewPrice: [],
+      specialSchemeRatesList: [],
+      totalPrice: 0,
+      schemeIDSelected: 0,
+      netAmount: 0,
+      amountPaid: 0,
+      primaryPaid: 0,
+      secondaryPaid: 0,
+      balanceAmount: 0,
+      primaryType: 'Cash',
+      secondaryType: 'UPI',
+      isCorporateBilling: false,
+      isSpecialschemeOpen: false,
+    );
+  }
 }
 
 final addTestScreenProvider =

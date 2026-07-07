@@ -5,10 +5,11 @@ import 'package:icon_infoware/core/constants/api_constants.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/services/device_details_picking/device_id_picking.dart';
 import 'package:icon_infoware/core/services/api_services/api_services.dart';
+import 'package:icon_infoware/models/base_url_response/base_url_response_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BaseUrlChecking {
-  static Future<String?> baseUrlRegister({
+  static Future<dynamic> baseUrlRegister({
     required BuildContext context,
     required String baseUrl,
 
@@ -39,7 +40,7 @@ class BaseUrlChecking {
       if (response.toString().isEmpty || response == null) {
         return 'Branch ID is wrong';
       } else {
-        return response['Success'] == true ? response['Cus_logo'] : 'fail';
+        return BaseUrlResponseModel.fromJson(response);
       }
     } catch (e) {
       log('-------------');

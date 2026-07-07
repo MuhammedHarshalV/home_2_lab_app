@@ -11,6 +11,7 @@ import 'package:icon_infoware/view/screens/login_screen.dart';
 import 'package:icon_infoware/view/screens/menu_screen.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
 import 'package:icon_infoware/view/screens/pin_setting_screen.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/screen/print_bill_details_screen.dart';
 import 'package:icon_infoware/view/screens/sign_in_screen.dart';
 import 'package:icon_infoware/view/screens/splash_screen.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/screen/spot_billing_screen.dart';
@@ -89,12 +90,19 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: AppRouteNames.printBillScreen.route,
+      name: AppRouteNames.printBillScreen.name,
+      builder: (BuildContext context, GoRouterState state) {
+        return const PrintBillDetailsScreen();
+      },
+    ),
+    GoRoute(
       path: AppRouteNames.spotBillingTestAddScreen.route,
       name: AppRouteNames.spotBillingTestAddScreen.name,
       builder: (BuildContext context, GoRouterState state) {
         final int? index = state.extra as int?;
 
-        return SpotBillingTestAddScreen(index: index);
+        return SpotBillingTestAddScreen(hiveIndex: index);
       },
     ),
     GoRoute(
@@ -110,7 +118,9 @@ final GoRouter router = GoRouter(
       path: AppRouteNames.paymentCompletionScreen.route,
       name: AppRouteNames.paymentCompletionScreen.name,
       builder: (BuildContext context, GoRouterState state) {
-        return PaymentCompletionScreen();
+        final int index = state.extra as int;
+
+        return PaymentCompletionScreen(index: index);
       },
     ),
   ],

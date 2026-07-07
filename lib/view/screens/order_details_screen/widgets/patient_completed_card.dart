@@ -1,5 +1,7 @@
 //
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -10,15 +12,18 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-
+import 'package:intl/intl.dart';
 
 class PatientCompletedCard extends ConsumerWidget {
   final PatientHiveModel patient;
+
   final int index;
+  final bool isDate;
   const PatientCompletedCard({
     super.key,
     required this.patient,
     required this.index,
+    this.isDate = false,
   });
 
   @override
@@ -27,6 +32,7 @@ class PatientCompletedCard extends ConsumerWidget {
     final patientBillingController = ref.read(patientBillingProvider.notifier);
     final syncComplete = ref.watch(patientSyncCompleteProvider);
     final testAddController = ref.read(addTestScreenProvider.notifier);
+    final testAddState = ref.watch(addTestScreenProvider);
 
     return InkWell(
       splashColor: Colors.transparent,
@@ -59,11 +65,38 @@ class PatientCompletedCard extends ConsumerWidget {
           isUrgent: false,
         );
 
-        // testAddController.getTestMasterLists(patient);
-        // context.pushNamed(
-        //   AppRouteNames.spotBillingTestAddScreen.name,
-        //   extra: index,
-        // );
+        testAddState.discountAmountController.text = patient.discAmt.toString();
+        testAddState.discountPercentageController.text =
+            ((patient.discAmt! / patient.grossAmt!) * 100).toString();
+        testAddState.servicesnargeController.text = patient.servChrge
+            .toString();
+        testAddState.upiRefferenceIdController.text =
+            patient.upiReferenceId ?? ''.toString();
+        testAddController.updatestate(
+          isSync: patient.isSync ?? 'No',
+          balanceAmount: patient.balance ?? 0,
+          amountPaid: patient.paidAmt ?? 0,
+          netAmount: patient.netAmt ?? 0,
+          grosAmount: patient.grossAmt ?? 0,
+          primaryPaid: patient.primaryPaid ?? 0,
+          secondaryPaid: patient.secondaryPaid ?? 0,
+          secondaryType: patient.secondaryType ?? '',
+          primaryType: patient.primaryType ?? '',
+        );
+
+        patientBillingController.updateState(
+          ageByYear: patient.patAgehead ?? '',
+          isUrgent: false,
+        );
+        if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
+          testAddState.testMasterListSelectedNewPrice.clear();
+        }
+        log(patient.toMap().toString());
+        testAddController.getTestMasterLists(patient);
+        context.pushNamed(
+          AppRouteNames.spotBillingTestAddScreen.name,
+          extra: {'index': index},
+        );
       },
       child: Container(
         decoration: BoxDecoration(
@@ -134,6 +167,14 @@ class PatientCompletedCard extends ConsumerWidget {
                   // SizedBox(width: 60),
                 ],
               ),
+              Text(
+                "(${patient.patGender.toString()} ${patient.patAge})",
+                style: TextStyle(
+                  fontSize: 10,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
+                ),
+              ),
               if (patient.bookTime?.trim().isNotEmpty ?? false)
                 Text(
                   'Visit time : ${patient.bookTime ?? ''}',
@@ -179,9 +220,58 @@ class PatientCompletedCard extends ConsumerWidget {
                       ),
                     ),
                   ),
+
                   //  const SizedBox(width: 60), // Space for the floating button
                 ],
               ),
+              if (patient.balance != 0)
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 10,
+                    vertical: 5,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(.7),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Balance :${patient.balance}',
+                        style: TextStyle(
+                          color: AppColors.appWhite,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              //  Spacer(),
+              if (isDate == true &&
+                  patient.timeToSave != null &&
+                  patient.timeToSave!.trim().isNotEmpty)
+                Text(
+                  patient.timeToSave ?? '',
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
+              if (isDate == true &&
+                  patient.dateToSave != null &&
+                  patient.dateToSave!.trim().isNotEmpty)
+                Text(
+                  DateFormat(
+                    'dd-MMM-yyyy',
+                  ).format(DateTime.parse(patient.dateToSave ?? '')),
+                  style: TextStyle(
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black87,
+                  ),
+                ),
             ],
           ),
         ),

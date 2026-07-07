@@ -3,7 +3,6 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
-import 'package:icon_infoware/controller/store_tests_hive_controller/store_tests_hive_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
@@ -16,7 +15,7 @@ class TestAddSearchValueContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final testAddState = ref.watch(addTestScreenProvider);
     final testAddController = ref.read(addTestScreenProvider.notifier);
-    final hiveContoller = ref.read(storeTestsHiveProvider.notifier);
+
     //  log(testAddState.checkedTestes.toString());
     return Container(
       height: MediaQuery.of(context).size.height / 2,

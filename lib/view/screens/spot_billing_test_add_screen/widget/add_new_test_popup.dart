@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
-import 'package:icon_infoware/controller/store_tests_hive_controller/store_tests_hive_controller.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/test_add_search_value_container.dart';
 import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
@@ -152,16 +152,6 @@ class AddNewTestPopUp extends ConsumerWidget {
                 Expanded(
                   child: ElevatedButton(
                     onPressed: () async {
-                      // testMasterController.updateSelectedList();
-                      // testMasterController.updatefinalList(
-                      //   testMasterState.testMasterListSelected,
-                      // );
-
-                      // await ref
-                      //     .read(storeTestsHiveProvider.notifier)
-                      //     .addTestToHive(
-                      //       test: testMasterState.testMasterListSelected,
-                      //     );
                       final uniqueIds = <dynamic>{};
 
                       final testList = testMasterState.testMasterListSelected
@@ -177,27 +167,33 @@ class AddNewTestPopUp extends ConsumerWidget {
                             (sum, test) => sum + (test.testRate ?? 0),
                           );
 
-                      log("Total Amount: $totalAmount");
+                      testMasterController.updatestate(
+                        testMasterListSelectedNewPrice:
+                            testMasterState.testMasterListSelected,
+                        grosAmount: totalAmount,
+                      );
+
+                      await testMasterController.updateNetBalanceAmounts();
+                      final testMasterState1 = ref.watch(addTestScreenProvider);
                       await homeController.updatePatient(
                         index: index,
                         testlists: testList,
-                        balance: totalAmount,
-                        netAmt: testMasterState.netAmount,
+                        discAmt:
+                            num.tryParse(
+                              testMasterState1.discountAmountController.text,
+                            ) ??
+                            0,
+                        balance: testMasterState1.balanceAmount,
+                        netAmt: testMasterState1.netAmount,
+                        paidAmt: testMasterState1.amountPaid,
+                        grossAmt: testMasterState1.totalPrice,
+                        servChrge:
+                            num.tryParse(
+                              testMasterState1.servicesnargeController.text,
+                            ) ??
+                            0,
                       );
 
-                      testMasterController.uodateNetandBalanceAmount();
-                      log('hhhhhhhhhhhhhhhhhh');
-                      // await homeController.getPatientsFromHive();
-                      // await testMasterController.getTestsFromHive(
-                      //   homestate.patientBookingList[index],
-                      // );
-                      // final updatedPatient = ref
-                      //     .read(homeScreenProvider)
-                      //     .patientBookingList[index];
-
-                      // await testMasterController.getTestsFromHive(
-                      //   updatedPatient,
-                      // );
                       if (context.mounted) {
                         context.pop();
                       }

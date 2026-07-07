@@ -9,6 +9,7 @@ import 'package:icon_infoware/controller/patient_sync_complete_controller/patien
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
+import 'package:intl/intl.dart';
 
 class PatientDetailsBelowCard extends ConsumerWidget {
   final int? index;
@@ -41,14 +42,18 @@ class PatientDetailsBelowCard extends ConsumerWidget {
             Spacer(),
             Container(
               decoration: BoxDecoration(
-                color: Colors.orange,
+                color: testAddState.balanceAmount == 0
+                    ? Colors.green
+                    : Colors.orange,
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Center(
                 child: Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: Text(
-                    'Payment Due',
+                    testAddState.balanceAmount == 0
+                        ? 'Complete'
+                        : 'Payment Due',
                     style: TextStyle(
                       fontSize: 10,
                       color: AppColors.appWhite,
@@ -103,13 +108,23 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 ),
               ],
             ),
-            
+
             Expanded(
               child: InkWell(
                 onTap: () {
                   testAddController.storingAndFetchingDiscount();
-
-                  context.pushNamed(AppRouteNames.paymentCompletionScreen.name);
+                  if (index == null) {
+                    int indexGet = homeState.patientBookingList.length - 1;
+                    context.pushNamed(
+                      AppRouteNames.paymentCompletionScreen.name,
+                      extra: indexGet,
+                    );
+                  } else {
+                    context.pushNamed(
+                      AppRouteNames.paymentCompletionScreen.name,
+                      extra: index!,
+                    );
+                  }
                 },
                 child: Container(
                   // width: double.infinity,
@@ -221,12 +236,35 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     if (testAddState
                         .testMasterListSelectedNewPrice
                         .isNotEmpty) {
-                      await patientSyncCompleteController
-                          .savePatientToCompletetion(
-                            homeState.patientBookingList[index!],
-                          );
-                      await homeController.deletePatient(index!);
-                      context.pop();
+                      if (testAddState.balanceAmount == 0) {
+                        // await patientSyncCompleteController
+                        //     .savePatientToCompletetion(
+                        //       homeState.patientBookingList[index!],
+                        //     )
+                        // ;
+                        final patient = homeState.patientBookingList[index!];
+                        final now = DateTime.now();
+                        await patientSyncCompleteController
+                            .savePatientToCompletetion(
+                              patient.copyWith(
+                                timeToSave: DateFormat('hh:mm a').format(now),
+                                dateToSave: DateTime.now().toIso8601String(),
+                              ),
+                            );
+                        await homeController.deletePatient(index!);
+                        context.pop();
+                      } else {
+                        final patient = homeState.patientBookingList[index!];
+                        final now = DateTime.now();
+                        await patientPendingController.savePatientToPending(
+                          patient.copyWith(
+                            timeToSave: DateFormat('hh:mm a').format(now),
+                            dateToSave: DateTime.now().toIso8601String(),
+                          ),
+                        );
+                        await homeController.deletePatient(index!);
+                        context.pop();
+                      }
                     } else {
                       showDialog(
                         context: context,

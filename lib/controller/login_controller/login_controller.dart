@@ -8,12 +8,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/apis/base_url_checking.dart';
 import 'package:icon_infoware/apis/sign_in_checking.dart';
+import 'package:icon_infoware/controller/login_controller/address_save.dart';
 
 import 'package:icon_infoware/controller/login_controller/login_state.dart';
 import 'package:icon_infoware/core/constants/api_constants.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/models/base_url_response/base_url_response_model.dart';
 import 'package:icon_infoware/models/sign_in/login_response_model.dart';
 
 import 'package:path_provider/path_provider.dart';
@@ -53,24 +55,41 @@ class LoginController extends StateNotifier<LoginState> {
   }) async {
     state = state.copyWith(isCheckBaseUrl: true);
     try {
-      final String? status = await BaseUrlChecking.baseUrlRegister(
-        context: context,
-        baseUrl: baseUrl,
-        branchID: branchID,
-      );
-    //  log("Response: $status");
-      if (status != null && status.isNotEmpty && status == 'fail') {
+      final BaseUrlResponseModel? response =
+          await BaseUrlChecking.baseUrlRegister(
+            context: context,
+            baseUrl: baseUrl,
+            branchID: branchID,
+          );
+      //  log("Response: $status");
+      if (response == null) {
         AppMessage.show(
           context,
           "Device registration failed.\nContact Icon Infoware",
         );
-      } else if (status != null && status.isNotEmpty) {
+      } else if (response.cusLogo != null &&
+          response.cusLogo.toString().isNotEmpty) {
         await storeBaseUrl(baseUrl: baseUrl);
-        await storeImage(image: status);
+        await storeImage(image: response.cusLogo!);
         context.goNamed(AppRouteNames.signInScreen.name);
-
+        await AddressStorage.saveAddress(
+          name: response.brName ?? '',
+          address: response.brAddr ?? '',
+          webUrl: response.webaddr ?? '',
+          phoneNumber: response.brPhno ?? '',
+          devCode: response.deviceCode ?? '',
+          tagLine: response.cusTagLine ?? '',
+          qrUrl: response.qRaddr ?? '',
+        );
+        AppConstance.name = response.brName ?? '';
+        AppConstance.address = response.brAddr ?? '';
+        AppConstance.webUrl = response.webaddr ?? '';
+        AppConstance.phoneNumber = response.brPhno ?? '';
+        AppConstance.devCode = response.deviceCode ?? '';
+        AppConstance.tagLine = response.cusTagLine ?? '';
+        AppConstance.qrUrl = response.qRaddr ?? '';
         state = state.copyWith(isSubmitted: false);
-      } else if (status == null) {
+      } else if (response.success == false) {
         AppMessage.show(
           context,
           "Identified as New Device,Please contact Software Support Team\nwww.iconinfoware.com it will take few minutes for configuration Please wait...",
@@ -98,6 +117,9 @@ class LoginController extends StateNotifier<LoginState> {
       );
       log("signin response :  ${response ?? 'Fail in sign in'}");
       if (response?.success == true) {
+        final SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('userName', userName);
+        AppConstance.userName = userName;
         context.goNamed(AppRouteNames.pinSettingScreen.name);
       } else if (response?.success == false) {
         AppMessage.show(context, 'Invalid username or password');
@@ -184,6 +206,7 @@ class LoginController extends StateNotifier<LoginState> {
     final String? pin = prefs.getString('PIN');
     final String? deviceID = prefs.getString('DeviceID');
     final String? branchID = prefs.getString('BranchID');
+    final String? userName = prefs.getString('userName');
 
     log('Readed pin :$pin');
 
@@ -196,6 +219,9 @@ class LoginController extends StateNotifier<LoginState> {
     }
     if (branchID != null && branchID.isNotEmpty) {
       AppConstance.branchID = branchID;
+    }
+    if (userName != null && userName.isNotEmpty) {
+      AppConstance.userName = userName;
     }
     await readBaseUrl();
     await readImage();

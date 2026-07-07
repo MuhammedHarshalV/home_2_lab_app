@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
-import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
-import 'package:icon_infoware/view/widgets/common_text_field.dart';
-import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/widget/discount_popup.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/widget/service_charge_popup.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/widget/upi_reffernce_id_popup.dart';
 
 class BillDetailsCard extends ConsumerWidget {
-  const BillDetailsCard({super.key});
+  final int index;
+  const BillDetailsCard({super.key, required this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -25,15 +26,18 @@ class BillDetailsCard extends ConsumerWidget {
       child: Column(
         children: [
           _BillRow(
+            index: index,
             label: 'Number of tests',
             value: addTeststate.testMasterListSelectedNewPrice.length
                 .toString(),
           ),
           _BillRow(
+            index: index,
             label: 'Gross Amount',
             value: addTeststate.totalPrice.toString(),
           ),
           _BillRow(
+            index: index,
             label: 'Discount Amount',
             value: addTeststate.discountAmountController.text.isEmpty
                 ? '00'
@@ -42,6 +46,7 @@ class BillDetailsCard extends ConsumerWidget {
             isDiscount: true,
           ),
           _BillRow(
+            index: index,
             label: 'Service Charge',
             value: addTeststate.servicesnargeController.text.isEmpty
                 ? '00'
@@ -50,21 +55,30 @@ class BillDetailsCard extends ConsumerWidget {
             isService: true,
           ),
           _BillRow(
+            index: index,
             label: 'Net Total',
             value: addTeststate.netAmount.toString(),
           ),
-          _BillRow(label: 'Amount Paid', value: '110.00'),
           _BillRow(
+            index: index,
+            label: 'Amount Paid',
+            value: addTeststate.amountPaid.toString(),
+          ),
+          _BillRow(
+            index: index,
             label: 'Balance',
-            value: '9890.00',
+            value: addTeststate.balanceAmount.toString(),
             valueColor: const Color(0xFFA32D2D),
           ),
           Divider(color: AppColors.appPrimaryColor, height: 20),
           _BillRow(
+            index: index,
             label: 'UPI Reference ID',
-            value: '',
+            value: addTeststate.upiRefferenceIdController.text.isEmpty
+                ? ''
+                : addTeststate.upiRefferenceIdController.text,
             isEditable: true,
-            showEditOnly: true,
+            // showEditOnly: true,
           ),
         ],
       ),
@@ -73,10 +87,11 @@ class BillDetailsCard extends ConsumerWidget {
 }
 
 class _BillRow extends StatelessWidget {
+  final int index;
   final String label;
   final String value;
   final bool isEditable;
-  final bool showEditOnly;
+
   final Color? valueColor;
   final bool isDiscount;
   final bool isService;
@@ -85,10 +100,11 @@ class _BillRow extends StatelessWidget {
     required this.label,
     required this.value,
     this.isEditable = false,
-    this.showEditOnly = false,
+
     this.isDiscount = false,
     this.valueColor,
     this.isService = false,
+    required this.index,
   });
 
   @override
@@ -96,345 +112,62 @@ class _BillRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
+          Expanded(
+            flex: 4,
+            child: Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Colors.black87,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
-          Row(
-            children: [
-              const Text(
-                ': ',
-                style: TextStyle(fontSize: 13, color: Colors.black87),
+
+          const Text(
+            ': ',
+            style: TextStyle(fontSize: 13, color: Colors.black87),
+          ),
+          if (isEditable) Spacer(),
+          if (isEditable)
+            Padding(
+              padding: const EdgeInsets.only(right: 4),
+              child: InkWell(
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (_) => isDiscount
+                        ? DiscountDialog(index: index)
+                        : isService
+                        ? ServiceChangeDialog(index: index)
+                        : RefferenceIdDialog(index: index),
+                  );
+                },
+                child: const Icon(
+                  Icons.edit,
+                  size: 20,
+                  color: Color(0xFF639922),
+                ),
               ),
-              if (isEditable)
-                InkWell(
-                  onTap: () {
-                    showDialog(
-                      context: context,
-                      builder: (_) => isDiscount == true
-                          ? DiscountDialog()
-                          : isService == true
-                          ? ServiceChangeDialog()
-                          : RefferenceIdDialog(),
-                    );
-                  },
-                  child: Icon(Icons.edit, size: 14, color: Color(0xFF639922)),
-                ),
-              if (!showEditOnly) ...[
-                const SizedBox(width: 4),
-                Text(
-                  value,
-                  style: TextStyle(
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                    color: valueColor ?? Colors.black87,
-                  ),
-                ),
-              ],
-            ],
+            ),
+
+          Expanded(
+            flex: 5,
+            child: Text(
+              value,
+              textAlign: TextAlign.end,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
+                color: valueColor ?? Colors.black87,
+              ),
+            ),
           ),
         ],
       ),
-    );
-  }
-}
-
-class DiscountDialog extends ConsumerWidget {
-  const DiscountDialog({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final addTeststate = ref.watch(addTestScreenProvider);
-    final addTestcontroller = ref.read(addTestScreenProvider.notifier);
-
-    return AlertDialog(
-      backgroundColor: AppColors.appWhite,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      title: const Center(
-        child: Text(
-          'Set discount',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        ),
-      ),
-      content: SizedBox(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CommonTextField(
-              controller: addTeststate.discountAmountController,
-              hint: 'Discount Amount',
-              icon: Icons.discount_outlined,
-              isNumberInput: true,
-              focusNode: true,
-              onchanger: (value) {
-                final amount = num.tryParse(value);
-
-                if (amount != null) {
-                  addTestcontroller.discountCalculation(discountAmount: amount);
-                }
-              },
-            ),
-
-            CommonTextField(
-              controller: addTeststate.discountPercentageController,
-              hint: 'Discount Percentage',
-              icon: Icons.percent,
-              focusNode: true,
-              isNumberInput: true,
-              onchanger: (value) {
-                final amount = num.tryParse(value);
-
-                if (amount != null) {
-                  addTestcontroller.discountCalculation(
-                    discountPercentage: amount,
-                  );
-                }
-              },
-            ),
-
-            const SizedBox(height: 10),
-
-            TypeTextFormField(
-              hintText: 'Reason *',
-              textController: addTeststate.discountReason,
-              isSuffix: true,
-              isReadOnly: true,
-              dropDown: addTeststate.discountList,
-              onChanged: (p0) {
-                //  addTeststate.genderController.text = p0;
-              },
-            ),
-          ],
-        ),
-      ),
-      // actionsPadding: const EdgeInsets.all(20),
-      actions: [
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColorLight,
-                  foregroundColor: AppColors.appBlack,
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  context.pop();
-                },
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColor,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  // Example:
-                  // ref.read(discountProvider.notifier).saveDiscount(
-                  //   amount: discountAmountController.text,
-                  //   percentage: discountPercentageController.text,
-                  // );
-
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Set",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class ServiceChangeDialog extends ConsumerWidget {
-  const ServiceChangeDialog({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final addTeststate = ref.watch(addTestScreenProvider);
-
-    return AlertDialog(
-      backgroundColor: AppColors.appWhite,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      title: const Center(
-        child: Text(
-          'Set Service charge',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        ),
-      ),
-      content: SizedBox(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CommonTextField(
-              controller: addTeststate.servicesnargeController,
-              hint: 'Service Charge',
-              icon: Icons.discount_outlined,
-              isNumberInput: true,
-            ),
-          ],
-        ),
-      ),
-      // actionsPadding: const EdgeInsets.all(20),
-      actions: [
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColorLight,
-                  foregroundColor: AppColors.appBlack,
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  context.pop();
-                },
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColor,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  // Example:
-                  // ref.read(discountProvider.notifier).saveDiscount(
-                  //   amount: discountAmountController.text,
-                  //   percentage: discountPercentageController.text,
-                  // );
-
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Set",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
-class RefferenceIdDialog extends ConsumerWidget {
-  const RefferenceIdDialog({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final addTeststate = ref.watch(addTestScreenProvider);
-
-    return AlertDialog(
-      backgroundColor: AppColors.appWhite,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      title: const Center(
-        child: Text(
-          'Enter UPI Reference ID',
-          style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
-        ),
-      ),
-      content: SizedBox(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CommonTextField(
-              controller: addTeststate.upiRefferenceIdController,
-              hint: 'Reference ID',
-              icon: Icons.qr_code_2_rounded,
-              isNumberInput: true,
-            ),
-          ],
-        ),
-      ),
-      // actionsPadding: const EdgeInsets.all(20),
-      actions: [
-        Row(
-          children: [
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColorLight,
-                  foregroundColor: AppColors.appBlack,
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  context.pop();
-                },
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColor,
-                  foregroundColor: Colors.white,
-                  minimumSize: const Size(0, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-                onPressed: () {
-                  // Example:
-                  // ref.read(discountProvider.notifier).saveDiscount(
-                  //   amount: discountAmountController.text,
-                  //   percentage: discountPercentageController.text,
-                  // );
-
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  "Set",
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
     );
   }
 }

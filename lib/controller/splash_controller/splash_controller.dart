@@ -1,7 +1,9 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/splash_controller/splash_state.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -28,11 +30,37 @@ class SplashNotifierController extends StateNotifier<SplashState> {
 
     final String? pin = prefs.getString('PIN');
     final String? baseUrl = prefs.getString('BaseURL');
+    final String? upiId = prefs.getString('upiId');
+    if ((upiId ?? '').isNotEmpty && (upiId != null)) {
+      AppConstance.upiPaymentId = upiId;
 
-    await Future.delayed(const Duration(seconds: 2)).then((value) {
+      log('upiid : $upiId');
+    }
+
+    await Future.delayed(const Duration(seconds: 2)).then((value) async {
       if ((pin ?? '').isNotEmpty && (baseUrl ?? '').isNotEmpty) {
         log('Stored PIN : $pin');
         log('Stored BaseUrl : $baseUrl');
+        final box = await Hive.openBox('addressBox');
+        log(box.keys.toString());
+        log(box.values.toString());
+        log(box.toMap().toString());
+        AppConstance.name = box.get('name');
+        AppConstance.address = box.get('address');
+        AppConstance.webUrl = box.get('webUrl');
+        AppConstance.phoneNumber = box.get('phoneNumber');
+        AppConstance.devCode = box.get('devCode');
+        AppConstance.tagLine = box.get('tagLine');
+        AppConstance.qrUrl = box.get('qrUrl');
+        log('''
+Name        : ${AppConstance.name}
+Address     : ${AppConstance.address}
+Web URL     : ${AppConstance.webUrl}
+Phone Number: ${AppConstance.phoneNumber}
+Dev Code    : ${AppConstance.devCode}
+Tag Line    : ${AppConstance.tagLine}
+QR URL      : ${AppConstance.qrUrl}
+''');
         return state = state.copyWith(
           navigationScreen: SplashNavigationState.login,
         );

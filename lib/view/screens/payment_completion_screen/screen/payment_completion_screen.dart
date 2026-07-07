@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -5,14 +6,20 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/core/services/qr_code_image/qr_code_image_service.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/above_container_card.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/billing_details_card.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/widget/qr_code_payment.dart';
+import 'package:icon_infoware/view/screens/payment_completion_screen/widget/split_payment_card.dart';
 import 'package:intl/intl.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class PaymentCompletionScreen extends ConsumerWidget {
-  const PaymentCompletionScreen({super.key});
+  final int index;
+  const PaymentCompletionScreen({super.key, required this.index});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -91,35 +98,59 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   AboveContainerCard(
                     icon: Icons.qr_code_outlined,
                     label: 'Paying No',
-                    value: 'DEV1',
+                    value: AppConstance.devCode,
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // Dashed Divider
             _DashedDivider(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
             // Bill Details Card
-            BillDetailsCard(),
-            const SizedBox(height: 16),
+            BillDetailsCard(index: index),
+            SizedBox(height: 16),
 
-            // ✅ Total Amount Card
-            _TotalAmountCard(),
-            const SizedBox(height: 16),
+            //  Total Amount Card
+            TotalAmountCard(index: index),
+            SizedBox(height: 16),
 
-            // ✅ Dashed Divider
+            //  Dashed Divider
             _DashedDivider(),
-            const SizedBox(height: 16),
+            SizedBox(height: 16),
 
-            // ✅ Payment Option (QR)
-            _PaymentOptionCard(),
-            const SizedBox(height: 24),
+            //  Payment Option (QR)
+            PaymentOptionCard(),
+            SizedBox(height: 24),
 
-            // ✅ Confirm Button
-            _ConfirmButton(),
+            //  Confirm Button
+            SizedBox(
+              width: double.infinity,
+              height: 52,
+              child: ElevatedButton(
+                onPressed: () {
+                  context.pushNamed(AppRouteNames.printBillScreen.name);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.appPrimaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14),
+                  ),
+                  elevation: 0,
+                ),
+                child: const Text(
+                  'Confirm Payment',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    letterSpacing: 0.3,
+                  ),
+                ),
+              ),
+            ),
             const SizedBox(height: 16),
           ],
         ),
@@ -128,77 +159,6 @@ class PaymentCompletionScreen extends ConsumerWidget {
   }
 }
 
-// ══════════════════════════════════════════
-// HEADER INFO CARD
-// ══════════════════════════════════════════
-// class _HeaderInfoCard extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Container(
-//       padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
-//       decoration: BoxDecoration(
-//         color: AppColors.appPrimaryColorLight,
-//         borderRadius: BorderRadius.circular(12),
-//       ),
-//       child: Row(
-//         children: [
-//           Expanded(
-//             child: Column(
-//               children: [
-//                 Icon(
-//                   Icons.wallet_travel_rounded,
-//                   color: const Color(0xFF3B6D11),
-//                   size: 22,
-//                 ),
-//                 const SizedBox(height: 4),
-//                 Text(
-//                   'Paying with',
-//                   style: const TextStyle(
-//                     fontSize: 10,
-//                     color: Color(0xFF639922),
-//                   ),
-//                 ),
-//                 const SizedBox(height: 2),
-//                 Text(
-//                   "Muhammed Harshal V",
-//                   textAlign: TextAlign.center,
-//                   style: const TextStyle(
-//                     fontSize: 11,
-//                     fontWeight: FontWeight.w600,
-//                     color: Color(0xFF27500A),
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//           Container(height: 50, width: 0.5, color: AppColors.appPrimaryColor),
-//           _HeaderInfoItem(
-//             icon: Icons.calendar_today_outlined,
-//             label: 'Paying Date',
-//             value: 'May 26, 2026',
-//           ),
-//           Container(height: 50, width: 0.5, color: AppColors.appPrimaryColor),
-//           _HeaderInfoItem(
-//             icon: Icons.qr_code_outlined,
-//             label: 'Paying No',
-//             value: 'DEV1',
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-class _VerticalDivider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(height: 50, width: 0.5, color: AppColors.appPrimaryColor);
-  }
-}
-
-// ══════════════════════════════════════════
-// DASHED DIVIDER
-// ══════════════════════════════════════════
 class _DashedDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -216,215 +176,6 @@ class _DashedDivider extends StatelessWidget {
           }),
         );
       },
-    );
-  }
-}
-
-// ══════════════════════════════════════════
-// TOTAL AMOUNT CARD
-// ══════════════════════════════════════════
-class _TotalAmountCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFEAF3DE),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Total amount row
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              const Text(
-                'Total Amount',
-                style: TextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xFF27500A),
-                ),
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: const Text(
-                  'split payment',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Color(0xFF3B6D11),
-                    fontWeight: FontWeight.w500,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 6),
-          const Text(
-            '₹10,000.00',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF3B6D11),
-            ),
-          ),
-          const SizedBox(height: 12),
-
-          // UPI and Cash row
-          Row(
-            children: [
-              Expanded(
-                child: _PaymentMethodCard(
-                  label: 'UPI',
-                  amount: 'Rs. 0.00',
-                  isLeft: true,
-                ),
-              ),
-              const SizedBox(width: 8),
-              Expanded(
-                child: _PaymentMethodCard(
-                  label: 'Cash',
-                  amount: 'Rs. 0.00',
-                  isLeft: false,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PaymentMethodCard extends StatelessWidget {
-  final String label;
-  final String amount;
-  final bool isLeft;
-
-  const _PaymentMethodCard({
-    required this.label,
-    required this.amount,
-    required this.isLeft,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFC0DD97)),
-      ),
-      child: Column(
-        crossAxisAlignment: isLeft
-            ? CrossAxisAlignment.start
-            : CrossAxisAlignment.end,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF639922)),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            amount,
-            style: const TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF27500A),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════
-// PAYMENT OPTION CARD (QR)
-// ══════════════════════════════════════════
-class _PaymentOptionCard extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: const Color(0xFFE8E8E8)),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Text(
-            'Payment Option',
-            style: TextStyle(fontSize: 12, color: Colors.grey),
-          ),
-          const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: const Color(0xFFEAF3DE),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Image.network(
-              'https://api.qrserver.com/v1/create-qr-code/?size=80x80&data=DEV1&color=3B6D11',
-              width: 70,
-              height: 70,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  width: 70,
-                  height: 70,
-                  decoration: BoxDecoration(
-                    color: const Color(0xFFEAF3DE),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: const Icon(
-                    Icons.qr_code,
-                    color: Color(0xFF3B6D11),
-                    size: 40,
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// ══════════════════════════════════════════
-// CONFIRM BUTTON
-// ══════════════════════════════════════════
-class _ConfirmButton extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: double.infinity,
-      height: 52,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.appPrimaryColor,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          elevation: 0,
-        ),
-        child: const Text(
-          'Confirm Payment',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
-            letterSpacing: 0.3,
-          ),
-        ),
-      ),
     );
   }
 }

@@ -1,17 +1,25 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_model.dart';
+import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/drop_down_schemeID.dart';
+import 'package:icon_infoware/view/widgets/common_touch_point_dropdown.dart';
 
 class MenuScreen extends ConsumerWidget {
   const MenuScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final bankingstate = ref.watch(bankFetchingProvider);
+    final bankingController = ref.read(bankFetchingProvider.notifier);
+
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: AppColors.appPrimaryColor,
@@ -298,17 +306,51 @@ class MenuScreen extends ConsumerWidget {
                         "Bill Title",
                       ),
 
-                      buildSettingsItem(
-                        const Icon(
-                          Icons.payments_outlined,
-                          size: 20,
-                          color: AppColors.appPrimaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTapDown: (details) async {
+                          await bankingController.bankFetchingApi(context);
+                          if (bankingstate.bankFetching.isNotEmpty) {
+                            await commonTouchPointDropdown<BankList>(
+                              context: context,
+
+                              tapPosition: details.globalPosition,
+                              items: bankingstate.bankFetching,
+                              itemText: (item) => item.name ?? '',
+                              onSelected: (item) async {
+                                log(item.upiId);
+                                await bankingController.storeUpiId(
+                                  upiId: item.upiId,
+                                );
+                              },
+                            );
+                          }
+                        },
+                        child: buildSettingsItem(
+                          bankingstate.isLoading == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.payments_outlined,
+                                  size: 20,
+                                  color: AppColors.appPrimaryColor,
+                                ),
+                          "Change UPI ID",
                         ),
-                        "Change UPI ID",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.account_balance_outlined,
                           size: 20,
                           color: AppColors.appPrimaryColor,

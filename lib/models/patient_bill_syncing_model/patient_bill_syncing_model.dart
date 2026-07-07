@@ -17,6 +17,7 @@ class PatientHiveModel {
   String? outDr;
   String? flag;
   String? patEmail;
+  String? upiReferenceId;
   num? repEmail;
   String? smplMode;
   num? repWhtapp;
@@ -33,7 +34,12 @@ class PatientHiveModel {
   num? netAmt;
   num? paidAmt;
   num? balance;
-  String? paymentType;
+  num? primaryPaid;
+  num? secondaryPaid;
+  String? secondaryType;
+  String? timeToSave;
+  String? dateToSave;
+  String? primaryType;
   String? insid;
   String? insNo;
   String? isCompleted;
@@ -59,7 +65,10 @@ class PatientHiveModel {
     this.passport,
     this.outDr,
     this.flag,
+    this.upiReferenceId,
     this.patEmail,
+    this.timeToSave,
+    this.dateToSave,
     this.repEmail,
     this.smplMode,
     this.repWhtapp,
@@ -75,11 +84,14 @@ class PatientHiveModel {
     this.netAmt,
     this.paidAmt,
     this.balance,
-    this.paymentType,
+    this.primaryType,
     this.insid,
     this.insNo,
     this.isCompleted,
     this.isSync,
+    this.secondaryPaid,
+    this.primaryPaid,
+    this.secondaryType,
     this.testlists,
   });
 
@@ -97,6 +109,10 @@ class PatientHiveModel {
       bookTime: map['bookTime'] ?? '',
       patMobno: map['patMobno'] ?? '',
       drId: map['drId'] ?? '',
+      timeToSave: map['timeToSave'] ?? '',
+      dateToSave: map['dateToSave'] ?? '',
+
+      upiReferenceId: map['upiReferenceId'] ?? '',
       bookMapUrl: map['bookMapUrl'] ?? '',
       currentDatetime: map['currentDatetime'] ?? '',
       remarks: map['remarks'] ?? '',
@@ -119,12 +135,14 @@ class PatientHiveModel {
       netAmt: map['netAmt'] ?? 0,
       paidAmt: map['paidAmt'] ?? 0,
       balance: map['balance'] ?? 0,
-      paymentType: map['paymentType'] ?? '',
+      primaryType: map['primaryType'] ?? '',
       insid: map['insid'] ?? '',
       insNo: map['insNo'] ?? '',
       isCompleted: map['isCompleted'] ?? "",
       isSync: map['isSync'] ?? "",
-
+      primaryPaid: map['primaryPaid'] ?? "",
+      secondaryPaid: map['secondaryPaid'] ?? "",
+      secondaryType: map['secondaryType'] ?? "",
       testlists: map['testlists'] != null
           ? (map['testlists'] as List)
                 .map((e) => Map<String, dynamic>.from(e as Map))
@@ -152,7 +170,10 @@ class PatientHiveModel {
       'remarks': remarks,
       'passport': passport,
       'outDr': outDr,
+      'upiReferenceId': upiReferenceId,
       'flag': flag,
+      'timeToSave': timeToSave,
+      'dateToSave': dateToSave,
       'patEmail': patEmail,
       'repEmail': repEmail,
       'smplMode': smplMode,
@@ -169,12 +190,74 @@ class PatientHiveModel {
       'netAmt': netAmt,
       'paidAmt': paidAmt,
       'balance': balance,
-      'paymentType': paymentType,
+      'primaryType': primaryType,
       'insid': insid,
       'insNo': insNo,
       'isCompleted': isCompleted,
       'isSync': isSync,
+      'primaryPaid': primaryPaid,
+      'secondaryPaid': secondaryPaid,
+      'secondaryType': secondaryType,
+
       'testlists': testlists,
     };
   }
+
+ PatientHiveModel copyWith({
+  String? bookTime,
+  String? currentDatetime,
+  String? timeToSave,
+  String? dateToSave,
+}) {
+  return PatientHiveModel(
+    patId: patId,
+    namePrefix: namePrefix,
+    patName: patName,
+    patAddress: patAddress,
+    invNo: invNo,
+    patGender: patGender,
+    patAge: patAge,
+    patAgehead: patAgehead,
+    patPhno: patPhno,
+    patMobno: patMobno,
+    drId: drId,
+    bookTime: bookTime ?? this.bookTime,
+    bookMapUrl: bookMapUrl,
+    currentDatetime: currentDatetime ?? this.currentDatetime,
+    remarks: remarks,
+    passport: passport,
+    outDr: outDr,
+    flag: flag,
+    patEmail: patEmail,
+    upiReferenceId: upiReferenceId,
+    timeToSave: timeToSave ?? this.timeToSave,
+    dateToSave: dateToSave ?? this.dateToSave,
+    repEmail: repEmail,
+    smplMode: smplMode,
+    repWhtapp: repWhtapp,
+    ipop: ipop,
+    patImg: patImg,
+    urgent: urgent,
+    dob: dob,
+    driverId: driverId,
+    techId: techId,
+    grossAmt: grossAmt,
+    discAmt: discAmt,
+    servChrge: servChrge,
+    netAmt: netAmt,
+    paidAmt: paidAmt,
+    balance: balance,
+    primaryPaid: primaryPaid,
+    secondaryPaid: secondaryPaid,
+    primaryType: primaryType,
+    secondaryType: secondaryType,
+    insid: insid,
+    insNo: insNo,
+    isCompleted: isCompleted,
+    isSync: isSync,
+    testlists: testlists == null
+        ? null
+        : List<Map<String, dynamic>>.from(testlists!),
+  );
+}
 }

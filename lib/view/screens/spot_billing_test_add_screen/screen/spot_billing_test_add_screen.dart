@@ -20,14 +20,16 @@ import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/p
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/test_add_search_value_container.dart';
 
 class SpotBillingTestAddScreen extends ConsumerWidget {
-  final int? index;
-  const SpotBillingTestAddScreen({super.key, this.index});
+  final int? hiveIndex;
+  const SpotBillingTestAddScreen({super.key, this.hiveIndex});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final testMasterState = ref.watch(addTestScreenProvider);
     final testMasterController = ref.read(addTestScreenProvider.notifier);
     final homeState = ref.watch(homeScreenProvider);
+    final homeController = ref.read(homeScreenProvider.notifier);
+
     final bottomNavController = ref.read(bottomNavProvider.notifier);
 
     // log('checked list :${testMasterState.checkedTestes.toString()}');
@@ -81,7 +83,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            PatientDetailsCard(index: index),
+            PatientDetailsCard(index: hiveIndex),
             SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(color: AppColors.appPrimaryColorLight),
@@ -221,24 +223,94 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                                   Colors.transparent,
                                               hoverColor: Colors.transparent,
                                               focusColor: Colors.transparent,
-                                              onTap: () {
-                                                // testMasterController
-                                                //     .updateSelectedTest(
-                                                //       index: null,
-                                                //       name: item.testName!,
-                                                //     );
-                                                // testMasterController
-                                                //     .removalSpecialRateNewPriceList(
-                                                //       item.testName!,
-                                                //     );
-                                                // testMasterController
-                                                //     .removalFinalList(
-                                                //       item.testName!,
-                                                //     );
-                                                // testMasterController
-                                                //     .checkedListRemoval(
-                                                //       item.testName!,
-                                                //     );
+                                              onTap: () async {
+                                               
+
+                                                final testMasterController2 =
+                                                    ref.read(
+                                                      addTestScreenProvider
+                                                          .notifier,
+                                                    );
+                                                await testMasterController2
+                                                    .removeTestsToTemperary(
+                                                      test: testMasterState
+                                                          .testMasterListSelectedNewPrice[index],
+                                                    );
+                                                final uniqueIds = <dynamic>{};
+                                                final testMasterState2 = ref
+                                                    .read(
+                                                      addTestScreenProvider,
+                                                    );
+
+                                                final testList =
+                                                    testMasterState2
+                                                        .testMasterListSelected
+                                                        .where(
+                                                          (e) => uniqueIds.add(
+                                                            e.testKey,
+                                                          ),
+                                                        )
+                                                        .map(
+                                                          (e) => {
+                                                            'TestId': e.testKey,
+                                                          },
+                                                        )
+                                                        .toList();
+                                                log(
+                                                  'selected lists : ${testList.toString()} \n length : ${testList.length}',
+                                                );
+                                                final totalAmount =
+                                                    testMasterState2
+                                                        .testMasterListSelected
+                                                        .fold<num>(
+                                                          0,
+                                                          (sum, test) =>
+                                                              sum +
+                                                              (test.testRate ??
+                                                                  0),
+                                                        );
+                                                testMasterController.updatestate(
+                                                  testMasterListSelectedNewPrice:
+                                                      testMasterState2
+                                                          .testMasterListSelected,
+                                                  grosAmount: totalAmount,
+                                                );
+                                                await testMasterController
+                                                    .updateNetBalanceAmounts();
+
+                                                int indexget =
+                                                    homeState
+                                                        .patientBookingList
+                                                        .length -
+                                                    1;
+                                                await homeController.updatePatient(
+                                                  index: hiveIndex == null
+                                                      ? indexget
+                                                      : hiveIndex!,
+                                                  testlists: testList,
+                                                  discAmt:
+                                                      num.tryParse(
+                                                        testMasterState2
+                                                            .discountAmountController
+                                                            .text,
+                                                      ) ??
+                                                      0,
+                                                  balance: testMasterState2
+                                                      .balanceAmount,
+                                                  netAmt: testMasterState2
+                                                      .netAmount,
+                                                  paidAmt: testMasterState2
+                                                      .amountPaid,
+                                                  grossAmt: testMasterState2
+                                                      .totalPrice,
+                                                  servChrge:
+                                                      num.tryParse(
+                                                        testMasterState2
+                                                            .servicesnargeController
+                                                            .text,
+                                                      ) ??
+                                                      0,
+                                                );
                                               },
                                               child: Icon(
                                                 Icons.delete,
@@ -275,7 +347,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               focusColor: Colors.transparent,
               onTap: () {
                 int indexget = homeState.patientBookingList.length - 1;
-                if (index == null) {
+                if (hiveIndex == null) {
                   showDialog(
                     context: context,
                     builder: (context) => AddNewTestPopUp(index: indexget),
@@ -283,7 +355,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                 } else {
                   showDialog(
                     context: context,
-                    builder: (context) => AddNewTestPopUp(index: index!),
+                    builder: (context) => AddNewTestPopUp(index: hiveIndex!),
                   );
                 }
               },
@@ -307,7 +379,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               ),
             ),
 
-            PatientDetailsBelowCard(index: index),
+            PatientDetailsBelowCard(index: hiveIndex),
           ],
         ),
       ),

@@ -22,8 +22,12 @@ class AddTestScreenState {
   final String secondaryType;
   final TextEditingController discountReason;
   final String primaryType;
+  final String cardName;
   final num netAmount;
   final num amountPaid;
+  final num primaryPaid;
+  final num secondaryPaid;
+  final String isSync;
   final num balanceAmount;
 
   final List<SchemeRateList> specialSchemeRatesList;
@@ -35,7 +39,10 @@ class AddTestScreenState {
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
   AddTestScreenState({
-   required this.discountReason,
+    required this.discountReason,
+    this.cardName = 'Home',
+    this.secondaryPaid = 0,
+    this.primaryPaid = 0,
     this.discountList = const [],
     this.specialSchemeList = const [],
     this.specialSchemeRatesList = const [],
@@ -44,7 +51,7 @@ class AddTestScreenState {
     this.testMasterListSelected = const [],
     // this.checkedTestes = const [],
     this.testMasterListSelectedNewPrice = const [],
-
+    this.isSync = 'No',
     this.totalPrice = 0,
     this.schemeIDSelected = 0,
     this.isCorporateBilling = false,
@@ -72,7 +79,10 @@ class AddTestScreenState {
     List<TestMasterSelected>? testMasterListSeeing,
     List<TestMasterSelected>? testMasterListSelected,
     List<TestMasterSelected>? testMasterListSelectedNewPrice,
-
+    String? cardName,
+    num? primaryPaid,
+    num? secondaryPaid,
+    String? isSync,
     FocusNode? specialSchemeFocusNode,
     TextEditingController? searchController,
     TextEditingController? specialSchemeController,
@@ -107,11 +117,13 @@ class AddTestScreenState {
           specialSchemeRatesList ?? this.specialSchemeRatesList,
       specialSchemeFocusNode:
           specialSchemeFocusNode ?? this.specialSchemeFocusNode,
-
+      cardName: cardName ?? this.cardName,
       testMasterListSelectedNewPrice:
           testMasterListSelectedNewPrice ?? this.testMasterListSelectedNewPrice,
       testMasterListSelected:
           testMasterListSelected ?? this.testMasterListSelected,
+      primaryPaid: primaryPaid ?? this.primaryPaid,
+      secondaryPaid: secondaryPaid ?? this.secondaryPaid,
       //checkedTestes: checkedTestes ?? this.checkedTestes,
       totalPrice: totalPrice ?? this.totalPrice,
       isCorporateBilling: isCorporateBilling ?? this.isCorporateBilling,
@@ -139,6 +151,7 @@ class AddTestScreenState {
       amountPaid: amountPaid ?? this.amountPaid,
       netAmount: netAmount ?? this.netAmount,
       discountReason: discountReason ?? this.discountReason,
+      isSync: isSync ?? this.isSync,
     );
   }
 }

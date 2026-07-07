@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
+import 'package:icon_infoware/controller/patient_pending_controller/patient_pending_controller.dart';
 import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
 
 import 'package:icon_infoware/core/constants/app_constance.dart';
@@ -27,6 +28,7 @@ class HomeScreen extends ConsumerWidget {
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
     final patientSyncState = ref.watch(patientSyncCompleteProvider);
+    final patientPendingState = ref.watch(patientPendingProvider);
 
     final orderDetailScreenController = ref.read(
       orderDetailsScreenProvider.notifier,
@@ -200,7 +202,10 @@ class HomeScreen extends ConsumerWidget {
                                   child: NewOrdersStatCard(
                                     icon: Icons.receipt_long_outlined,
                                     category: 'Pending Invoice',
-                                    count: '12',
+                                    count: patientPendingState
+                                        .patientBookingListPending
+                                        .length
+                                        .toString(),
                                     belowCategory: 'Invoices',
                                     color: AppColors.appYellow,
                                   ),

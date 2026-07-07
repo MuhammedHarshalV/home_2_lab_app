@@ -499,6 +499,7 @@ class SpotBillingScreen extends ConsumerWidget {
                           patName: spotBillingState.patientNameController.text,
                           patMobno: '',
                         );
+                        ref.read(addTestScreenProvider.notifier).clearState();
                         await ref
                             .read(homeScreenProvider.notifier)
                             .savePatient(patient);

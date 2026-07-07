@@ -1,5 +1,7 @@
 //
 
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -54,11 +56,19 @@ class PatientContactCard extends ConsumerWidget {
         testAddState.discountAmountController.text = patient.discAmt.toString();
         testAddState.discountPercentageController.text =
             ((patient.discAmt! / patient.grossAmt!) * 100).toString();
+        testAddState.servicesnargeController.text = patient.servChrge
+            .toString();
+        testAddState.upiRefferenceIdController.text = patient.upiReferenceId
+            .toString();
         testAddController.updatestate(
           balanceAmount: patient.balance ?? 0,
           amountPaid: patient.paidAmt ?? 0,
           netAmount: patient.netAmt ?? 0,
           grosAmount: patient.grossAmt ?? 0,
+          primaryPaid: patient.primaryPaid ?? 0,
+          secondaryPaid: patient.secondaryPaid ?? 0,
+          secondaryType: patient.secondaryType ?? '',
+          primaryType: patient.primaryType ?? '',
         );
 
         patientBillingController.updateState(
@@ -68,6 +78,7 @@ class PatientContactCard extends ConsumerWidget {
         if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
           testAddState.testMasterListSelectedNewPrice.clear();
         }
+        log(patient.toMap().toString());
         testAddController.getTestMasterLists(patient);
         context.pushNamed(
           AppRouteNames.spotBillingTestAddScreen.name,

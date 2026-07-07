@@ -6,7 +6,6 @@ import 'package:icon_infoware/controller/patient_sync_complete_controller/patien
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
-
 class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
   PatientSyncCompleteController() : super(PatientSyncState()) {
     getCompletedBillingDetails();
@@ -51,12 +50,13 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
             netAmt: item['netAmt'],
             paidAmt: item['paidAmt'],
             balance: item['balance'],
-            paymentType: item['paymentType'],
+            primaryType: item['primaryType'],
             insid: item['insid'],
             insNo: item['insNo'],
             isCompleted: item['isCompleted'],
             isSync: item['isSync'],
-
+            timeToSave: item['timeToSave'],
+            dateToSave: item['dateToSave'],
             testlists: item['testlists'] != null
                 ? (item['testlists'] as List)
                       .map((e) => Map<String, dynamic>.from(e))
@@ -114,10 +114,12 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
       'netAmt': patient.netAmt ?? 0,
       'paidAmt': patient.paidAmt ?? 0,
       'balance': patient.balance ?? 0,
-      'paymentType': patient.paymentType ?? '',
+      'primaryType': patient.primaryType ?? '',
       'insid': patient.insid ?? '',
       'insNo': patient.insNo ?? '',
       'isSync': patient.isSync ?? '',
+      'timeToSave': patient.timeToSave ?? '',
+      'dateToSave': patient.dateToSave ?? '',
       'isCompleted': patient.isCompleted ?? '',
       'testlists': patient.testlists ?? <Map<String, dynamic>>[],
     });
@@ -161,14 +163,17 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
     num? netAmt,
     num? paidAmt,
     num? balance,
-    String? paymentType,
+    String? primaryType,
     String? insid,
     String? insNo,
     List<Map<String, dynamic>>? testlists,
     String? isCompleted,
-    String? issync,
+    String? timeToSave,
+    String? dateToSave,
+
+    String? isSync,
   }) async {
-    final box = await Hive.openBox('patient_booking');
+    final box = await Hive.openBox('patient_completed');
 
     final oldData = Map<String, dynamic>.from(box.getAt(index));
 
@@ -206,12 +211,14 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
     oldData['netAmt'] = netAmt ?? oldData['netAmt'];
     oldData['paidAmt'] = paidAmt ?? oldData['paidAmt'];
     oldData['balance'] = balance ?? oldData['balance'];
-    oldData['paymentType'] = paymentType ?? oldData['paymentType'];
+    oldData['primaryType'] = primaryType ?? oldData['primaryType'];
     oldData['insid'] = insid ?? oldData['insid'];
     oldData['insNo'] = insNo ?? oldData['insNo'];
     oldData['testlists'] = testlists ?? [];
     oldData['isCompleted'] = isCompleted ?? oldData['isCompleted'];
-    oldData['isSync'] = issync ?? oldData['isSync'];
+    oldData['isSync'] = isSync ?? oldData['isSync'];
+    oldData['timeToSave'] = timeToSave ?? oldData['timetoSave'];
+    oldData['dateToSave'] = dateToSave ?? oldData['dateToSave'];
 
     log('Before save: ${oldData['testlists']}');
     log('New testlists: $testlists');
@@ -292,17 +299,17 @@ class PatientSyncCompleteController extends StateNotifier<PatientSyncState> {
   //}
 
   //delete entire patient details
-  // Future<void> deletePatient(num index) async {
-  //   final box = await Hive.openBox('patient_booking');
+  Future<void> deletePatient(int index) async {
+    final box = await Hive.openBox('patient_completed');
 
-  //   if (index >= 0 && index < box.length) {
-  //     await box.deleteAt(index);
+    if (index >= 0 && index < box.length) {
+      await box.deleteAt(index);
 
-  //     log('Deleted patient at index: $index');
+      log('Deleted patient at index: $index');
 
-  //     //await getPatientsFromHive(); // Refresh state
-  //   }
-  // }
+      //await getPatientsFromHive(); // Refresh state
+    }
+  }
 
   //clear hive
   Future<void> clearPatients() async {

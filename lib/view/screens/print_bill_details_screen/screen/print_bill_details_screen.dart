@@ -1,0 +1,218 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/above_bill_card.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/below_info_card.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/bill_info_card.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/lab_info_card.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/share_bill.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/test_listing_card.dart';
+import 'package:icon_infoware/view/widgets/print_bill_details.dart';
+import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
+import 'package:share_plus/share_plus.dart';
+
+final ScreenshotController screenshotController = ScreenshotController();
+
+class PrintBillDetailsScreen extends ConsumerWidget {
+  final Color darkBlue = const Color(0xFF163E61);
+  final Color keyGreen = const Color(0xFF1B6A3B);
+  final Color valueDark = const Color(0xFF1A334B);
+  final Color rowLightBlue = const Color(0xFFE5F0F9);
+  final Color backgroundColor = const Color(0xFFF7F5F0); // Off-white/cream
+  const PrintBillDetailsScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final addTestState = ref.watch(addTestScreenProvider);
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: SystemUiOverlayStyle(
+        statusBarColor: AppColors.appWhite,
+        statusBarIconBrightness: Brightness.light, // icons = white
+        statusBarBrightness: Brightness.dark, // for iOS
+      ),
+      child: SafeArea(
+        child: Scaffold(
+          backgroundColor: AppColors.appWhite,
+          body: Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.only(
+                    left: 10,
+                    right: 10,
+                    bottom: 10,
+                  ),
+                  child: Center(
+                    child: Screenshot(
+                      controller: screenshotController,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        // margin: const EdgeInsets.symmetric(vertical: 15),
+                        decoration: BoxDecoration(color: backgroundColor),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            AboveBillCard(),
+                            _buildDivider(),
+                            LabInfoCard(),
+                            _buildDivider(),
+
+                            TestTableWidget(),
+
+                            _buildDivider(),
+                            Column(
+                              children: [
+                                BillingRowWidget(
+                                  label: 'Gross Amount :',
+                                  amount: addTestState.totalPrice.toString(),
+                                  isLightBlue: false,
+                                ),
+                                BillingRowWidget(
+                                  label: 'Service Charge :',
+                                  amount:
+                                      addTestState.servicesnargeController.text,
+                                  isLightBlue: false,
+                                ),
+                                BillingRowWidget(
+                                  label: 'Discount Amount :',
+                                  amount: addTestState
+                                      .discountAmountController
+                                      .text,
+                                  isLightBlue: false,
+                                ),
+                                BillingRowWidget(
+                                  label: 'Net Amount :',
+                                  amount: addTestState.netAmount.toString(),
+                                  isLightBlue: false,
+                                ),
+                                BillingRowWidget(
+                                  label: 'Received Amount :',
+                                  amount: addTestState.amountPaid.toString(),
+                                  isLightBlue: false,
+                                ),
+                                BillingRowWidget(
+                                  label: 'Pending Amount :',
+                                  amount: addTestState.balanceAmount.toString(),
+                                  isLightBlue: true,
+                                ),
+                              ],
+                            ),
+                            // _buildBillingSummary(),
+                            const SizedBox(height: 10),
+                            _buildFooterNote(),
+                            _buildDivider(),
+                            BillFooterWidget(),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+
+              // Bottom Action Bar
+              SizedBox(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await ScreenshotUtils.shareBill(
+                              controller: screenshotController,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Icon(
+                            Icons.share_outlined,
+                            color: AppColors.appWhite,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await ScreenshotUtils.shareBill(
+                              controller: screenshotController,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: const FaIcon(
+                            FontAwesomeIcons.whatsapp,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await ScreenshotUtils.shareBill(
+                              controller: screenshotController,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: const FaIcon(
+                            FontAwesomeIcons.print,
+                            color: AppColors.appWhite,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFooterNote() {
+    return const Center(
+      child: Text(
+        '*** Result also available through E-mail & Whatsapp ***',
+        style: TextStyle(fontSize: 10, fontWeight: FontWeight.w500),
+      ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(color: Colors.grey.shade400, thickness: 1.5, height: 20);
+  }
+}

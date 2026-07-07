@@ -12,12 +12,19 @@ class CompletedPatientScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ListView.separated(
-      itemBuilder: (context, index) {
-        return PatientCompletedCard(patient: details[index], index: index);
-      },
-      separatorBuilder: (context, index) => SizedBox(height: 10),
-      itemCount: details.length,
-    );
+    return details.isEmpty
+        ? Center(child: Text('Completed Orders.'))
+        : ListView.separated(
+            itemBuilder: (context, index) {
+              return PatientCompletedCard(
+                isDate: true,
+
+                patient: details[index],
+                index: index,
+              );
+            },
+            separatorBuilder: (context, index) => SizedBox(height: 10),
+            itemCount: details.length,
+          );
   }
 }

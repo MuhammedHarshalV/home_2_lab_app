@@ -14,7 +14,10 @@ class AppMessage {
           title: Center(
             child: Text("Alert", style: TextStyle(fontWeight: FontWeight.bold)),
           ),
-          content: Text(message),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [Center(child: Text(message))],
+          ),
         );
       },
     );
