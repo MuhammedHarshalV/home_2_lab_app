@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
-import 'package:icon_infoware/controller/patient_pending_controller/patient_pending_controller.dart';
-import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
+
 
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
@@ -27,8 +26,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
-    final patientSyncState = ref.watch(patientSyncCompleteProvider);
-    final patientPendingState = ref.watch(patientPendingProvider);
+   
 
     final orderDetailScreenController = ref.read(
       orderDetailsScreenProvider.notifier,
@@ -170,7 +168,7 @@ class HomeScreen extends ConsumerWidget {
                                   child: NewOrdersStatCard(
                                     icon: Icons.check_circle_outline,
                                     category: 'Completed',
-                                    count: patientSyncState
+                                    count: homeState
                                         .patientBookingListCompleted
                                         .length
                                         .toString(),
@@ -202,7 +200,7 @@ class HomeScreen extends ConsumerWidget {
                                   child: NewOrdersStatCard(
                                     icon: Icons.receipt_long_outlined,
                                     category: 'Pending Invoice',
-                                    count: patientPendingState
+                                    count: homeState
                                         .patientBookingListPending
                                         .length
                                         .toString(),

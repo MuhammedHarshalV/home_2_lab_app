@@ -4,8 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
-import 'package:icon_infoware/controller/patient_pending_controller/patient_pending_controller.dart';
-import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
+
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
@@ -20,10 +19,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
     final testAddState = ref.watch(addTestScreenProvider);
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
-    final patientSyncCompleteController = ref.read(
-      patientSyncCompleteProvider.notifier,
-    );
-    final patientPendingController = ref.read(patientPendingProvider.notifier);
+
     final testAddController = ref.read(addTestScreenProvider.notifier);
     return Column(
       children: [
@@ -202,17 +198,11 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                         .isNotEmpty) {
                       if (testAddState.balanceAmount == 0) {
                         //store to completion
-                        patientSyncCompleteController.savePatientToCompletetion(
-                          homeState.patientBookingList[indexGet],
-                        );
-                        await homeController.deletePatient(indexGet);
+
                         context.pop();
                       } else {
                         //store to pending
-                        patientPendingController.savePatientToPending(
-                          homeState.patientBookingList[indexGet],
-                        );
-                        await homeController.deletePatient(indexGet);
+
                         context.pop();
                       }
                     } else {
@@ -244,25 +234,9 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                         // ;
                         final patient = homeState.patientBookingList[index!];
                         final now = DateTime.now();
-                        await patientSyncCompleteController
-                            .savePatientToCompletetion(
-                              patient.copyWith(
-                                timeToSave: DateFormat('hh:mm a').format(now),
-                                dateToSave: DateTime.now().toIso8601String(),
-                              ),
-                            );
-                        await homeController.deletePatient(index!);
+
                         context.pop();
                       } else {
-                        final patient = homeState.patientBookingList[index!];
-                        final now = DateTime.now();
-                        await patientPendingController.savePatientToPending(
-                          patient.copyWith(
-                            timeToSave: DateFormat('hh:mm a').format(now),
-                            dateToSave: DateTime.now().toIso8601String(),
-                          ),
-                        );
-                        await homeController.deletePatient(index!);
                         context.pop();
                       }
                     } else {

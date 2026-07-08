@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
+
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -30,7 +30,7 @@ class PatientCompletedCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final patientBillingDetailsState = ref.watch(patientBillingProvider);
     final patientBillingController = ref.read(patientBillingProvider.notifier);
-    final syncComplete = ref.watch(patientSyncCompleteProvider);
+   
     final testAddController = ref.read(addTestScreenProvider.notifier);
     final testAddState = ref.watch(addTestScreenProvider);
 

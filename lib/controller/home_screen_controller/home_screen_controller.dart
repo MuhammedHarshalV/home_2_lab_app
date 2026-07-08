@@ -401,9 +401,30 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         log('Patient $i -> testlists: $testLists');
       }
     }
+    final List<PatientHiveModel> patientBookingList = [];
+    final List<PatientHiveModel> completedList = [];
+    final List<PatientHiveModel> pendingList = [];
+    final List<PatientHiveModel> upcomingBookingList = [];
 
-    //update state class
-    state = state.copyWith(patientBookingList: patients);
+    for (final patient in patients) {
+      if (patient.flag == '1' || patient.flag == 1) {
+        upcomingBookingList.add(patient);
+      } else if (patient.isCompleted == 'Yes' && (patient.balance ?? 0) == 0) {
+        completedList.add(patient);
+      } else if (patient.isCompleted == 'Yes' && (patient.balance ?? 0) != 0) {
+        pendingList.add(patient);
+      } else {
+        patientBookingList.add(patient);
+      }
+    }
+
+    state = state.copyWith(
+      patientBookingList: patientBookingList,
+      patientBookingListCompleted: completedList,
+      patientBookingListPending: pendingList,
+      upcomingBookingList: upcomingBookingList,
+    );
+  
   }
 
   //delete entire patient details

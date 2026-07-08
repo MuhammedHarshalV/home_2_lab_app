@@ -6,8 +6,6 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/controller/patient_pending_controller/patient_pending_controller.dart';
-import 'package:icon_infoware/controller/patient_sync_complete_controller/patient_sync_complete_controller.dart';
 
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
@@ -15,6 +13,7 @@ import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/assigned_order_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/assigned_order_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/completed_patient_screen.dart';
+import 'package:icon_infoware/view/screens/order_details_screen/screens/new_order_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/patient_pending_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/widgets/patient_completed_card.dart';
 
@@ -28,8 +27,6 @@ class OderDetailsScreen extends ConsumerWidget {
     final homeState = ref.watch(homeScreenProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
-    final patientSyncState = ref.watch(patientSyncCompleteProvider);
-    final patientPendingState = ref.watch(patientPendingProvider);
 
     return DefaultTabController(
       initialIndex: state.selectedTabIndex,
@@ -123,13 +120,13 @@ class OderDetailsScreen extends ConsumerWidget {
               padding: const EdgeInsets.all(10),
               child: TabBarView(
                 children: [
-                  Center(child: Text("Assigned Orders")),
+                  NewOrderScreen(details: homeState.upcomingBookingList),
                   AssignedOrdersScreen(details: homeState.patientBookingList),
                   CompletedPatientScreen(
-                    details: patientSyncState.patientBookingListCompleted,
+                    details: homeState.patientBookingListCompleted,
                   ),
                   PatientPendingScreen(
-                    details: patientPendingState.patientBookingListPending,
+                    details: homeState.patientBookingListPending,
                   ),
                 ],
               ),
