@@ -25,7 +25,7 @@ class DiscountDialog extends ConsumerWidget {
         if (didPop) {
           final homeState = ref.watch(homeScreenProvider);
           addTeststate.discountAmountController.text = homeState
-              .patientBookingList[index]
+              .allBookingDetails[index]
               .discAmt
               .toString();
           await addTestcontroller.updateNetBalanceAmounts();
@@ -173,7 +173,7 @@ class DiscountDialog extends ConsumerWidget {
                   onPressed: () async {
                     final homeState = ref.watch(homeScreenProvider);
                     addTeststate.discountAmountController.text = homeState
-                        .patientBookingList[index]
+                        .allBookingDetails[index]
                         .discAmt
                         .toString();
                     await addTestcontroller.updateNetBalanceAmounts();

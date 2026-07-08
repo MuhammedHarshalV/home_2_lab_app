@@ -54,7 +54,7 @@ class PaymentOptionCard extends ConsumerWidget {
                 AppMessage.show(context, "message");
               } else {
                 final qrData = UpiQrService.generateUri(
-                  upiId: AppConstance.upiPaymentId,
+                  upiId: AppConstants.upiPaymentId,
                   payeeName: 'ABC Diagnostics',
                   amount: amount,
                   note: 'Lab Test Payment',

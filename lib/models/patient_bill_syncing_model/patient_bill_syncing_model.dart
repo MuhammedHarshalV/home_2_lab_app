@@ -1,4 +1,5 @@
 class PatientHiveModel {
+  int? indexClick;
   num? patId;
   String? namePrefix;
   String? patName;
@@ -47,6 +48,7 @@ class PatientHiveModel {
   List<Map<String, dynamic>>? testlists;
 
   PatientHiveModel({
+    this.indexClick,
     this.patId,
     this.namePrefix,
     this.patName,
@@ -97,6 +99,7 @@ class PatientHiveModel {
 
   factory PatientHiveModel.fromMap(Map<dynamic, dynamic> map) {
     return PatientHiveModel(
+      indexClick: map['indexClick'] ?? 0,
       patId: map['patId'] ?? 0,
       namePrefix: map['namePrefix'] ?? '',
       patName: map['patName'] ?? '',
@@ -153,6 +156,7 @@ class PatientHiveModel {
 
   Map<dynamic, dynamic> toMap() {
     return {
+      'indexClick': indexClick,
       'patId': patId,
       'namePrefix': namePrefix,
       'patName': patName,
@@ -203,61 +207,61 @@ class PatientHiveModel {
     };
   }
 
- PatientHiveModel copyWith({
-  String? bookTime,
-  String? currentDatetime,
-  String? timeToSave,
-  String? dateToSave,
-}) {
-  return PatientHiveModel(
-    patId: patId,
-    namePrefix: namePrefix,
-    patName: patName,
-    patAddress: patAddress,
-    invNo: invNo,
-    patGender: patGender,
-    patAge: patAge,
-    patAgehead: patAgehead,
-    patPhno: patPhno,
-    patMobno: patMobno,
-    drId: drId,
-    bookTime: bookTime ?? this.bookTime,
-    bookMapUrl: bookMapUrl,
-    currentDatetime: currentDatetime ?? this.currentDatetime,
-    remarks: remarks,
-    passport: passport,
-    outDr: outDr,
-    flag: flag,
-    patEmail: patEmail,
-    upiReferenceId: upiReferenceId,
-    timeToSave: timeToSave ?? this.timeToSave,
-    dateToSave: dateToSave ?? this.dateToSave,
-    repEmail: repEmail,
-    smplMode: smplMode,
-    repWhtapp: repWhtapp,
-    ipop: ipop,
-    patImg: patImg,
-    urgent: urgent,
-    dob: dob,
-    driverId: driverId,
-    techId: techId,
-    grossAmt: grossAmt,
-    discAmt: discAmt,
-    servChrge: servChrge,
-    netAmt: netAmt,
-    paidAmt: paidAmt,
-    balance: balance,
-    primaryPaid: primaryPaid,
-    secondaryPaid: secondaryPaid,
-    primaryType: primaryType,
-    secondaryType: secondaryType,
-    insid: insid,
-    insNo: insNo,
-    isCompleted: isCompleted,
-    isSync: isSync,
-    testlists: testlists == null
-        ? null
-        : List<Map<String, dynamic>>.from(testlists!),
-  );
-}
+  PatientHiveModel copyWith({
+    String? bookTime,
+    String? currentDatetime,
+    String? timeToSave,
+    String? dateToSave,
+  }) {
+    return PatientHiveModel(
+      patId: patId,
+      namePrefix: namePrefix,
+      patName: patName,
+      patAddress: patAddress,
+      invNo: invNo,
+      patGender: patGender,
+      patAge: patAge,
+      patAgehead: patAgehead,
+      patPhno: patPhno,
+      patMobno: patMobno,
+      drId: drId,
+      bookTime: bookTime ?? this.bookTime,
+      bookMapUrl: bookMapUrl,
+      currentDatetime: currentDatetime ?? this.currentDatetime,
+      remarks: remarks,
+      passport: passport,
+      outDr: outDr,
+      flag: flag,
+      patEmail: patEmail,
+      upiReferenceId: upiReferenceId,
+      timeToSave: timeToSave ?? this.timeToSave,
+      dateToSave: dateToSave ?? this.dateToSave,
+      repEmail: repEmail,
+      smplMode: smplMode,
+      repWhtapp: repWhtapp,
+      ipop: ipop,
+      patImg: patImg,
+      urgent: urgent,
+      dob: dob,
+      driverId: driverId,
+      techId: techId,
+      grossAmt: grossAmt,
+      discAmt: discAmt,
+      servChrge: servChrge,
+      netAmt: netAmt,
+      paidAmt: paidAmt,
+      balance: balance,
+      primaryPaid: primaryPaid,
+      secondaryPaid: secondaryPaid,
+      primaryType: primaryType,
+      secondaryType: secondaryType,
+      insid: insid,
+      insNo: insNo,
+      isCompleted: isCompleted,
+      isSync: isSync,
+      testlists: testlists == null
+          ? null
+          : List<Map<String, dynamic>>.from(testlists!),
+    );
+  }
 }

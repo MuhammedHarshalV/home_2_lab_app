@@ -81,13 +81,13 @@ class LoginController extends StateNotifier<LoginState> {
           tagLine: response.cusTagLine ?? '',
           qrUrl: response.qRaddr ?? '',
         );
-        AppConstance.name = response.brName ?? '';
-        AppConstance.address = response.brAddr ?? '';
-        AppConstance.webUrl = response.webaddr ?? '';
-        AppConstance.phoneNumber = response.brPhno ?? '';
-        AppConstance.devCode = response.deviceCode ?? '';
-        AppConstance.tagLine = response.cusTagLine ?? '';
-        AppConstance.qrUrl = response.qRaddr ?? '';
+        AppConstants.name = response.brName ?? '';
+        AppConstants.address = response.brAddr ?? '';
+        AppConstants.webUrl = response.webaddr ?? '';
+        AppConstants.phoneNumber = response.brPhno ?? '';
+        AppConstants.devCode = response.deviceCode ?? '';
+        AppConstants.tagLine = response.cusTagLine ?? '';
+        AppConstants.qrUrl = response.qRaddr ?? '';
         state = state.copyWith(isSubmitted: false);
       } else if (response.success == false) {
         AppMessage.show(
@@ -119,7 +119,7 @@ class LoginController extends StateNotifier<LoginState> {
       if (response?.success == true) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('userName', userName);
-        AppConstance.userName = userName;
+        AppConstants.userName = userName;
         context.goNamed(AppRouteNames.pinSettingScreen.name);
       } else if (response?.success == false) {
         AppMessage.show(context, 'Invalid username or password');
@@ -140,7 +140,7 @@ class LoginController extends StateNotifier<LoginState> {
   Future<void> storePIN({required String pin}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('PIN', pin);
-    AppConstance.pin = pin;
+    AppConstants.pin = pin;
     log('PIN storing $pin');
   } //Image storing to phone
 
@@ -151,7 +151,7 @@ class LoginController extends StateNotifier<LoginState> {
     if (image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
       state = state.copyWith(imageBase64: imagePath);
-      AppConstance.base64Image = image;
+      AppConstants.base64Image = image;
     }
   } //baseurl storing to phone
 
@@ -171,7 +171,7 @@ class LoginController extends StateNotifier<LoginState> {
     log('Readed Image :$image');
     if (image != null && image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
-      AppConstance.base64Image = imagePath;
+      AppConstants.base64Image = imagePath;
 
       state = state.copyWith(imageBase64: imagePath);
     }
@@ -211,17 +211,17 @@ class LoginController extends StateNotifier<LoginState> {
     log('Readed pin :$pin');
 
     if (deviceID != null && deviceID.isNotEmpty) {
-      AppConstance.deviceID = deviceID;
+      AppConstants.deviceID = deviceID;
     }
     if (pin != null && pin.isNotEmpty) {
       state = state.copyWith(pinNumber: pin);
-      AppConstance.pin = pin;
+      AppConstants.pin = pin;
     }
     if (branchID != null && branchID.isNotEmpty) {
-      AppConstance.branchID = branchID;
+      AppConstants.branchID = branchID;
     }
     if (userName != null && userName.isNotEmpty) {
-      AppConstance.userName = userName;
+      AppConstants.userName = userName;
     }
     await readBaseUrl();
     await readImage();

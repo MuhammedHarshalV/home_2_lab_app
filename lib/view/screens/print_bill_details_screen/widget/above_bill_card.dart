@@ -16,7 +16,7 @@ class AboveBillCard extends ConsumerWidget {
         children: [
           Center(
             child: Image.file(
-              File(AppConstance.base64Image),
+              File(AppConstants.base64Image),
               width: MediaQuery.of(context).size.width / 1.5,
 
               fit: BoxFit.fill,
@@ -35,12 +35,12 @@ class AboveBillCard extends ConsumerWidget {
           ),
           const SizedBox(height: 10),
           Text(
-            AppConstance.name,
+            AppConstants.name,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
           ),
           const SizedBox(height: 5),
           Text(
-            AppConstance.address,
+            AppConstants.address,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
@@ -50,7 +50,7 @@ class AboveBillCard extends ConsumerWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            AppConstance.phoneNumber,
+            AppConstants.phoneNumber,
             textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 14,
@@ -60,7 +60,7 @@ class AboveBillCard extends ConsumerWidget {
           ),
           const SizedBox(height: 5),
           Text(
-            'Web: ${AppConstance.webUrl}',
+            'Web: ${AppConstants.webUrl}',
             style: TextStyle(
               fontSize: 14,
               color: AppColors.primaryBlue,

@@ -5,11 +5,14 @@ class HomeScreenState {
   final List<PatientHiveModel> patientBookingListCompleted;
   final List<PatientHiveModel> patientBookingListPending;
   final List<PatientHiveModel> upcomingBookingList;
+  final List<PatientHiveModel> allBookingDetails;
 
   final bool isLoading;
 
   HomeScreenState({
     this.patientBookingList = const [],
+    this.allBookingDetails = const [],
+
     this.isLoading = false,
     this.patientBookingListCompleted = const [],
     this.patientBookingListPending = const [],
@@ -20,10 +23,12 @@ class HomeScreenState {
     List<PatientHiveModel>? patientBookingListCompleted,
     List<PatientHiveModel>? patientBookingListPending,
     List<PatientHiveModel>? upcomingBookingList,
+    List<PatientHiveModel>? allBookingDetails,
 
     bool? isLoading,
   }) {
     return HomeScreenState(
+      allBookingDetails: allBookingDetails ?? this.allBookingDetails,
       patientBookingList: patientBookingList ?? this.patientBookingList,
       patientBookingListPending:
           patientBookingListPending ?? this.patientBookingListPending,

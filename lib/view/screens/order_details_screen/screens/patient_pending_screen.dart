@@ -18,7 +18,7 @@ class PatientPendingScreen extends ConsumerWidget {
               return PatientCompletedCard(
                 isDate: true,
                 patient: details[index],
-                index: index,
+                index: details[index].indexClick ?? 0,
               );
             },
             separatorBuilder: (context, index) => SizedBox(height: 10),

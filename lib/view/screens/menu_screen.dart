@@ -65,7 +65,7 @@ class MenuScreen extends ConsumerWidget {
                           child: Image.file(
                             width: MediaQuery.of(context).size.width / 3,
                             fit: BoxFit.fill,
-                            File(AppConstance.base64Image),
+                            File(AppConstants.base64Image),
                           ),
                         ),
                       );

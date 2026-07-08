@@ -72,7 +72,7 @@ class OderDetailsScreen extends ConsumerWidget {
                     child: Image.file(
                       width: MediaQuery.of(context).size.width / 1.5,
                       fit: BoxFit.fill,
-                      File(AppConstance.base64Image),
+                      File(AppConstants.base64Image),
                     ),
                   ),
                 ],

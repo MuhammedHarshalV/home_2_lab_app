@@ -9,4 +9,5 @@ class ApiConstants {
   static String patientBookingDetails = '/HomeCollList';
   static String discountFetching = '/General_Master';
   static String bankFetching = '/Bank';
+  static String patientSync = '/Sync_patients_Bill';
 }

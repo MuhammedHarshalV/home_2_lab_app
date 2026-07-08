@@ -110,7 +110,8 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 onTap: () {
                   testAddController.storingAndFetchingDiscount();
                   if (index == null) {
-                    int indexGet = homeState.patientBookingList.length - 1;
+                    int indexGet =
+                        homeState.allBookingDetails.last.indexClick ?? 0;
                     context.pushNamed(
                       AppRouteNames.paymentCompletionScreen.name,
                       extra: indexGet,
@@ -158,7 +159,8 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 focusColor: Colors.transparent,
                 onTap: () async {
                   if (index == null) {
-                    int indexGet = homeState.patientBookingList.length - 1;
+                    int indexGet =
+                        homeState.allBookingDetails.last.indexClick ?? 0;
                     await homeController.deletePatient(indexGet);
                     context.pop();
                   } else {
@@ -192,19 +194,26 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 focusColor: Colors.transparent,
                 onTap: () async {
                   if (index == null) {
-                    int indexGet = homeState.patientBookingList.length - 1;
+                    int indexGet =
+                        homeState.allBookingDetails.last.indexClick ?? 0;
                     if (testAddState
                         .testMasterListSelectedNewPrice
                         .isNotEmpty) {
-                      if (testAddState.balanceAmount == 0) {
-                        //store to completion
-
-                        context.pop();
-                      } else {
-                        //store to pending
-
-                        context.pop();
-                      }
+                      final String time = DateFormat(
+                        'hh:mm a',
+                      ).format(DateTime.now());
+                      final String date = DateFormat(
+                        'dd-MMM-yyyy',
+                      ).format(DateTime.now());
+                      await homeController.updatePatient(
+                        index: indexGet,
+                        isCompleted: 'Yes',
+                        timeToSave: time,
+                        dateToSave: date,
+                      );
+                      context.pushReplacementNamed(
+                        AppRouteNames.bottomNavScreen.name,
+                      );
                     } else {
                       showDialog(
                         context: context,
@@ -226,19 +235,19 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     if (testAddState
                         .testMasterListSelectedNewPrice
                         .isNotEmpty) {
-                      if (testAddState.balanceAmount == 0) {
-                        // await patientSyncCompleteController
-                        //     .savePatientToCompletetion(
-                        //       homeState.patientBookingList[index!],
-                        //     )
-                        // ;
-                        final patient = homeState.patientBookingList[index!];
-                        final now = DateTime.now();
-
-                        context.pop();
-                      } else {
-                        context.pop();
-                      }
+                      final String time = DateFormat(
+                        'hh:mm a',
+                      ).format(DateTime.now());
+                      final String date = DateFormat(
+                        'dd-MMM-yyyy',
+                      ).format(DateTime.now());
+                      await homeController.updatePatient(
+                        index: index!,
+                        isCompleted: 'Yes',
+                        timeToSave: time,
+                        dateToSave: date,
+                      );
+                      context.pop();
                     } else {
                       showDialog(
                         context: context,

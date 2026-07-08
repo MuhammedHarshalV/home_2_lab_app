@@ -16,7 +16,7 @@ class BillFooterWidget extends ConsumerWidget {
     return Column(
       children: [
         Text(
-          'User: ${AppConstance.userName.isNotEmpty ? AppConstance.userName[0].toUpperCase() + AppConstance.userName.substring(1) : ''}',
+          'User: ${AppConstants.userName.isNotEmpty ? AppConstants.userName[0].toUpperCase() + AppConstants.userName.substring(1) : ''}',
           style: const TextStyle(fontSize: 14),
         ),
 
@@ -28,7 +28,7 @@ class BillFooterWidget extends ConsumerWidget {
             color: Colors.white,
           ),
           child: QrImageView(
-            data: AppConstance.qrUrl,
+            data: AppConstants.qrUrl,
             version: QrVersions.auto,
             size: 120,
           ),
@@ -42,7 +42,7 @@ class BillFooterWidget extends ConsumerWidget {
         const SizedBox(height: 4),
 
         Text(
-          AppConstance.tagLine,
+          AppConstants.tagLine,
           style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
         ),
 

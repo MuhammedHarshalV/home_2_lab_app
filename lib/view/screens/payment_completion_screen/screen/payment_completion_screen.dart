@@ -55,7 +55,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
               child: Image.file(
                 width: MediaQuery.of(context).size.width / 1.5,
                 fit: BoxFit.fill,
-                File(AppConstance.base64Image),
+                File(AppConstants.base64Image),
               ),
             ),
           ],
@@ -98,7 +98,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   AboveContainerCard(
                     icon: Icons.qr_code_outlined,
                     label: 'Paying No',
-                    value: AppConstance.devCode,
+                    value: AppConstants.devCode,
                   ),
                 ],
               ),

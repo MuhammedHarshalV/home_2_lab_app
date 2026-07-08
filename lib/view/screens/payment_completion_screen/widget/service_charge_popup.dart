@@ -23,7 +23,7 @@ class ServiceChangeDialog extends ConsumerWidget {
           final homeState = ref.read(homeScreenProvider);
 
           addTeststate.servicesnargeController.text = homeState
-              .patientBookingList[index]
+              .allBookingDetails[index]
               .servChrge
               .toString();
 
@@ -82,7 +82,11 @@ class ServiceChangeDialog extends ConsumerWidget {
                     ),
                   ),
                   onPressed: () async {
-                    addTeststate.servicesnargeController.clear();
+                    final homeState1 = ref.read(homeScreenProvider);
+                    addTeststate.servicesnargeController.text = homeState1
+                        .allBookingDetails[index]
+                        .servChrge
+                        .toString();
                     await addTestController.updateNetBalanceAmounts();
                     final testMasterState1 = ref.watch(addTestScreenProvider);
                     await homeController.updatePatient(

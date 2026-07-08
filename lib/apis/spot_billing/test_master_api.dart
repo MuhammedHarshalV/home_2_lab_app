@@ -14,7 +14,7 @@ class TestMasterApi {
     try {
       final response = await PostApiServices.callApi(
         url: "/${ApiConstants.testMaster}",
-        queryParams: {"Branchid": AppConstance.branchID},
+        queryParams: {"Branchid": AppConstants.branchID},
       );
 
       if (response.toString().isEmpty || response == null) {

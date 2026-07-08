@@ -113,25 +113,25 @@ class SplitPaymentDialog extends ConsumerWidget {
         if (didPop) {
           final homeState = ref.watch(homeScreenProvider);
           addTestState.primaryAmountContoller.text = homeState
-              .patientBookingList[index]
+              .allBookingDetails[index]
               .primaryPaid
               .toString();
 
           addTestState.secondaryAmountController.text = homeState
-              .patientBookingList[index]
+              .allBookingDetails[index]
               .secondaryPaid
               .toString();
 
           addTestController.updatestate(
-            primaryPaid: homeState.patientBookingList[index].primaryPaid ?? 0,
+            primaryPaid: homeState.allBookingDetails[index].primaryPaid ?? 0,
             secondaryPaid:
-                homeState.patientBookingList[index].secondaryPaid ?? 0,
+                homeState.allBookingDetails[index].secondaryPaid ?? 0,
             amountPaid:
-                (homeState.patientBookingList[index].primaryPaid ?? 0) +
-                (homeState.patientBookingList[index].secondaryPaid ?? 0),
-            primaryType: homeState.patientBookingList[index].primaryType ?? '',
+                (homeState.allBookingDetails[index].primaryPaid ?? 0) +
+                (homeState.allBookingDetails[index].secondaryPaid ?? 0),
+            primaryType: homeState.allBookingDetails[index].primaryType ?? '',
             secondaryType:
-                homeState.patientBookingList[index].secondaryType ?? '',
+                homeState.allBookingDetails[index].secondaryType ?? '',
           );
 
           await addTestController.updateNetBalanceAmounts();
@@ -518,37 +518,6 @@ class DropdownPayment extends StatelessWidget {
           ),
         ),
       ],
-    );
-  }
-}
-
-class _PaymentDropDown extends StatelessWidget {
-  final String value;
-
-  const _PaymentDropDown({required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 50,
-      padding: const EdgeInsets.symmetric(horizontal: 5),
-      decoration: BoxDecoration(
-        color: const Color(0xffEAF1FF),
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isExpanded: true,
-          items: const [
-            DropdownMenuItem(value: "Cash", child: Text("Cash")),
-            DropdownMenuItem(value: "Card", child: Text("Card")),
-            DropdownMenuItem(value: "UPI", child: Text("UPI")),
-            DropdownMenuItem(value: "Pending", child: Text("Pending")),
-          ],
-          onChanged: (value) {},
-        ),
-      ),
     );
   }
 }

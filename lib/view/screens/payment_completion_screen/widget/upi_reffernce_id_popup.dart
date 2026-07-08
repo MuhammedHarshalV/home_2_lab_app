@@ -20,7 +20,7 @@ class RefferenceIdDialog extends ConsumerWidget {
         if (didPop) {
           final homeState = ref.watch(homeScreenProvider);
           addTeststate.upiRefferenceIdController.text =
-              homeState.patientBookingList[index].upiReferenceId ?? '';
+              homeState.allBookingDetails[index].upiReferenceId ?? '';
         }
       },
 
@@ -63,8 +63,7 @@ class RefferenceIdDialog extends ConsumerWidget {
                   onPressed: () {
                     final homeState = ref.watch(homeScreenProvider);
                     addTeststate.upiRefferenceIdController.text =
-                        homeState.patientBookingList[index].upiReferenceId ??
-                        '';
+                        homeState.allBookingDetails[index].upiReferenceId ?? '';
 
                     context.pop();
                   },

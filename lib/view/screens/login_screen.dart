@@ -232,7 +232,7 @@ class LoginScreen extends ConsumerWidget {
                               // submit logic
                               if (pinState.loginController.text.isNotEmpty) {
                                 if (pinState.loginController.text ==
-                                    AppConstance.pin) {
+                                    AppConstants.pin) {
                                   ref.invalidate(loginProvider);
                                   ref.invalidate(splashDisposeProvider);
                                   log(

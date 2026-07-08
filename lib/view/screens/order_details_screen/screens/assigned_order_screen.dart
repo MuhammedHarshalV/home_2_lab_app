@@ -17,7 +17,7 @@ class AssignedOrdersScreen extends ConsumerWidget {
             itemBuilder: (context, index) {
               return PatientCompletedCard(
                 patient: details[index],
-                index: index,
+                index: details[index].indexClick ?? 0,
               );
             },
             separatorBuilder: (context, index) => SizedBox(height: 10),

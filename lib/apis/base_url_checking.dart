@@ -21,8 +21,8 @@ class BaseUrlChecking {
     await prefs.setString('DeviceID', deviceID);
     await prefs.setString('BranchID', branchID);
     ApiConstants.baseUrl = baseUrl;
-    AppConstance.deviceID = deviceID;
-    AppConstance.branchID = branchID;
+    AppConstants.deviceID = deviceID;
+    AppConstants.branchID = branchID;
 
     log('storing device ID :$deviceID');
     log('storing branch ID :$branchID');

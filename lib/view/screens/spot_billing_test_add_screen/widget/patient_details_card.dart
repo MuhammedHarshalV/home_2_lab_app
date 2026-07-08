@@ -158,7 +158,8 @@ class PatientDetailsCard extends ConsumerWidget {
             GestureDetector(
               onTap: () {
                 if (index == null) {
-                  int indexNot = homeState.patientBookingList.length - 1;
+                  int indexNot =
+                      homeState.allBookingDetails.last.indexClick ?? 0;
                   context.pushNamed(
                     AppRouteNames.editSpotBillingScreen.name,
                     pathParameters: {'index': indexNot.toString()},
@@ -211,7 +212,7 @@ class PatientDetailsCard extends ConsumerWidget {
                           log("corparate already clicked");
                           addTestController.updatestate(schemeIDSelected: 0);
                           addTestState.specialSchemeController.clear();
-                         // addTestController.updateSpecialSchemePrice();
+                          // addTestController.updateSpecialSchemePrice();
                         }
                         //  else {
                         //   log(

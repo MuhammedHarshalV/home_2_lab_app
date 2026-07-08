@@ -32,7 +32,7 @@ class SplashNotifierController extends StateNotifier<SplashState> {
     final String? baseUrl = prefs.getString('BaseURL');
     final String? upiId = prefs.getString('upiId');
     if ((upiId ?? '').isNotEmpty && (upiId != null)) {
-      AppConstance.upiPaymentId = upiId;
+      AppConstants.upiPaymentId = upiId;
 
       log('upiid : $upiId');
     }
@@ -45,21 +45,21 @@ class SplashNotifierController extends StateNotifier<SplashState> {
         log(box.keys.toString());
         log(box.values.toString());
         log(box.toMap().toString());
-        AppConstance.name = box.get('name');
-        AppConstance.address = box.get('address');
-        AppConstance.webUrl = box.get('webUrl');
-        AppConstance.phoneNumber = box.get('phoneNumber');
-        AppConstance.devCode = box.get('devCode');
-        AppConstance.tagLine = box.get('tagLine');
-        AppConstance.qrUrl = box.get('qrUrl');
+        AppConstants.name = box.get('name');
+        AppConstants.address = box.get('address');
+        AppConstants.webUrl = box.get('webUrl');
+        AppConstants.phoneNumber = box.get('phoneNumber');
+        AppConstants.devCode = box.get('devCode');
+        AppConstants.tagLine = box.get('tagLine');
+        AppConstants.qrUrl = box.get('qrUrl');
         log('''
-Name        : ${AppConstance.name}
-Address     : ${AppConstance.address}
-Web URL     : ${AppConstance.webUrl}
-Phone Number: ${AppConstance.phoneNumber}
-Dev Code    : ${AppConstance.devCode}
-Tag Line    : ${AppConstance.tagLine}
-QR URL      : ${AppConstance.qrUrl}
+Name        : ${AppConstants.name}
+Address     : ${AppConstants.address}
+Web URL     : ${AppConstants.webUrl}
+Phone Number: ${AppConstants.phoneNumber}
+Dev Code    : ${AppConstants.devCode}
+Tag Line    : ${AppConstants.tagLine}
+QR URL      : ${AppConstants.qrUrl}
 ''');
         return state = state.copyWith(
           navigationScreen: SplashNavigationState.login,

@@ -17,7 +17,7 @@ class LabInfoCard extends ConsumerWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: Column(
         children: [
-          _buildInfoRow('LAB NO', ': ${AppConstance.devCode}', null),
+          _buildInfoRow('LAB NO', ': ${AppConstants.devCode}', null),
           _buildInfoRow(
             'DATE',
             ': ${DateFormat('MMM d, yyyy').format(DateTime.now())}',

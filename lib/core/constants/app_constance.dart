@@ -1,4 +1,4 @@
-class AppConstance {
+class AppConstants {
   static String base64Image = '';
   static String pin = '';
   static String branchID = '';

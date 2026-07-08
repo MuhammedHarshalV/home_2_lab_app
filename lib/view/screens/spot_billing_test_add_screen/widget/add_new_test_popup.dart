@@ -61,7 +61,7 @@ class AddNewTestPopUp extends ConsumerWidget {
                   onTap: () async {
                     final updatedPatient = ref
                         .read(homeScreenProvider)
-                        .patientBookingList[index];
+                        .allBookingDetails[index];
 
                     await testMasterController.getTestsFromHive(updatedPatient);
 
@@ -122,7 +122,7 @@ class AddNewTestPopUp extends ConsumerWidget {
                       testMasterState.searchController.clear();
                       final updatedPatient = ref
                           .read(homeScreenProvider)
-                          .patientBookingList[index];
+                          .allBookingDetails[index];
 
                       await testMasterController.getTestsFromHive(
                         updatedPatient,

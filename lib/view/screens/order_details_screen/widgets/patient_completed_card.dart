@@ -12,7 +12,6 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-import 'package:intl/intl.dart';
 
 class PatientCompletedCard extends ConsumerWidget {
   final PatientHiveModel patient;
@@ -30,7 +29,7 @@ class PatientCompletedCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final patientBillingDetailsState = ref.watch(patientBillingProvider);
     final patientBillingController = ref.read(patientBillingProvider.notifier);
-   
+
     final testAddController = ref.read(addTestScreenProvider.notifier);
     final testAddState = ref.watch(addTestScreenProvider);
 
@@ -95,7 +94,7 @@ class PatientCompletedCard extends ConsumerWidget {
         testAddController.getTestMasterLists(patient);
         context.pushNamed(
           AppRouteNames.spotBillingTestAddScreen.name,
-          extra: {'index': index},
+          extra: index,
         );
       },
       child: Container(
@@ -114,7 +113,7 @@ class PatientCompletedCard extends ConsumerWidget {
         child: Padding(
           padding: EdgeInsets.all(10.0),
           child: Column(
-            spacing: 10,
+            //spacing: 10,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Row(
@@ -224,54 +223,63 @@ class PatientCompletedCard extends ConsumerWidget {
                   //  const SizedBox(width: 60), // Space for the floating button
                 ],
               ),
-              if (patient.balance != 0)
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 5,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.orange.withOpacity(.7),
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Column(
-                    children: [
-                      Text(
-                        'Balance :${patient.balance}',
-                        style: TextStyle(
-                          color: AppColors.appWhite,
-                          fontSize: 12,
-                          fontWeight: FontWeight.bold,
-                        ),
+
+              Row(
+                children: [
+                  if (patient.balance != 0)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
                       ),
+                      decoration: BoxDecoration(
+                        color: Colors.orange.withOpacity(.7),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Balance :${patient.balance}',
+                            style: TextStyle(
+                              color: AppColors.appWhite,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  Spacer(),
+                  Column(
+                    children: [
+                      if (isDate == true &&
+                          patient.timeToSave != null &&
+                          patient.timeToSave!.trim().isNotEmpty)
+                        Text(
+                          patient.timeToSave ?? '',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
+                      if (isDate == true &&
+                          patient.dateToSave != null &&
+                          patient.dateToSave!.trim().isNotEmpty)
+                        Text(
+                          patient.dateToSave ?? '',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
+                        ),
                     ],
                   ),
-                ),
+                ],
+              ),
+
               //  Spacer(),
-              if (isDate == true &&
-                  patient.timeToSave != null &&
-                  patient.timeToSave!.trim().isNotEmpty)
-                Text(
-                  patient.timeToSave ?? '',
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
-              if (isDate == true &&
-                  patient.dateToSave != null &&
-                  patient.dateToSave!.trim().isNotEmpty)
-                Text(
-                  DateFormat(
-                    'dd-MMM-yyyy',
-                  ).format(DateTime.parse(patient.dateToSave ?? '')),
-                  style: TextStyle(
-                    fontSize: 10,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black87,
-                  ),
-                ),
             ],
           ),
         ),

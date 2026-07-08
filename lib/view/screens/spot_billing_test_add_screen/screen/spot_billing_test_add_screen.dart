@@ -10,10 +10,7 @@ import 'package:icon_infoware/controller/home_screen_controller/home_screen_cont
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
-import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
-import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
-import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';
+
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/add_new_test_popup.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_below_card.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_card.dart';
@@ -73,7 +70,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               child: Image.file(
                 width: MediaQuery.of(context).size.width / 1.5,
                 fit: BoxFit.fill,
-                File(AppConstance.base64Image),
+                File(AppConstants.base64Image),
               ),
             ),
           ],
@@ -224,8 +221,6 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                               hoverColor: Colors.transparent,
                                               focusColor: Colors.transparent,
                                               onTap: () async {
-                                               
-
                                                 final testMasterController2 =
                                                     ref.read(
                                                       addTestScreenProvider
@@ -280,9 +275,10 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
 
                                                 int indexget =
                                                     homeState
-                                                        .patientBookingList
-                                                        .length -
-                                                    1;
+                                                        .allBookingDetails
+                                                        .last
+                                                        .indexClick ??
+                                                    0;
                                                 await homeController.updatePatient(
                                                   index: hiveIndex == null
                                                       ? indexget
@@ -346,7 +342,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               hoverColor: Colors.transparent,
               focusColor: Colors.transparent,
               onTap: () {
-                int indexget = homeState.patientBookingList.length - 1;
+                int indexget = homeState.allBookingDetails.last.indexClick ?? 0;
                 if (hiveIndex == null) {
                   showDialog(
                     context: context,

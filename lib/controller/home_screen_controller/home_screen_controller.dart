@@ -49,7 +49,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       }
       if (!exists) {
         log("save to hive one :$patient");
-        await box.add({
+        final key = await box.add({
+          "indexClick": 0,
           'patId': patient.bookPatId ?? 0,
           'namePrefix': '',
           'patName': patient.bookName ?? '',
@@ -100,6 +101,11 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
             {"TestId": '0'},
           ],
         });
+        final data = Map<String, dynamic>.from(box.get(key));
+        data['indexClick'] = key;
+        await box.put(key, data);
+
+        log("Saved patient with Hive key: $key");
       }
     }
   }
@@ -108,7 +114,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
   Future<void> savePatient(PatientHiveModel patient) async {
     final box = await Hive.openBox('patient_booking');
 
-    await box.add({
+    final key = await box.add({
+      'indexClick': 0,
       'patId': patient.patId ?? '',
       'namePrefix': patient.namePrefix ?? '',
       'patName': patient.patName ?? '',
@@ -159,12 +166,16 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         {"TestId": '0'},
       ],
     });
+    final item = Map<String, dynamic>.from(box.get(key));
+    item['indexClick'] = key;
+    await box.put(key, item);
     await getPatientBookingDetails(true);
   }
 
   //edit stored data
   Future<void> updatePatient({
     required int index,
+    int? indexClick,
     String? patId,
     String? namePrefix,
     String? patName,
@@ -214,9 +225,11 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     List<Map<String, dynamic>>? testlists,
   }) async {
     final box = await Hive.openBox('patient_booking');
-
-    final oldData = Map<String, dynamic>.from(box.getAt(index));
-
+    final hiveIndex = box.values.toList().indexWhere(
+      (item) => item['indexClick'] == index,
+    );
+    final oldData = Map<String, dynamic>.from(box.getAt(hiveIndex));
+    oldData['indexClick'] = indexClick ?? oldData['indexClick'];
     oldData['patId'] = patId ?? oldData['patId'];
     oldData['namePrefix'] = namePrefix ?? oldData['namePrefix'];
     oldData['patName'] = patName ?? oldData['patName'];
@@ -270,6 +283,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     log('New testlists: $testlists');
     log(oldData['isSync']);
     final params = {
+      'indexClick': indexClick,
       'index': index,
       'patId': patId,
       'namePrefix': namePrefix,
@@ -322,8 +336,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     params.forEach((key, value) {
       log('$key: $value');
     });
-    await box.putAt(index, oldData);
-    final updated = box.getAt(index);
+    await box.putAt(hiveIndex, oldData);
+    final updated = box.getAt(hiveIndex);
     log('After save: ${updated['testlists']}');
 
     await getPatientBookingDetails(true);
@@ -337,6 +351,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
     final patients = box.values.map<PatientHiveModel>((item) {
       return PatientHiveModel(
+        indexClick: item['indexClick'],
         invNo: item['invNo'],
         patId: item['patId'],
         namePrefix: item['namePrefix'],
@@ -423,21 +438,22 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       patientBookingListCompleted: completedList,
       patientBookingListPending: pendingList,
       upcomingBookingList: upcomingBookingList,
+      allBookingDetails: patients,
     );
-  
+    //update state class
   }
 
   //delete entire patient details
   Future<void> deletePatient(int index) async {
     final box = await Hive.openBox('patient_booking');
+    final hiveIndex = box.values.toList().indexWhere(
+      (item) => item['indexClick'] == index,
+    );
+    await box.deleteAt(hiveIndex);
 
-    if (index >= 0 && index < box.length) {
-      await box.deleteAt(index);
+    log('Deleted patient at index: $hiveIndex');
 
-      log('Deleted patient at index: $index');
-
-      await getPatientsFromHive(); // Refresh state
-    }
+    await getPatientsFromHive(); // Refresh state
   }
 
   //clear hive

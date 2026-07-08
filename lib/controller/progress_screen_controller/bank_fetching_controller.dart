@@ -46,7 +46,7 @@ class BankFetchingController extends StateNotifier<BankFetchingState> {
     }
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('upiId', trimmedUpiId);
-    AppConstance.upiPaymentId = trimmedUpiId;
+    AppConstants.upiPaymentId = trimmedUpiId;
   }
 }
 
