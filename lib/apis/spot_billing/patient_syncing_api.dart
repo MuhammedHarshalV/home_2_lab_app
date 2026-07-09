@@ -6,14 +6,14 @@ import 'package:icon_infoware/core/services/api_services/api_services.dart';
 
 class PatientSyncingApi {
   static Future<dynamic> patientSyncingApi({
-    String? billLocation,
-    int? assignBrId,
-    int? corpId,
+    // String? billLocation,
+    // int? assignBrId,
+    // int? corpId,
     String? patId,
     String? namePrefix,
     String? patName,
     String? patAddress,
-    String? invNo,
+    int? invNo,
     String? patEmail,
     String? patPhno,
     String? patMobno,
@@ -24,15 +24,15 @@ class PatientSyncingApi {
     int? drId,
     String? outDr,
     String? passport,
-    bool? repEmail,
-    bool? repWhatsapp,
+    int? repEmail,
+    int? repWhatsapp,
     int? urgent,
     String? remarks,
     String? ipop,
-    int? discRsnId,
-    String? patImg,
+
+    // int? discRsnId,
     String? dob,
-    int? driverId,
+    String? driverId,
     int? technicianId,
     num? grossAmt,
     num? discAmt,
@@ -43,20 +43,12 @@ class PatientSyncingApi {
     String? paymentType,
     int? insId,
     int? insNo,
-    String? startTime,
-    String? endTime,
-    num? priPaidAmt,
-    String? secPayType,
-    num? secPaidAmt,
-    String? transactionRef,
+
     List<Map<String, dynamic>>? testLists,
   }) async {
     try {
       final body = <String, dynamic>{};
 
-      if (billLocation != null) body["BillLctn"] = billLocation;
-      if (assignBrId != null) body["AssignBrId"] = assignBrId;
-      if (corpId != null) body["CorpID"] = corpId;
       if (patId != null) body["patId"] = patId;
       if (namePrefix != null) body["NamePrefix"] = namePrefix;
       if (patName != null) body["patName"] = patName;
@@ -77,8 +69,7 @@ class PatientSyncingApi {
       if (urgent != null) body["Urgent"] = urgent;
       if (remarks != null) body["Remarks"] = remarks;
       if (ipop != null) body["Ipop"] = ipop;
-      if (discRsnId != null) body["DiscRsnId"] = discRsnId;
-      if (patImg != null) body["PatImg"] = patImg;
+
       if (dob != null) body["Dob"] = dob;
       if (driverId != null) body["DriverId"] = driverId;
       if (technicianId != null) body["TechntnId"] = technicianId;
@@ -91,20 +82,13 @@ class PatientSyncingApi {
       if (paymentType != null) body["PaymentType"] = paymentType;
       if (insId != null) body["Insid"] = insId;
       if (insNo != null) body["InsNo"] = insNo;
-      if (startTime != null) body["StartTime"] = startTime;
-      if (endTime != null) body["EndTime"] = endTime;
-      if (priPaidAmt != null) body["PriPaidAmt"] = priPaidAmt;
-      if (secPayType != null) body["SecPayType"] = secPayType;
-      if (secPaidAmt != null) body["SecPaidAmt"] = secPaidAmt;
-      if (transactionRef != null) {
-        body["TransactnRefDet"] = transactionRef;
-      }
+
       if (testLists != null) body["Testlists"] = testLists;
 
       final response = await PostApiServices.callApi(
         body: {
           "YrId": 2425,
-          "BrId": AppConstants.branchID,
+          "BrId": int.tryParse(AppConstants.branchID) ?? 0,
           "DevCode": AppConstants.deviceID,
           "Pat_List": [body],
         },

@@ -28,22 +28,27 @@ class DiscountDialog extends ConsumerWidget {
               .allBookingDetails[index]
               .discAmt
               .toString();
-          await addTestcontroller.updateNetBalanceAmounts();
-          final testMasterState1 = ref.watch(addTestScreenProvider);
-          await homeController.updatePatient(
-            index: index,
-
-            discAmt:
-                num.tryParse(testMasterState1.discountAmountController.text) ??
-                0,
-            balance: testMasterState1.balanceAmount,
-            netAmt: testMasterState1.netAmount,
-            paidAmt: testMasterState1.amountPaid,
-            grossAmt: testMasterState1.totalPrice,
-            servChrge:
-                num.tryParse(testMasterState1.servicesnargeController.text) ??
-                0,
+          addTestcontroller.discountCalculation(
+            discountAmount: num.tryParse(
+              addTeststate.discountAmountController.text,
+            ),
           );
+          await addTestcontroller.updateNetBalanceAmounts();
+          // final testMasterState1 = ref.watch(addTestScreenProvider);
+          // await homeController.updatePatient(
+          //   index: index,
+
+          //   discAmt:
+          //       num.tryParse(testMasterState1.discountAmountController.text) ??
+          //       0,
+          //   balance: testMasterState1.balanceAmount,
+          //   netAmt: testMasterState1.netAmount,
+          //   paidAmt: testMasterState1.amountPaid,
+          //   grossAmt: testMasterState1.totalPrice,
+          //   servChrge:
+          //       num.tryParse(testMasterState1.servicesnargeController.text) ??
+          //       0,
+          // );
         }
       },
       child: AlertDialog(
@@ -77,25 +82,25 @@ class DiscountDialog extends ConsumerWidget {
                     addTeststate.discountPercentageController.clear();
                     addTeststate.discountAmountController.clear();
                     await addTestcontroller.updateNetBalanceAmounts();
-                    final testMasterState1 = ref.watch(addTestScreenProvider);
-                    await homeController.updatePatient(
-                      index: index,
+                    //  final testMasterState1 = ref.watch(addTestScreenProvider);
+                    // await homeController.updatePatient(
+                    //   index: index,
 
-                      discAmt:
-                          num.tryParse(
-                            testMasterState1.discountAmountController.text,
-                          ) ??
-                          0,
-                      balance: testMasterState1.balanceAmount,
-                      netAmt: testMasterState1.netAmount,
-                      paidAmt: testMasterState1.amountPaid,
-                      grossAmt: testMasterState1.totalPrice,
-                      servChrge:
-                          num.tryParse(
-                            testMasterState1.servicesnargeController.text,
-                          ) ??
-                          0,
-                    );
+                    //   discAmt:
+                    //       num.tryParse(
+                    //         testMasterState1.discountAmountController.text,
+                    //       ) ??
+                    //       0,
+                    //   balance: testMasterState1.balanceAmount,
+                    //   netAmt: testMasterState1.netAmount,
+                    //   paidAmt: testMasterState1.amountPaid,
+                    //   grossAmt: testMasterState1.totalPrice,
+                    //   servChrge:
+                    //       num.tryParse(
+                    //         testMasterState1.servicesnargeController.text,
+                    //       ) ??
+                    //       0,
+                    // );
                   }
                 },
               ),
@@ -118,25 +123,25 @@ class DiscountDialog extends ConsumerWidget {
                     addTeststate.discountPercentageController.clear();
                     addTeststate.discountAmountController.clear();
                     await addTestcontroller.updateNetBalanceAmounts();
-                    final testMasterState1 = ref.watch(addTestScreenProvider);
-                    await homeController.updatePatient(
-                      index: index,
+                    // final testMasterState1 = ref.watch(addTestScreenProvider);
+                    // await homeController.updatePatient(
+                    //   index: index,
 
-                      discAmt:
-                          num.tryParse(
-                            testMasterState1.discountAmountController.text,
-                          ) ??
-                          0,
-                      balance: testMasterState1.balanceAmount,
-                      netAmt: testMasterState1.netAmount,
-                      paidAmt: testMasterState1.amountPaid,
-                      grossAmt: testMasterState1.totalPrice,
-                      servChrge:
-                          num.tryParse(
-                            testMasterState1.servicesnargeController.text,
-                          ) ??
-                          0,
-                    );
+                    //   discAmt:
+                    //       num.tryParse(
+                    //         testMasterState1.discountAmountController.text,
+                    //       ) ??
+                    //       0,
+                    //   balance: testMasterState1.balanceAmount,
+                    //   netAmt: testMasterState1.netAmount,
+                    //   paidAmt: testMasterState1.amountPaid,
+                    //   grossAmt: testMasterState1.totalPrice,
+                    //   servChrge:
+                    //       num.tryParse(
+                    //         testMasterState1.servicesnargeController.text,
+                    //       ) ??
+                    //       0,
+                    // );
                   }
                 },
               ),

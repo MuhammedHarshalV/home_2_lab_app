@@ -424,7 +424,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     for (final patient in patients) {
       if (patient.flag == '1' || patient.flag == 1) {
         upcomingBookingList.add(patient);
-      } else if (patient.isCompleted == 'Yes' && (patient.balance ?? 0) == 0) {
+      } else if (patient.isCompleted == 'Yes' &&
+          (patient.balance ?? 0) == 0 &&
+          patient.isSync == 'Yes') {
         completedList.add(patient);
       } else if (patient.isCompleted == 'Yes' && (patient.balance ?? 0) != 0) {
         pendingList.add(patient);

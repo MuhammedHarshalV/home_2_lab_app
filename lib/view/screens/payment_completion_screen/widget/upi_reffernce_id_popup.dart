@@ -13,14 +13,18 @@ class RefferenceIdDialog extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addTeststate = ref.watch(addTestScreenProvider);
+    final addTestController = ref.read(addTestScreenProvider.notifier);
+
     final homeController = ref.read(homeScreenProvider.notifier);
 
     return PopScope(
       onPopInvoked: (didPop) async {
         if (didPop) {
-          final homeState = ref.watch(homeScreenProvider);
-          addTeststate.upiRefferenceIdController.text =
-              homeState.allBookingDetails[index].upiReferenceId ?? '';
+          final homeState = ref.read(homeScreenProvider);
+
+          addTestController.upiUpdates(
+            homeState.allBookingDetails[index].upiReferenceId ?? '',
+          );
         }
       },
 
@@ -42,6 +46,16 @@ class RefferenceIdDialog extends ConsumerWidget {
                 hint: 'Reference ID',
                 icon: Icons.qr_code_2_rounded,
                 isNumberInput: true,
+                onchanger: (p0) {
+                  final homeState = ref.read(homeScreenProvider);
+                  if (p0.trim().isNotEmpty) {
+                    addTestController.upiUpdates(p0);
+                  } else {
+                    addTestController.upiUpdates(
+                      homeState.allBookingDetails[index].upiReferenceId ?? '',
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -60,11 +74,7 @@ class RefferenceIdDialog extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
-                    final homeState = ref.watch(homeScreenProvider);
-                    addTeststate.upiRefferenceIdController.text =
-                        homeState.allBookingDetails[index].upiReferenceId ?? '';
-
+                  onPressed: () async {
                     context.pop();
                   },
                   child: const Text(
@@ -84,12 +94,12 @@ class RefferenceIdDialog extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  onPressed: () {
+                  onPressed: () async {
                     final addTeststate1 = ref.watch(addTestScreenProvider);
                     if (addTeststate1.upiRefferenceIdController.text
                         .trim()
                         .isNotEmpty) {
-                      homeController.updatePatient(
+                      await homeController.updatePatient(
                         index: index,
                         upiReferenceId:
                             addTeststate1.upiRefferenceIdController.text,

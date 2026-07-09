@@ -1,7 +1,8 @@
 //
 
 import 'dart:developer';
-
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+import 'package:slide_to_act/slide_to_act.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -38,65 +39,68 @@ class PatientCompletedCard extends ConsumerWidget {
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
       focusColor: Colors.transparent,
-      onTap: () {
-        patientBillingDetailsState.patientDetailsController.text =
-            patient.namePrefix ?? '';
-        patientBillingDetailsState.patientNameController.text =
-            patient.patName ?? '';
-        patientBillingDetailsState.patientPhoneController.text =
-            patient.patPhno ?? '';
-        patientBillingDetailsState.patientEmailController.text =
-            patient.patEmail ?? '';
-        patientBillingDetailsState.patientDateOfBirthController.text = '';
-        patientBillingDetailsState.ageController.text = patient.patAge
-            .toString();
-        patientBillingDetailsState.abhaIdController.text = '';
-        patientBillingDetailsState.noteController.text = '';
-        patientBillingDetailsState.genderController.text =
-            patient.patGender ?? '';
-        patientBillingDetailsState.addressController.text =
-            patient.patAddress ?? '';
-        patientBillingDetailsState.referredByController.text = '';
-        patientBillingDetailsState.assignedByController.text = '';
+      onTap: patient.flag.toString() == '1'
+          ? () {}
+          : () {
+              patientBillingDetailsState.patientDetailsController.text =
+                  patient.namePrefix ?? '';
+              patientBillingDetailsState.patientNameController.text =
+                  patient.patName ?? '';
+              patientBillingDetailsState.patientPhoneController.text =
+                  patient.patPhno ?? '';
+              patientBillingDetailsState.patientEmailController.text =
+                  patient.patEmail ?? '';
+              patientBillingDetailsState.patientDateOfBirthController.text = '';
+              patientBillingDetailsState.ageController.text = patient.patAge
+                  .toString();
+              patientBillingDetailsState.abhaIdController.text = '';
+              patientBillingDetailsState.noteController.text = '';
+              patientBillingDetailsState.genderController.text =
+                  patient.patGender ?? '';
+              patientBillingDetailsState.addressController.text =
+                  patient.patAddress ?? '';
+              patientBillingDetailsState.referredByController.text = '';
+              patientBillingDetailsState.assignedByController.text = '';
 
-        patientBillingController.updateState(
-          ageByYear: patient.patAgehead ?? '',
-          isUrgent: false,
-        );
+              patientBillingController.updateState(
+                ageByYear: patient.patAgehead ?? '',
+                isUrgent: false,
+              );
 
-        testAddState.discountAmountController.text = patient.discAmt.toString();
-        testAddState.discountPercentageController.text =
-            ((patient.discAmt! / patient.grossAmt!) * 100).toString();
-        testAddState.servicesnargeController.text = patient.servChrge
-            .toString();
-        testAddState.upiRefferenceIdController.text =
-            patient.upiReferenceId ?? ''.toString();
-        testAddController.updatestate(
-          isSync: patient.isSync ?? 'No',
-          balanceAmount: patient.balance ?? 0,
-          amountPaid: patient.paidAmt ?? 0,
-          netAmount: patient.netAmt ?? 0,
-          grosAmount: patient.grossAmt ?? 0,
-          primaryPaid: patient.primaryPaid ?? 0,
-          secondaryPaid: patient.secondaryPaid ?? 0,
-          secondaryType: patient.secondaryType ?? '',
-          primaryType: patient.primaryType ?? '',
-        );
+              testAddState.discountAmountController.text = patient.discAmt
+                  .toString();
+              testAddState.discountPercentageController.text =
+                  ((patient.discAmt! / patient.grossAmt!) * 100).toString();
+              testAddState.servicesnargeController.text = patient.servChrge
+                  .toString();
+              testAddState.upiRefferenceIdController.text =
+                  patient.upiReferenceId ?? ''.toString();
+              testAddController.updatestate(
+                isSync: patient.isSync ?? 'No',
+                balanceAmount: patient.balance ?? 0,
+                amountPaid: patient.paidAmt ?? 0,
+                netAmount: patient.netAmt ?? 0,
+                grosAmount: patient.grossAmt ?? 0,
+                primaryPaid: patient.primaryPaid ?? 0,
+                secondaryPaid: patient.secondaryPaid ?? 0,
+                secondaryType: patient.secondaryType ?? '',
+                primaryType: patient.primaryType ?? '',
+              );
 
-        patientBillingController.updateState(
-          ageByYear: patient.patAgehead ?? '',
-          isUrgent: false,
-        );
-        if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
-          testAddState.testMasterListSelectedNewPrice.clear();
-        }
-        log(patient.toMap().toString());
-        testAddController.getTestMasterLists(patient);
-        context.pushNamed(
-          AppRouteNames.spotBillingTestAddScreen.name,
-          extra: index,
-        );
-      },
+              patientBillingController.updateState(
+                ageByYear: patient.patAgehead ?? '',
+                isUrgent: false,
+              );
+              if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
+                testAddState.testMasterListSelectedNewPrice.clear();
+              }
+              log(patient.toMap().toString());
+              testAddController.getTestMasterLists(patient);
+              context.pushNamed(
+                AppRouteNames.spotBillingTestAddScreen.name,
+                extra: index,
+              );
+            },
       child: Container(
         decoration: BoxDecoration(
           color: AppColors.appWhite,
@@ -278,12 +282,51 @@ class PatientCompletedCard extends ConsumerWidget {
                   ),
                 ],
               ),
-
+              if (patient.flag.toString() == '1') SizedBox(height: 10),
+              if (patient.flag.toString() == '1')
+                SwipeAcceptButton(index: index),
               //  Spacer(),
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class SwipeAcceptButton extends ConsumerWidget {
+  final int index;
+  const SwipeAcceptButton({super.key, required this.index});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final homeController = ref.read(homeScreenProvider.notifier);
+    return SlideAction(
+      height: 40,
+      borderRadius: 8,
+      sliderButtonIconPadding: 0,
+      outerColor: Colors.green,
+      innerColor: Colors.transparent,
+      sliderButtonIconSize: 12,
+      text: "Swipe to Accept",
+      textStyle: const TextStyle(
+        color: Colors.white,
+        fontSize: 13,
+        fontWeight: FontWeight.bold,
+      ),
+      sliderButtonIcon: Container(
+        decoration: BoxDecoration(
+          color: AppColors.appWhite,
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.green),
+        ),
+      ),
+      onSubmit: () async {
+        await homeController.updatePatient(index: index, flag: '0');
+      },
     );
   }
 }

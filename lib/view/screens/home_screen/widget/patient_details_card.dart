@@ -69,6 +69,7 @@ class PatientContactCard extends ConsumerWidget {
           secondaryPaid: patient.secondaryPaid ?? 0,
           secondaryType: patient.secondaryType ?? '',
           primaryType: patient.primaryType ?? '',
+          isSync: patient.isSync ?? '',
         );
 
         patientBillingController.updateState(

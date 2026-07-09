@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
@@ -156,21 +157,25 @@ class PatientDetailsCard extends ConsumerWidget {
             ),
 
             GestureDetector(
-              onTap: () {
-                if (index == null) {
-                  int indexNot =
-                      homeState.allBookingDetails.last.indexClick ?? 0;
-                  context.pushNamed(
-                    AppRouteNames.editSpotBillingScreen.name,
-                    pathParameters: {'index': indexNot.toString()},
-                  );
-                } else {
-                  context.pushNamed(
-                    AppRouteNames.editSpotBillingScreen.name,
-                    pathParameters: {'index': index.toString()},
-                  );
-                }
-              },
+              onTap: addTestState.isSync != 'Yes'
+                  ? () {
+                      if (index == null) {
+                        int indexNot =
+                            homeState.allBookingDetails.last.indexClick ?? 0;
+                        context.pushNamed(
+                          AppRouteNames.editSpotBillingScreen.name,
+                          pathParameters: {'index': indexNot.toString()},
+                        );
+                      } else {
+                        context.pushNamed(
+                          AppRouteNames.editSpotBillingScreen.name,
+                          pathParameters: {'index': index.toString()},
+                        );
+                      }
+                    }
+                  : () {
+                      AppMessage.show(context, 'Bill is already synced.');
+                    },
               child: const Text(
                 'Edit Patient Info',
                 style: TextStyle(
@@ -207,26 +212,36 @@ class PatientDetailsCard extends ConsumerWidget {
                       highlightColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       focusColor: Colors.transparent,
-                      onTap: () {
-                        if (addTestState.isCorporateBilling == true) {
-                          log("corparate already clicked");
-                          addTestController.updatestate(schemeIDSelected: 0);
-                          addTestState.specialSchemeController.clear();
-                          // addTestController.updateSpecialSchemePrice();
-                        }
-                        //  else {
-                        //   log(
-                        //     "Special scheme ID selected ${addTestState.schemeIDSelected.toString()}",
-                        //   );
-                        //   addTestController.updatestate(
-                        //     schemeIDSelected: addTestState.schemeIDSelected,
-                        //   );
-                        //   addTestController.updateSpecialSchemePrice();
-                        // }
-                        addTestController.updatestate(
-                          isCorporateBilling: !addTestState.isCorporateBilling,
-                        );
-                      },
+                      onTap: addTestState.isSync != 'Yes'
+                          ? () {
+                              if (addTestState.isCorporateBilling == true) {
+                                log("corparate already clicked");
+                                addTestController.updatestate(
+                                  schemeIDSelected: 0,
+                                );
+                                addTestState.specialSchemeController.clear();
+                                // addTestController.updateSpecialSchemePrice();
+                              }
+                              //  else {
+                              //   log(
+                              //     "Special scheme ID selected ${addTestState.schemeIDSelected.toString()}",
+                              //   );
+                              //   addTestController.updatestate(
+                              //     schemeIDSelected: addTestState.schemeIDSelected,
+                              //   );
+                              //   addTestController.updateSpecialSchemePrice();
+                              // }
+                              addTestController.updatestate(
+                                isCorporateBilling:
+                                    !addTestState.isCorporateBilling,
+                              );
+                            }
+                          : () {
+                              AppMessage.show(
+                                context,
+                                'Bill is already synced.',
+                              );
+                            },
                       child: Icon(
                         addTestState.isCorporateBilling
                             ? Icons.check_box_outlined

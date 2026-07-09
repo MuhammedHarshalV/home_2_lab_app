@@ -6,6 +6,7 @@ import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
 
 class AddTestScreenState {
+  final bool isSyncLoading;
   final List<String> discountList;
   final List<AccountsList> specialSchemeList;
   final List<TestMaster> testMasterList;
@@ -39,6 +40,7 @@ class AddTestScreenState {
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
   AddTestScreenState({
+    this.isSyncLoading = false,
     required this.discountReason,
     this.cardName = 'Home',
     this.secondaryPaid = 0,
@@ -72,6 +74,7 @@ class AddTestScreenState {
     this.primaryType = 'Cash',
   });
   AddTestScreenState copyWith({
+    bool? isSyncLoading,
     List<String>? discountList,
     TextEditingController? discountReason,
     List<AccountsList>? specialSchemeList,
@@ -105,6 +108,7 @@ class AddTestScreenState {
     bool? isSpecialschemeOpen,
   }) {
     return AddTestScreenState(
+      isSyncLoading: isSyncLoading ?? this.isSyncLoading,
       discountList: discountList ?? this.discountList,
       specialSchemeList: specialSchemeList ?? this.specialSchemeList,
       testMasterList: testMasterList ?? this.testMasterList,

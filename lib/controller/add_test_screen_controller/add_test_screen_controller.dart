@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:icon_infoware/apis/discount_fetching/discount_fetching_api.dart';
+import 'package:icon_infoware/apis/spot_billing/patient_syncing_api.dart';
 import 'package:icon_infoware/apis/spot_billing/special_scheme_rates_api.dart';
 import 'package:icon_infoware/apis/spot_billing/test_master_api.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_state.dart';
@@ -15,6 +16,7 @@ import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.
 import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddTestScreenController extends StateNotifier<AddTestScreenState> {
@@ -448,6 +450,64 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     );
   }
 
+  //upi id fetching
+  void upiUpdates(String value) {
+    state.upiRefferenceIdController.text = value;
+  }
+
+  //sync patient billing
+  Future<bool> patientBillSyncingApi(PatientHiveModel patient) async {
+    try {
+      state = state.copyWith(isSyncLoading: true);
+      final String currentDate = DateFormat(
+        'yyyy-MM-dd',
+      ).format(DateTime.now());
+      final bool response = await PatientSyncingApi.patientSyncingApi(
+        patId: patient.patId?.toString(),
+        namePrefix: patient.namePrefix,
+        patName: patient.patName,
+        patAddress: patient.patAddress,
+        invNo: int.tryParse(patient.invNo.toString()),
+        patEmail: patient.patEmail,
+        patPhno: patient.patPhno,
+        patMobno: patient.patMobno,
+        patAge: patient.patAge?.toInt(),
+        patAgeHead: patient.patAgehead,
+        patGender: patient.patGender,
+        currentDateTime: currentDate,
+        drId: int.tryParse(patient.drId ?? ''),
+        outDr: patient.outDr,
+        passport: patient.passport,
+        repEmail: int.tryParse(patient.repEmail.toString()),
+        repWhatsapp: int.tryParse(patient.repWhtapp.toString()),
+        urgent: patient.urgent?.toInt(),
+        remarks: patient.remarks,
+        ipop: patient.ipop,
+
+        dob: patient.dob,
+        driverId: patient.driverId ?? '',
+        technicianId: int.tryParse(patient.techId ?? ''),
+        grossAmt: patient.grossAmt,
+        discAmt: patient.discAmt,
+        servCharge: patient.servChrge,
+        netAmt: patient.netAmt,
+        paidAmt: patient.paidAmt,
+        balance: patient.balance,
+        paymentType: patient.primaryType,
+        insId: int.tryParse(patient.insid ?? ''),
+        insNo: int.tryParse(patient.insNo ?? ''),
+
+        testLists: patient.testlists,
+      );
+      log('syncing response :$response');
+      return response;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    } finally {
+      state = state.copyWith(isSyncLoading: false);
+    }
+  }
   //update final list to see
   // void updateSpecialSchemePrice() {
   //   List<TestMasterSelected> updatedList = [];
@@ -748,6 +808,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       secondaryType: 'UPI',
       isCorporateBilling: false,
       isSpecialschemeOpen: false,
+      isSync: 'No',
     );
   }
 }

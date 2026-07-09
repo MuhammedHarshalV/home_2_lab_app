@@ -22,10 +22,6 @@ import 'package:share_plus/share_plus.dart';
 final ScreenshotController screenshotController = ScreenshotController();
 
 class PrintBillDetailsScreen extends ConsumerWidget {
-  final Color darkBlue = const Color(0xFF163E61);
-  final Color keyGreen = const Color(0xFF1B6A3B);
-  final Color valueDark = const Color(0xFF1A334B);
-  final Color rowLightBlue = const Color(0xFFE5F0F9);
   final Color backgroundColor = const Color(0xFFF7F5F0); // Off-white/cream
   const PrintBillDetailsScreen({super.key});
 
