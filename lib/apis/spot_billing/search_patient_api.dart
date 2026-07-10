@@ -16,7 +16,7 @@ class SearchPatientApi {
         url: ApiConstants.searchApi,
         body: {"SrchVal": body},
       );
-      log('+++++++++++++++++++++${response.toString()}');
+
       if (response == null || response.toString().isEmpty) {
         log('======Response :${response.toString()}');
         return [];

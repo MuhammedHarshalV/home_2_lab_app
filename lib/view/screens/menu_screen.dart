@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -18,7 +19,10 @@ class MenuScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bankingstate = ref.watch(bankFetchingProvider);
+    final patientstate = ref.watch(patientBillingProvider);
+
     final bankingController = ref.read(bankFetchingProvider.notifier);
+    final patientController = ref.read(patientBillingProvider.notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -181,12 +185,42 @@ class MenuScreen extends ConsumerWidget {
                       const SizedBox(height: 16),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.sync,
                           size: 20,
                           color: AppColors.appPrimaryColor,
                         ),
                         "Test Sync",
+                      ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () async {
+                          await patientController.doneBySearch(
+                            searchText: '',
+                            apiCall: true,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          patientstate.isLoading == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.sync,
+                                  size: 20,
+                                  color: AppColors.appPrimaryColor,
+                                ),
+                          "Account Heads Sync",
+                        ),
                       ),
 
                       buildSettingsItem(

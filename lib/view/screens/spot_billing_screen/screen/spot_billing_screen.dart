@@ -282,7 +282,10 @@ class SpotBillingScreen extends ConsumerWidget {
                             doneByAccountListSearch: newSearchList,
                           );
                         } else {
-                          spotBillingController.doneBySearch(searchText: value);
+                          spotBillingController.doneBySearch(
+                            searchText: value,
+                            apiCall: false,
+                          );
                         }
                         // spotBillingController.doneBySearch(
                         //   searchText: value,
@@ -467,7 +470,7 @@ class SpotBillingScreen extends ConsumerWidget {
                       spotBillingController.updateState(isSubmitted: true);
                       if (formKey.currentState!.validate()) {
                         // testMasterController.testMasterCalling();
-                        testMasterController.specialRatesFetch();
+                        // testMasterController.specialRatesFetch();
                         context.pushReplacementNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,
                         );

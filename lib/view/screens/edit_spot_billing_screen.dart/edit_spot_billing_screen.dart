@@ -243,7 +243,10 @@ class EditSpotBillingScreen extends ConsumerWidget {
                             doneByAccountListSearch: newSearchList,
                           );
                         } else {
-                          spotBillingController.doneBySearch(searchText: value);
+                          spotBillingController.doneBySearch(
+                            searchText: value,
+                            apiCall: false,
+                          );
                         }
                         // spotBillingController.doneBySearch(
                         //   searchText: value,

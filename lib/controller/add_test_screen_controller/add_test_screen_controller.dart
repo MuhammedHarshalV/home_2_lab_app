@@ -36,11 +36,21 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         ),
       ) {
     Future.microtask(() async {
-      //  await getTestMasterLists();
+      await getspecialSchemeAccounts();
       // testMasterCalling();
-      specialRatesFetch();
+      // specialRatesFetch();
     });
   }
+  //getdata from hive special scheme list
+  Future<void> getspecialSchemeAccounts() async {
+    final box = await Hive.openBox('special_scheme');
+
+    List<AccountsList> data = box.values
+        .map((item) => AccountsList.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
+    state = state.copyWith(specialSchemeList: data);
+  }
+
   //store test lists to hive
   Future<void> getTestMasterLists(PatientHiveModel? indexOfClicking) async {
     bool isConnected = await InternetChecker.hasConnection();

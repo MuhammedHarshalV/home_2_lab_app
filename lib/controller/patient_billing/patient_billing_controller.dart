@@ -2,10 +2,12 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:icon_infoware/apis/spot_billing/done_by_search_api.dart';
 import 'package:icon_infoware/apis/spot_billing/search_patient_api.dart';
-import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+
 import 'package:icon_infoware/controller/patient_billing/patient_billing_state.dart';
+import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 
 import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
@@ -35,7 +37,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
         ),
       ) {
     Future.microtask(() {
-      doneBySearch(searchText: '');
+      doneBySearch(searchText: '', apiCall: false);
     });
   }
 
@@ -63,62 +65,147 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   }
 
   //Search done by api
-  Future<void> doneBySearch({required String searchText}) async {
-    if (state.doneByAccountListApi.isEmpty) {
-      final response = await DoneBySearchApi.doneBySearch();
-      log('done by api response in controller :${response.toString()}');
-      if (response == null || response is! DoneBySearchResponseModel) {
-        return;
-      }
-      List<AccountsList> newAccountList = [];
-      List<AccountsList> specialSchemeList = [];
+  Future<void> doneBySearch({
+    required String searchText,
+    required bool apiCall,
+  }) async {
+    try {
+      state = state.copyWith(isLoading: true);
 
-      for (var item in response.accountsList ?? []) {
-        final account = item;
+      if (apiCall == true) {
+        bool isConnect = await InternetChecker.hasConnection();
+        final box = await Hive.openBox('staff_account');
 
-        if (account.type == "Staff") {
-          log("staffs : ready");
-          newAccountList.add(account);
-        } else if (account.type == 'Hosp' || account.type == 'AccHd') {
-          specialSchemeList.add(account);
-          // log('new special scheme list : $scpecialSchemeList');
-          ref
-              .read(addTestScreenProvider.notifier)
-              .updatestate(specialSchemeList: specialSchemeList);
-          // log(
-          //   'new special scheme list : ${specialSchemeList.map((e) => e.name).toList()}',
-          // );
-        }
-      }
-      log('done by account list : $newAccountList');
-      state = state.copyWith(
-        doneByAccountListApi: newAccountList,
-        isDoneByApi: true,
-      );
-    } else {
-      final searchTexts = searchText.toLowerCase();
-
-      if (searchTexts.isEmpty) {
-        state = state.copyWith(doneByAccountListSearch: [], isDoneByApi: true);
-      } else {
-        List<String> newsearchList = [];
-
-        for (var item in state.doneByAccountListApi) {
-          final name = item.name?.toLowerCase() ?? '';
-
-          if (name.contains(searchTexts)) {
-            newsearchList.add(item.name ?? '');
-
-            log('done by search account list : $newsearchList');
+        //==================== Done By Account API ====================//
+        if (apiCall == true) {
+          final response = await DoneBySearchApi.doneBySearch();
+          log('done by api response in controller :${response.toString()}');
+          if (response == null || response is! DoneBySearchResponseModel) {
+            return;
           }
-        }
+          List<AccountsList> newAccountList = [];
+          List<AccountsList> specialSchemeList = [];
 
-        state = state.copyWith(
-          doneByAccountListSearch: newsearchList,
-          isDoneByApi: true,
-        );
+          for (var item in response.accountsList ?? []) {
+            final account = item;
+
+            if (account.type == "Staff") {
+              log("staffs : ready");
+              newAccountList.add(account);
+            } else if (account.type == 'Hosp' || account.type == 'AccHd') {
+              specialSchemeList.add(account);
+            }
+          }
+
+          log('done by account list : $newAccountList');
+          state = state.copyWith(
+            doneByAccountListApi: newAccountList,
+            isDoneByApi: true,
+          );
+          await saveStaffAccounts(
+            accounts: newAccountList,
+            specialSchemeList: specialSchemeList,
+          );
+        }
+        //================== End Done By Account API ==================//
+        //==================== Done By Account API when Hive have no data ====================//
+        else if (isConnect == true && box.isEmpty) {
+          final response = await DoneBySearchApi.doneBySearch();
+          log('done by api response in controller :${response.toString()}');
+          if (response == null || response is! DoneBySearchResponseModel) {
+            return;
+          }
+          List<AccountsList> newAccountList = [];
+          List<AccountsList> specialSchemeList = [];
+
+          for (var item in response.accountsList ?? []) {
+            final account = item;
+
+            if (account.type == "Staff") {
+              log("staffs : ready");
+              newAccountList.add(account);
+            } else if (account.type == 'Hosp' || account.type == 'AccHd') {
+              specialSchemeList.add(account);
+            }
+          }
+
+          log('done by account list : $newAccountList');
+          state = state.copyWith(
+            doneByAccountListApi: newAccountList,
+            isDoneByApi: true,
+          );
+          await saveStaffAccounts(
+            accounts: newAccountList,
+            specialSchemeList: specialSchemeList,
+          );
+        } //====================end Done By Account API when Hive have no data ====================//
+        //====================stored data fetching ====================//
+        else if (state.doneByAccountListApi.isEmpty) {
+          List<AccountsList> staffAccountList = await getStaffAccounts();
+          log(staffAccountList.toString());
+          state = state.copyWith(doneByAccountListApi: staffAccountList);
+          log(state.doneByAccountListApi.toString());
+        }
+      } else {
+        final searchTexts = searchText.toLowerCase();
+
+        if (searchTexts.isEmpty) {
+          state = state.copyWith(
+            doneByAccountListSearch: [],
+            isDoneByApi: true,
+          );
+        } else {
+          List<String> newsearchList = [];
+
+          for (var item in state.doneByAccountListApi) {
+            final name = item.name?.toLowerCase() ?? '';
+
+            if (name.contains(searchTexts)) {
+              newsearchList.add(item.name ?? '');
+
+              log('done by search account list : $newsearchList');
+            }
+          }
+
+          state = state.copyWith(
+            doneByAccountListSearch: newsearchList,
+            isDoneByApi: true,
+          );
+        }
       }
+    } catch (e) {
+      log(e.toString());
+    } finally {
+      state = state.copyWith(isLoading: false);
     }
+  }
+
+  //store to account heads staffs to hive
+  Future<void> saveStaffAccounts({
+    required List<AccountsList> accounts,
+    required List<AccountsList> specialSchemeList,
+  }) async {
+    final staffBox = await Hive.openBox('staff_account');
+    final schemeBox = await Hive.openBox('special_scheme');
+
+    await staffBox.clear(); // Optional: remove old data
+    await schemeBox.clear();
+    for (final account in accounts) {
+      await staffBox.add(account.toJson());
+    }
+
+    for (final scheme in specialSchemeList) {
+      await schemeBox.add(scheme.toJson());
+    }
+  }
+
+  //get stored account heads by staff
+  Future<List<AccountsList>> getStaffAccounts() async {
+    final box = await Hive.openBox('staff_account');
+
+    return box.values
+        .map((item) => AccountsList.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
   }
 
   /// COMMON UPDATE METHOD
