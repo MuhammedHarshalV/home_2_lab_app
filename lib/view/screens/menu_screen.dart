@@ -3,8 +3,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_controller.dart';
 import 'package:icon_infoware/core/constants/app_constance.dart';
@@ -20,9 +22,11 @@ class MenuScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final bankingstate = ref.watch(bankFetchingProvider);
     final patientstate = ref.watch(patientBillingProvider);
+    final addTeststate = ref.watch(addTestScreenProvider);
 
     final bankingController = ref.read(bankFetchingProvider.notifier);
     final patientController = ref.read(patientBillingProvider.notifier);
+    final addTestController = ref.read(addTestScreenProvider.notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
@@ -222,6 +226,35 @@ class MenuScreen extends ConsumerWidget {
                           "Account Heads Sync",
                         ),
                       ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () async {
+                          await addTestController.specialRatesFetch(
+                            apiCall: true,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          addTeststate.isSyncLoading == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.sync,
+                                  size: 20,
+                                  color: AppColors.appPrimaryColor,
+                                ),
+                          "Special Rates Sync",
+                        ),
+                      ),
 
                       buildSettingsItem(
                         const Icon(
@@ -232,13 +265,38 @@ class MenuScreen extends ConsumerWidget {
                         "Invoice Sync",
                       ),
 
-                      buildSettingsItem(
-                        const Icon(
-                          Icons.calendar_month_outlined,
-                          size: 20,
-                          color: AppColors.appPrimaryColor,
+                      InkWell(
+                        onTap: () {
+                          Color selectedColor = Colors.blue;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: const Text("Pick a Color"),
+                                content: SingleChildScrollView(
+                                  child: ColorPicker(
+                                    pickerColor: selectedColor,
+                                    onColorChanged: (Color color) {},
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () => Navigator.pop(context),
+                                    child: const Text("Done"),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: buildSettingsItem(
+                          const Icon(
+                            Icons.calendar_month_outlined,
+                            size: 20,
+                            color: AppColors.appPrimaryColor,
+                          ),
+                          "Booking Sync",
                         ),
-                        "Booking Sync",
                       ),
 
                       buildSettingsItem(

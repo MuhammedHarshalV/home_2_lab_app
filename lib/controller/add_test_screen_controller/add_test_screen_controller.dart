@@ -36,9 +36,9 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         ),
       ) {
     Future.microtask(() async {
-      await getspecialSchemeAccounts();
+      getspecialSchemeAccounts();
       // testMasterCalling();
-      // specialRatesFetch();
+      specialRatesFetch(apiCall: false);
     });
   }
   //getdata from hive special scheme list
@@ -582,16 +582,48 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   // }
 
   //special scheme rate fetch by api
-  Future<void> specialRatesFetch() async {
+  Future<void> specialRatesFetch({required bool apiCall}) async {
     try {
-      final SpecialSchemeRatesResponseModel response =
-          await SpecialSchemeRatesApi.specialSchemesApi();
-      state = state.copyWith(
-        specialSchemeRatesList: response.schemeRateList ?? [],
-      );
+      state = state.copyWith(isSyncLoading: true);
+      if (apiCall == true) {
+        final SpecialSchemeRatesResponseModel response =
+            await SpecialSchemeRatesApi.specialSchemesApi();
+        state = state.copyWith(
+          specialSchemeRatesList: response.schemeRateList ?? [],
+        );
+        await saveSpecialSchemeAccounts(
+          specialSchemeList: response.schemeRateList ?? [],
+        );
+      } else {
+        List<SchemeRateList> schemeList = await getSpecialSchemeList();
+        state = state.copyWith(specialSchemeRatesList: schemeList);
+      }
     } catch (e) {
       log('conntroller catch : ${e.toString()}');
+    } finally {
+      state = state.copyWith(isSyncLoading: false);
     }
+  }
+
+  //store phones to special schemeRates
+  Future<void> saveSpecialSchemeAccounts({
+    required List<SchemeRateList> specialSchemeList,
+  }) async {
+    final schemeBox = await Hive.openBox('special_scheme_rates');
+
+    await schemeBox.clear();
+    for (final account in specialSchemeList) {
+      await schemeBox.add(account.toJson());
+    }
+  }
+
+  //get stored special rates List
+  Future<List<SchemeRateList>> getSpecialSchemeList() async {
+    final box = await Hive.openBox('special_scheme_rates');
+
+    return box.values
+        .map((item) => SchemeRateList.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
   }
 
   Future<void> updateSpecialRateNewPriceList(TestMasterSelected list) async {
