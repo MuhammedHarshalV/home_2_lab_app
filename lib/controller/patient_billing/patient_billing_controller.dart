@@ -16,6 +16,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   PatientBillingController(this.ref)
     : super(
         PatientBillingState(
+          outDoctorController: TextEditingController(),
           ageController: TextEditingController(),
           patientSearchController: TextEditingController(),
           patientDetailsController: TextEditingController(),

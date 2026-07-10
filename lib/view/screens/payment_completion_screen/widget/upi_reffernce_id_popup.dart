@@ -21,7 +21,7 @@ class RefferenceIdDialog extends ConsumerWidget {
       onPopInvoked: (didPop) async {
         if (didPop) {
           final homeState = ref.read(homeScreenProvider);
-
+          addTeststate.upiRefferenceIdController.clear();
           addTestController.upiUpdates(
             homeState.allBookingDetails[index].upiReferenceId ?? '',
           );

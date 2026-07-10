@@ -21,7 +21,7 @@ class ServiceChangeDialog extends ConsumerWidget {
         if (didPop) {
           // Same code as your Cancel button
           final homeState = ref.read(homeScreenProvider);
-
+          addTeststate.servicesnargeController.clear();
           addTeststate.servicesnargeController.text = homeState
               .allBookingDetails[index]
               .servChrge

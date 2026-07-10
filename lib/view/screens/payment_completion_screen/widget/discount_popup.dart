@@ -24,6 +24,7 @@ class DiscountDialog extends ConsumerWidget {
       onPopInvoked: (didPop) async {
         if (didPop) {
           final homeState = ref.watch(homeScreenProvider);
+          addTeststate.discountAmountController.clear();
           addTeststate.discountAmountController.text = homeState
               .allBookingDetails[index]
               .discAmt

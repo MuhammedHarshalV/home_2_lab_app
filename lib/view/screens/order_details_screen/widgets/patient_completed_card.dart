@@ -50,6 +50,14 @@ class PatientCompletedCard extends ConsumerWidget {
                   patient.patPhno ?? '';
               patientBillingDetailsState.patientEmailController.text =
                   patient.patEmail ?? '';
+              patientBillingDetailsState.passPortNumberController.text =
+                  patient.passport ?? '';
+              patientBillingDetailsState.noteController.text =
+                  patient.note ?? '';
+              patientBillingDetailsState.abhaIdController.text =
+                  patient.abhaId ?? '';
+              patientBillingDetailsState.outDoctorController.text =
+                  patient.outDr ?? '';
               patientBillingDetailsState.patientDateOfBirthController.text = '';
               patientBillingDetailsState.ageController.text = patient.patAge
                   .toString();
@@ -64,7 +72,7 @@ class PatientCompletedCard extends ConsumerWidget {
 
               patientBillingController.updateState(
                 ageByYear: patient.patAgehead ?? '',
-                isUrgent: false,
+                isUrgent: patient.urgent == 0 ? false : true,
               );
 
               testAddState.discountAmountController.text = patient.discAmt
@@ -85,11 +93,12 @@ class PatientCompletedCard extends ConsumerWidget {
                 secondaryPaid: patient.secondaryPaid ?? 0,
                 secondaryType: patient.secondaryType ?? '',
                 primaryType: patient.primaryType ?? '',
+                isUrgent: patient.urgent == 0 ? false : true,
               );
 
               patientBillingController.updateState(
                 ageByYear: patient.patAgehead ?? '',
-                isUrgent: false,
+                isUrgent: patient.urgent == 0 ? false : true,
               );
               if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
                 testAddState.testMasterListSelectedNewPrice.clear();

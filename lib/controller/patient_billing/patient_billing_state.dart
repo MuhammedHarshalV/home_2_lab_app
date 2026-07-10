@@ -12,6 +12,7 @@ class PatientBillingState {
   final TextEditingController ageController;
   final TextEditingController abhaIdController;
   final TextEditingController passPortNumberController;
+  final TextEditingController outDoctorController;
   final TextEditingController noteController;
   final String ageByYear;
   //final String age;
@@ -34,11 +35,9 @@ class PatientBillingState {
   final bool isDoneByApi;
 
   final bool isUrgent;
-  
 
   PatientBillingState({
     // this.age = '',
-   
     this.searchPatientList = const [],
     this.doneByAccountListApi = const [],
     this.doneByAccountListSearch = const [],
@@ -56,6 +55,7 @@ class PatientBillingState {
     required this.patientNameController,
     required this.patientPhoneController,
     required this.patientEmailController,
+    required this.outDoctorController,
     required this.patientDateOfBirthController,
     required this.genderController,
     required this.addressController,
@@ -81,7 +81,7 @@ class PatientBillingState {
     String? ageByYear,
     TextEditingController? genderController,
     TextEditingController? ageController,
-
+    TextEditingController? outDoctorController,
     TextEditingController? addressController,
     TextEditingController? referredByController,
     TextEditingController? assignedByController,
@@ -98,10 +98,9 @@ class PatientBillingState {
 
     bool? isAdditional,
     bool? isUrgent,
-  
   }) {
     return PatientBillingState(
-     
+      outDoctorController: outDoctorController ?? this.outDoctorController,
       patientSearchController:
           patientSearchController ?? this.patientSearchController,
       ageController: ageController ?? this.ageController,

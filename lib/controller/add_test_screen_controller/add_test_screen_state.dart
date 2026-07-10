@@ -30,6 +30,7 @@ class AddTestScreenState {
   final num secondaryPaid;
   final String isSync;
   final num balanceAmount;
+  final bool isUrgent;
 
   final List<SchemeRateList> specialSchemeRatesList;
   final TextEditingController searchController;
@@ -40,6 +41,7 @@ class AddTestScreenState {
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
   AddTestScreenState({
+    this.isUrgent = false,
     this.isSyncLoading = false,
     required this.discountReason,
     this.cardName = 'Home',
@@ -74,6 +76,7 @@ class AddTestScreenState {
     this.primaryType = 'Cash',
   });
   AddTestScreenState copyWith({
+    bool? isUrgent,
     bool? isSyncLoading,
     List<String>? discountList,
     TextEditingController? discountReason,
@@ -108,6 +111,7 @@ class AddTestScreenState {
     bool? isSpecialschemeOpen,
   }) {
     return AddTestScreenState(
+      isUrgent: isUrgent ?? this.isUrgent,
       isSyncLoading: isSyncLoading ?? this.isSyncLoading,
       discountList: discountList ?? this.discountList,
       specialSchemeList: specialSchemeList ?? this.specialSchemeList,

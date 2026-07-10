@@ -41,6 +41,9 @@ class PatientSyncingApi {
     num? paidAmt,
     num? balance,
     String? paymentType,
+    String? secondaryType,
+    num? primaryamount,
+    num? secondaryamount,
     int? insId,
     int? insNo,
 
@@ -82,7 +85,9 @@ class PatientSyncingApi {
       if (paymentType != null) body["PaymentType"] = paymentType;
       if (insId != null) body["Insid"] = insId;
       if (insNo != null) body["InsNo"] = insNo;
-
+      if (secondaryType != null) body['SecPayType'] = secondaryType;
+      if (primaryamount != null) body['PriPaidAmt'] = primaryamount;
+      if (secondaryamount != null) body['SecPaidAmt'] = secondaryamount;
       if (testLists != null) body["Testlists"] = testLists;
 
       final response = await PostApiServices.callApi(

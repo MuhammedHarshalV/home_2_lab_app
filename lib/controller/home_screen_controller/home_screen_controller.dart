@@ -67,6 +67,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           'remarks': patient.remarks ?? '',
           'passport': '',
           'outDr': '',
+          "abhaId": patient.bookAbhmid ?? '',
+          "note": '',
           'flag': patient.flag.toString(),
           'patEmail': patient.bookEmail ?? '',
           'repEmail': 1,
@@ -127,6 +129,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'patPhno': patient.patPhno ?? '',
       'patMobno': patient.patMobno ?? '',
       'drId': '',
+      "abhaId": patient.abhaId ?? '',
+      'note': '',
       'upiReferenceId': '',
       "bookTime": patient.bookTime ?? '',
       'bookMapUrl': '',
@@ -141,7 +145,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'repWhtapp': 1,
       'ipop': '',
       'patImg': '',
-      'urgent': 0,
+      'urgent': patient.urgent,
       'dob': '',
       'driverId': '',
       'techId': '',
@@ -174,6 +178,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
   //edit stored data
   Future<void> updatePatient({
+    String? abhaId,
+    String? note,
     required int index,
     int? indexClick,
     String? patId,
@@ -230,6 +236,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     );
     final oldData = Map<String, dynamic>.from(box.getAt(hiveIndex));
     oldData['indexClick'] = indexClick ?? oldData['indexClick'];
+    oldData['abhaId'] = abhaId ?? oldData['abhaId'];
+    oldData['note'] = note ?? oldData['note'];
+
     oldData['patId'] = patId ?? oldData['patId'];
     oldData['namePrefix'] = namePrefix ?? oldData['namePrefix'];
     oldData['patName'] = patName ?? oldData['patName'];
@@ -284,6 +293,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     log(oldData['isSync']);
     final params = {
       'indexClick': indexClick,
+      'abhaId': abhaId,
+      'note': note,
       'index': index,
       'patId': patId,
       'namePrefix': namePrefix,
@@ -356,6 +367,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         patId: item['patId'],
         namePrefix: item['namePrefix'],
         patName: item['patName'],
+        abhaId: item['abhaId'],
+        note: item['note'],
         patAddress: item['patAddress'],
         patGender: item['patGender'],
         patAge: item['patAge'],

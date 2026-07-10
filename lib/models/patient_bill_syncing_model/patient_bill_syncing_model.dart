@@ -24,6 +24,8 @@ class PatientHiveModel {
   num? repWhtapp;
   String? ipop;
   String? patImg;
+  String? abhaId;
+  String? note;
   num? urgent;
   String? bookTime;
   String? dob;
@@ -48,6 +50,8 @@ class PatientHiveModel {
   List<Map<String, dynamic>>? testlists;
 
   PatientHiveModel({
+    this.abhaId,
+    this.note,
     this.indexClick,
     this.patId,
     this.namePrefix,
@@ -100,6 +104,9 @@ class PatientHiveModel {
   factory PatientHiveModel.fromMap(Map<dynamic, dynamic> map) {
     return PatientHiveModel(
       indexClick: map['indexClick'] ?? 0,
+      note: map['note'] ?? '',
+      abhaId: map['abhaId'] ?? '',
+
       patId: map['patId'] ?? 0,
       namePrefix: map['namePrefix'] ?? '',
       patName: map['patName'] ?? '',
@@ -197,6 +204,8 @@ class PatientHiveModel {
       'primaryType': primaryType,
       'insid': insid,
       'insNo': insNo,
+      "abhaId": abhaId,
+      "note": note,
       'isCompleted': isCompleted,
       'isSync': isSync,
       'primaryPaid': primaryPaid,
@@ -214,6 +223,7 @@ class PatientHiveModel {
     String? dateToSave,
   }) {
     return PatientHiveModel(
+      indexClick: indexClick,
       patId: patId,
       namePrefix: namePrefix,
       patName: patName,
@@ -231,6 +241,8 @@ class PatientHiveModel {
       remarks: remarks,
       passport: passport,
       outDr: outDr,
+      abhaId: abhaId,
+      note: note,
       flag: flag,
       patEmail: patEmail,
       upiReferenceId: upiReferenceId,

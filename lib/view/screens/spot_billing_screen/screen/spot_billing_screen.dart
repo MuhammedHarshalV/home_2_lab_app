@@ -422,6 +422,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         CommonTextField(
                           hint: 'Out Doctor',
                           icon: Icons.person_add_alt_outlined,
+                          controller: spotBillingState.outDoctorController,
                         ),
                         CommonTextField(
                           hint: 'Note',
@@ -442,9 +443,10 @@ class SpotBillingScreen extends ConsumerWidget {
                           spotBillingController.updateState(
                             isUrgent: !spotBillingState.isUrgent,
                           );
+                          log(spotBillingState.isUrgent.toString());
                         },
                         child: Icon(
-                          spotBillingState.isUrgent
+                          spotBillingState.isUrgent == true
                               ? Icons.check_box_outlined
                               : Icons.check_box_outline_blank,
                         ),
@@ -498,12 +500,19 @@ class SpotBillingScreen extends ConsumerWidget {
                           patId: 0,
                           patName: spotBillingState.patientNameController.text,
                           patMobno: '',
+                          urgent: spotBillingState.isUrgent == false ? 0 : 1,
+                          abhaId: spotBillingState.abhaIdController.text,
+                          note: spotBillingState.noteController.text,
+                          outDr: spotBillingState.outDoctorController.text,
+                          passport:
+                              spotBillingState.passPortNumberController.text,
                         );
                         ref.read(addTestScreenProvider.notifier).clearState();
                         await ref
                             .read(homeScreenProvider.notifier)
                             .savePatient(patient);
-                        log("save to hive :$patient");
+                        log("save to hive :${patient.toString()}");
+                        log("save to urgent :${patient.urgent.toString()}");
                         bottomNavController.setIndex(0);
                       } else {
                         log("Show errors ");

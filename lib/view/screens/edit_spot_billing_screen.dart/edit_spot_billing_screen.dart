@@ -431,6 +431,10 @@ class EditSpotBillingScreen extends ConsumerWidget {
                           patAddress: spotBillingState.addressController.text,
                           passport:
                               spotBillingState.passPortNumberController.text,
+                          outDr: spotBillingState.outDoctorController.text,
+                          abhaId: spotBillingState.abhaIdController.text,
+                          note: spotBillingState.noteController.text,
+                          urgent: spotBillingState.isUrgent == false ? 0 : 1,
                         );
                         context.pushReplacementNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,

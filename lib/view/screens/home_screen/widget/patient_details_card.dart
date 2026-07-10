@@ -43,6 +43,10 @@ class PatientContactCard extends ConsumerWidget {
         patientBillingDetailsState.patientEmailController.text =
             patient.patEmail ?? '';
         patientBillingDetailsState.patientDateOfBirthController.text = '';
+        patientBillingDetailsState.passPortNumberController.text =
+            patient.passport ?? '';
+        patientBillingDetailsState.outDoctorController.text =
+            patient.outDr ?? '';
         patientBillingDetailsState.ageController.text = patient.patAge
             .toString();
         patientBillingDetailsState.abhaIdController.text = '';
@@ -70,11 +74,12 @@ class PatientContactCard extends ConsumerWidget {
           secondaryType: patient.secondaryType ?? '',
           primaryType: patient.primaryType ?? '',
           isSync: patient.isSync ?? '',
+          isUrgent: patient.urgent == 0 ? false : true,
         );
 
         patientBillingController.updateState(
           ageByYear: patient.patAgehead ?? '',
-          isUrgent: false,
+          isUrgent: patient.urgent == 0 ? false : true,
         );
         if (testAddState.testMasterListSelectedNewPrice.isNotEmpty) {
           testAddState.testMasterListSelectedNewPrice.clear();

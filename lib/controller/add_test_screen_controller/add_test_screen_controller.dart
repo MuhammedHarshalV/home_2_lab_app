@@ -360,6 +360,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
 
   //state updation function
   void updatestate({
+    bool? isUrgent,
     String? isSync,
     List<AccountsList>? specialSchemeList,
     List<TestMasterSelected>? testMasterListSeeing,
@@ -394,6 +395,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       testMasterListSelectedNewPrice: testMasterListSelectedNewPrice,
       isSync: isSync,
       cardName: cardName,
+      isUrgent: isUrgent,
     );
   }
 
@@ -475,7 +477,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         patAgeHead: patient.patAgehead,
         patGender: patient.patGender,
         currentDateTime: currentDate,
-        drId: int.tryParse(patient.drId ?? ''),
+        drId: int.tryParse(patient.drId.toString()),
         outDr: patient.outDr,
         passport: patient.passport,
         repEmail: int.tryParse(patient.repEmail.toString()),
@@ -494,9 +496,11 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         paidAmt: patient.paidAmt,
         balance: patient.balance,
         paymentType: patient.primaryType,
-        insId: int.tryParse(patient.insid ?? ''),
-        insNo: int.tryParse(patient.insNo ?? ''),
-
+        insId: int.tryParse(patient.insid.toString()),
+        insNo: int.tryParse(patient.insNo.toString()),
+        secondaryType: patient.secondaryType ?? '',
+        primaryamount: patient.primaryPaid ?? 0,
+        secondaryamount: patient.secondaryPaid ?? 0,
         testLists: patient.testlists,
       );
       log('syncing response :$response');
@@ -809,6 +813,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       isCorporateBilling: false,
       isSpecialschemeOpen: false,
       isSync: 'No',
+      isUrgent: false,
     );
   }
 }
