@@ -208,107 +208,71 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     ? () async {
                         final bool isConnected =
                             await InternetChecker.hasConnection();
-                        if (index == null) {
-                          int indexGet =
-                              homeState.allBookingDetails.last.indexClick ?? 0;
-                          if (testAddState
-                              .testMasterListSelectedNewPrice
-                              .isNotEmpty) {
-                            bool syncing = false;
-                            if (isConnected) {
-                              final bool synced = await testAddController
-                                  .patientBillSyncingApi(
-                                    homeState.allBookingDetails[indexGet],
-                                  );
-                              syncing = synced;
-                              log('sync is $syncing');
-                            }
-                            final String time = DateFormat(
-                              'hh:mm a',
-                            ).format(DateTime.now());
-                            final String date = DateFormat(
-                              'dd-MMM-yyyy',
-                            ).format(DateTime.now());
-                            await homeController.updatePatient(
-                              index: indexGet,
-                              isCompleted: 'Yes',
-                              isSync: syncing == true ? 'Yes' : 'No',
-                              timeToSave: time,
-                              dateToSave: date,
-                            );
-                            context.pushReplacementNamed(
-                              AppRouteNames.bottomNavScreen.name,
-                            );
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  backgroundColor: AppColors.appWhite,
-                                  title: Center(
-                                    child: Text(
-                                      'Alert',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  content: Text(
-                                    'Please add at least one test.',
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                        } else {
-                          if (testAddState
-                              .testMasterListSelectedNewPrice
-                              .isNotEmpty) {
-                            bool syncing = false;
-                            if (isConnected) {
-                              final bool synced = await testAddController
-                                  .patientBillSyncingApi(
-                                    homeState.allBookingDetails[index!],
-                                  );
-                              syncing = synced;
-                              log('sync is $syncing');
-                            }
-                            final String time = DateFormat(
-                              'hh:mm a',
-                            ).format(DateTime.now());
-                            final String date = DateFormat(
-                              'dd-MMM-yyyy',
-                            ).format(DateTime.now());
 
-                            await homeController.updatePatient(
-                              index: index!,
-                              isCompleted: 'Yes',
-                              isSync: syncing == true ? 'Yes' : 'No',
-                              timeToSave: time,
-                              dateToSave: date,
-                            );
-                            context.pop();
-                          } else {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  backgroundColor: AppColors.appWhite,
-                                  title: Center(
-                                    child: Text(
-                                      'Alert',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
+                        final int patientIndex =
+                            index ??
+                            (homeState.allBookingDetails.last.indexClick ?? 0);
+
+                        if (testAddState
+                            .testMasterListSelectedNewPrice
+                            .isEmpty) {
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: AppColors.appWhite,
+                                title: const Center(
+                                  child: Text(
+                                    'Alert',
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
                                     ),
                                   ),
-                                  content: Text(
-                                    'Please add at least one test.',
-                                  ),
-                                );
-                              },
-                            );
-                          }
+                                ),
+                                content: const Text(
+                                  'Please add at least one test.',
+                                ),
+                              );
+                            },
+                          );
+                          return;
+                        }
+
+                        bool syncing = false;
+
+                        if (isConnected) {
+                          syncing = await testAddController
+                              .patientBillSyncingApi(
+                                homeState.allBookingDetails[patientIndex],
+                              );
+
+                          log('Sync status : $syncing');
+                        }
+
+                        final String time = DateFormat(
+                          'hh:mm a',
+                        ).format(DateTime.now());
+
+                        final String date = DateFormat(
+                          'dd-MMM-yyyy',
+                        ).format(DateTime.now());
+
+                        await homeController.updatePatient(
+                          index: patientIndex,
+                          isCompleted: 'Yes',
+                          isSync: syncing ? 'Yes' : 'No',
+                          timeToSave: time,
+                          dateToSave: date,
+                        );
+
+                        if (!context.mounted) return;
+
+                        if (index == null) {
+                          context.pushReplacementNamed(
+                            AppRouteNames.bottomNavScreen.name,
+                          );
+                        } else {
+                          context.pop();
                         }
                       }
                     : () {

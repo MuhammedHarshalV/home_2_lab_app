@@ -482,7 +482,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         namePrefix: patient.namePrefix,
         patName: patient.patName,
         patAddress: patient.patAddress,
-        invNo: int.tryParse(patient.invNo.toString()),
+        invNo: (patient.indexClick ?? 0) + 1,
         patEmail: patient.patEmail,
         patPhno: patient.patPhno,
         patMobno: patient.patMobno,
