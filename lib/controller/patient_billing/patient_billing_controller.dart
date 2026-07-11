@@ -73,83 +73,80 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   }) async {
     try {
       state = state.copyWith(isLoading: true);
+      bool isConnect = await InternetChecker.hasConnection();
+      final box = await Hive.openBox('staff_account');
 
+      //==================== Done By Account API ====================//
       if (apiCall == true) {
-        bool isConnect = await InternetChecker.hasConnection();
-        final box = await Hive.openBox('staff_account');
-
-        //==================== Done By Account API ====================//
-        if (apiCall == true) {
-          final response = await DoneBySearchApi.doneBySearch(context);
-          log('done by api response in controller :${response.toString()}');
-          if (response == null || response is! DoneBySearchResponseModel) {
-            return;
-          }
-          List<AccountsList> newAccountList = [];
-          List<AccountsList> specialSchemeList = [];
-          if (context != null) {
-            AppMessage.show(context, "Account heads synced successfully.");
-          }
-          for (var item in response.accountsList ?? []) {
-            final account = item;
-
-            if (account.type == "Staff") {
-              log("staffs : ready");
-              newAccountList.add(account);
-            } else if (account.type == 'Hosp' || account.type == 'AccHd') {
-              specialSchemeList.add(account);
-            }
-          }
-
-          log('done by account list : $newAccountList');
-          state = state.copyWith(
-            doneByAccountListApi: newAccountList,
-            isDoneByApi: true,
-          );
-          await saveStaffAccounts(
-            accounts: newAccountList,
-            specialSchemeList: specialSchemeList,
-          );
+        final response = await DoneBySearchApi.doneBySearch(context);
+        log('done by api response in controller :${response.toString()}');
+        if (response == null || response is! DoneBySearchResponseModel) {
+          return;
         }
-        //================== End Done By Account API ==================//
-        //==================== Done By Account API when Hive have no data ====================//
-        else if (isConnect == true && box.isEmpty) {
-          final response = await DoneBySearchApi.doneBySearch(context);
-          log('done by api response in controller :${response.toString()}');
-          if (response == null || response is! DoneBySearchResponseModel) {
-            return;
-          }
-          List<AccountsList> newAccountList = [];
-          List<AccountsList> specialSchemeList = [];
-
-          for (var item in response.accountsList ?? []) {
-            final account = item;
-
-            if (account.type == "Staff") {
-              log("staffs : ready");
-              newAccountList.add(account);
-            } else if (account.type == 'Hosp' || account.type == 'AccHd') {
-              specialSchemeList.add(account);
-            }
-          }
-
-          log('done by account list : $newAccountList');
-          state = state.copyWith(
-            doneByAccountListApi: newAccountList,
-            isDoneByApi: true,
-          );
-          await saveStaffAccounts(
-            accounts: newAccountList,
-            specialSchemeList: specialSchemeList,
-          );
-        } //====================end Done By Account API when Hive have no data ====================//
-        //====================stored data fetching ====================//
-        else if (state.doneByAccountListApi.isEmpty) {
-          List<AccountsList> staffAccountList = await getStaffAccounts();
-          log(staffAccountList.toString());
-          state = state.copyWith(doneByAccountListApi: staffAccountList);
-          log(state.doneByAccountListApi.toString());
+        List<AccountsList> newAccountList = [];
+        List<AccountsList> specialSchemeList = [];
+        if (context != null) {
+          AppMessage.show(context, "Account heads synced successfully.");
         }
+        for (var item in response.accountsList ?? []) {
+          final account = item;
+
+          if (account.type == "Staff") {
+            log("staffs : ready");
+            newAccountList.add(account);
+          } else if (account.type == 'Hosp' || account.type == 'AccHd') {
+            specialSchemeList.add(account);
+          }
+        }
+
+        log('done by account list : $newAccountList');
+        state = state.copyWith(
+          doneByAccountListApi: newAccountList,
+          isDoneByApi: true,
+        );
+        await saveStaffAccounts(
+          accounts: newAccountList,
+          specialSchemeList: specialSchemeList,
+        );
+      }
+      //================== End Done By Account API ==================//
+      //==================== Done By Account API when Hive have no data ====================//
+      else if (isConnect == true && box.isEmpty) {
+        final response = await DoneBySearchApi.doneBySearch(context);
+        log('done by api response in controller :${response.toString()}');
+        if (response == null || response is! DoneBySearchResponseModel) {
+          return;
+        }
+        List<AccountsList> newAccountList = [];
+        List<AccountsList> specialSchemeList = [];
+
+        for (var item in response.accountsList ?? []) {
+          final account = item;
+
+          if (account.type == "Staff") {
+            log("staffs : ready");
+            newAccountList.add(account);
+          } else if (account.type == 'Hosp' || account.type == 'AccHd') {
+            specialSchemeList.add(account);
+          }
+        }
+
+        log('done by account list : $newAccountList');
+        state = state.copyWith(
+          doneByAccountListApi: newAccountList,
+          isDoneByApi: true,
+        );
+        await saveStaffAccounts(
+          accounts: newAccountList,
+          specialSchemeList: specialSchemeList,
+        );
+      } //====================end Done By Account API when Hive have no data ====================//
+      //====================stored data fetching ====================//
+      else if (state.doneByAccountListApi.isEmpty) {
+        List<AccountsList> staffAccountList = await getStaffAccounts();
+        log(staffAccountList.toString());
+        state = state.copyWith(doneByAccountListApi: staffAccountList);
+        log(state.doneByAccountListApi.toString());
       } else {
         final searchTexts = searchText.toLowerCase();
 

@@ -414,6 +414,8 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
 
   //netamount balance amount calculate
   Future<void> updateNetBalanceAmounts() async {
+
+    
     final grossAmount = state.totalPrice;
 
     final discountAmount =

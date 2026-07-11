@@ -263,6 +263,7 @@ class PatientDetailsCard extends ConsumerWidget {
                             builder: (context, constraints) {
                               return TapRegion(
                                 onTapOutside: (_) {
+                                  Future.delayed(Duration(seconds: 1));
                                   FocusManager.instance.primaryFocus?.unfocus();
                                 },
                                 child: DropdownMenu<AccountsList>(

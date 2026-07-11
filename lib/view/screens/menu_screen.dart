@@ -207,6 +207,7 @@ class MenuScreen extends ConsumerWidget {
                             apiCall: true,
                             context: context,
                           );
+                          addTestController.getspecialSchemeAccounts();
                         },
                         child: buildSettingsItem(
                           patientstate.isLoading == true
@@ -235,7 +236,7 @@ class MenuScreen extends ConsumerWidget {
                         onTap: () async {
                           await addTestController.specialRatesFetch(
                             apiCall: true,
-                            context:context
+                            context: context,
                           );
                         },
                         child: buildSettingsItem(
