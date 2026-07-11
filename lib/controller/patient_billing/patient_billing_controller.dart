@@ -7,6 +7,7 @@ import 'package:icon_infoware/apis/spot_billing/done_by_search_api.dart';
 import 'package:icon_infoware/apis/spot_billing/search_patient_api.dart';
 
 import 'package:icon_infoware/controller/patient_billing/patient_billing_state.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 
@@ -37,7 +38,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
         ),
       ) {
     Future.microtask(() {
-      doneBySearch(searchText: '', apiCall: false);
+      doneBySearch(searchText: '', apiCall: false, context: null);
     });
   }
 
@@ -68,6 +69,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
   Future<void> doneBySearch({
     required String searchText,
     required bool apiCall,
+    required BuildContext? context,
   }) async {
     try {
       state = state.copyWith(isLoading: true);
@@ -78,14 +80,16 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
 
         //==================== Done By Account API ====================//
         if (apiCall == true) {
-          final response = await DoneBySearchApi.doneBySearch();
+          final response = await DoneBySearchApi.doneBySearch(context);
           log('done by api response in controller :${response.toString()}');
           if (response == null || response is! DoneBySearchResponseModel) {
             return;
           }
           List<AccountsList> newAccountList = [];
           List<AccountsList> specialSchemeList = [];
-
+          if (context != null) {
+            AppMessage.show(context, "Account heads synced successfully.");
+          }
           for (var item in response.accountsList ?? []) {
             final account = item;
 
@@ -110,7 +114,7 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
         //================== End Done By Account API ==================//
         //==================== Done By Account API when Hive have no data ====================//
         else if (isConnect == true && box.isEmpty) {
-          final response = await DoneBySearchApi.doneBySearch();
+          final response = await DoneBySearchApi.doneBySearch(context);
           log('done by api response in controller :${response.toString()}');
           if (response == null || response is! DoneBySearchResponseModel) {
             return;
@@ -175,6 +179,9 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
       }
     } catch (e) {
       log(e.toString());
+      if (context != null) {
+        AppMessage.show(context, e.toString());
+      }
     } finally {
       state = state.copyWith(isLoading: false);
     }

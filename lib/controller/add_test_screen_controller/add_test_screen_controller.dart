@@ -4,15 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:icon_infoware/apis/discount_fetching/discount_fetching_api.dart';
+import 'package:icon_infoware/apis/spot_billing/normal_special_rates_api.dart';
 import 'package:icon_infoware/apis/spot_billing/patient_syncing_api.dart';
 import 'package:icon_infoware/apis/spot_billing/special_scheme_rates_api.dart';
 import 'package:icon_infoware/apis/spot_billing/test_master_api.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_state.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/discount_reasons/discount_reasons_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
+import 'package:icon_infoware/models/spot_billing/normal_special_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
@@ -38,7 +41,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     Future.microtask(() async {
       getspecialSchemeAccounts();
       // testMasterCalling();
-      specialRatesFetch(apiCall: false);
+      specialRatesFetch(apiCall: false, context: null);
     });
   }
   //getdata from hive special scheme list
@@ -522,84 +525,71 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       state = state.copyWith(isSyncLoading: false);
     }
   }
-  //update final list to see
-  // void updateSpecialSchemePrice() {
-  //   List<TestMasterSelected> updatedList = [];
-  //   testMasterCalling();
-  //   //specialRatesFetch();
-
-  //   for (var test in state.finalListNewPrice) {
-  //     num price = test.testRate ?? 0;
-
-  //     log('controller schemeid selected: ${state.schemeIDSelected}');
-
-  //     if (test.testKey == state.schemeIDSelected) {
-  //       log('controller schemeid selected if: ${state.schemeIDSelected}');
-
-  //       for (var item in state.specialSchemeRatesList) {
-  //         if (item.schRTstid == state.schemeIDSelected) {
-  //           price = item.schRate ?? price;
-  //           break; // stop loop after first match
-  //         }
-  //       }
-  //     } else {
-  //       log('=======================================1');
-  //       for (var item in state.testMasterListSeeing) {
-  //         log('=======================================2');
-  //         if (item.testKey == test.testKey) {
-  //           log('=======================================3');
-  //           price = item.testRate ?? price;
-  //           log('=======================================$price');
-  //           break; // stop loop after first match
-  //         }
-  //       }
-  //     }
-
-  //     updatedList.add(
-  //       TestMasterSelected(
-  //         testKey: test.testKey,
-  //         testRate: price,
-  //         testShortCode: test.testShortCode,
-  //         testName: test.testName,
-  //         testSelected: test.testSelected,
-  //       ),
-  //     );
-  //   }
-
-  //   num totalPrice = 0;
-
-  //   for (var item in updatedList) {
-  //     totalPrice += item.testRate ?? 0;
-  //   }
-
-  //   state = state.copyWith(
-  //     finalListNewPrice: updatedList,
-  //     totalPrice: totalPrice,
-  //   );
-  //   log('new special schemeid not selected : ${updatedList.toString()}');
-  //   log('new final list ${state.finalListNewPrice}');
-  //   log('new total price ${state.totalPrice}');
-  // }
 
   //special scheme rate fetch by api
-  Future<void> specialRatesFetch({required bool apiCall}) async {
+  Future<void> specialRatesFetch({
+    required bool apiCall,
+    required BuildContext? context,
+  }) async {
     try {
+      bool isConnect = await InternetChecker.hasConnection();
+      final box = await Hive.openBox('special_scheme_rates');
+
       state = state.copyWith(isSyncLoading: true);
       if (apiCall == true) {
         final SpecialSchemeRatesResponseModel response =
-            await SpecialSchemeRatesApi.specialSchemesApi();
-        state = state.copyWith(
-          specialSchemeRatesList: response.schemeRateList ?? [],
-        );
-        await saveSpecialSchemeAccounts(
-          specialSchemeList: response.schemeRateList ?? [],
-        );
+            await SpecialSchemeRatesApi.specialSchemesApi(context);
+        final NormalSpecialRatesResponseModel response2 =
+            await NormalSpecialRatesApi.normalSpecialRatesApi(context);
+        if (response.success == true &&
+            response.schemeRateList != null &&
+            response2.success == true &&
+            response2.spclRateList != null) {
+          state = state.copyWith(
+            specialSchemeRatesList: response.schemeRateList ?? [],
+            normalSpecialRates: response2.spclRateList ?? [],
+          );
+          if (context != null) {
+            AppMessage.show(context, "Special rates fetched successfully.");
+          }
+          await saveSpecialSchemeAccounts(
+            specialSchemeList: response.schemeRateList ?? [],
+            normalSpecialRatesList: response2.spclRateList ?? [],
+          );
+        }
+      } else if (box.isEmpty && isConnect == true) {
+        final SpecialSchemeRatesResponseModel response =
+            await SpecialSchemeRatesApi.specialSchemesApi(context);
+        final NormalSpecialRatesResponseModel response2 =
+            await NormalSpecialRatesApi.normalSpecialRatesApi(context);
+        if (response.success == true &&
+            response.schemeRateList != null &&
+            response2.success == true &&
+            response2.spclRateList != null) {
+          state = state.copyWith(
+            specialSchemeRatesList: response.schemeRateList ?? [],
+            normalSpecialRates: response2.spclRateList ?? [],
+          );
+          await saveSpecialSchemeAccounts(
+            specialSchemeList: response.schemeRateList ?? [],
+            normalSpecialRatesList: response2.spclRateList ?? [],
+          );
+        }
       } else {
         List<SchemeRateList> schemeList = await getSpecialSchemeList();
-        state = state.copyWith(specialSchemeRatesList: schemeList);
+        List<SpclRateList> normalSpecialRates = await getNormalSpecialRates();
+        log("specialscheme length :${schemeList.length}");
+        log("normalrates length :${normalSpecialRates.length}");
+        state = state.copyWith(
+          specialSchemeRatesList: schemeList,
+          normalSpecialRates: normalSpecialRates,
+        );
       }
     } catch (e) {
       log('conntroller catch : ${e.toString()}');
+      if (context != null) {
+        AppMessage.show(context, e.toString());
+      }
     } finally {
       state = state.copyWith(isSyncLoading: false);
     }
@@ -608,13 +598,22 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   //store phones to special schemeRates
   Future<void> saveSpecialSchemeAccounts({
     required List<SchemeRateList> specialSchemeList,
+    required List<SpclRateList> normalSpecialRatesList,
   }) async {
     final schemeBox = await Hive.openBox('special_scheme_rates');
+    final normalBox = await Hive.openBox('normal_special_rates');
 
     await schemeBox.clear();
+    await normalBox.clear();
+
     for (final account in specialSchemeList) {
       await schemeBox.add(account.toJson());
     }
+    for (final account in normalSpecialRatesList) {
+      await normalBox.add(account.toJson());
+    }
+    log("specialscheme length :${schemeBox.length}");
+    log("normalrates length :${normalBox.length}");
   }
 
   //get stored special rates List
@@ -623,6 +622,17 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
 
     return box.values
         .map((item) => SchemeRateList.fromJson(Map<String, dynamic>.from(item)))
+        .toList();
+  }
+
+  //normal special rates get
+
+  //get stored special rates List
+  Future<List<SpclRateList>> getNormalSpecialRates() async {
+    final box = await Hive.openBox('normal_special_rates');
+
+    return box.values
+        .map((item) => SpclRateList.fromJson(Map<String, dynamic>.from(item)))
         .toList();
   }
 

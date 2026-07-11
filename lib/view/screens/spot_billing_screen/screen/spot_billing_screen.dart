@@ -283,6 +283,7 @@ class SpotBillingScreen extends ConsumerWidget {
                           );
                         } else {
                           spotBillingController.doneBySearch(
+                            context: null,
                             searchText: value,
                             apiCall: false,
                           );

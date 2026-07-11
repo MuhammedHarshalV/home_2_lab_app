@@ -205,6 +205,7 @@ class MenuScreen extends ConsumerWidget {
                           await patientController.doneBySearch(
                             searchText: '',
                             apiCall: true,
+                            context: context,
                           );
                         },
                         child: buildSettingsItem(
@@ -234,6 +235,7 @@ class MenuScreen extends ConsumerWidget {
                         onTap: () async {
                           await addTestController.specialRatesFetch(
                             apiCall: true,
+                            context:context
                           );
                         },
                         child: buildSettingsItem(

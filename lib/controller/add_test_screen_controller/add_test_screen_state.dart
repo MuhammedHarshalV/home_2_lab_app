@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
+import 'package:icon_infoware/models/spot_billing/normal_special_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
@@ -14,6 +15,7 @@ class AddTestScreenState {
   final TextEditingController specialSchemeController;
   final List<TestMasterSelected> testMasterListSelected;
   final List<TestMasterSelected> testMasterListSelectedNewPrice;
+  final List<SpclRateList> normalSpecialRates;
   final TextEditingController discountAmountController;
   final TextEditingController discountPercentageController;
   final TextEditingController servicesnargeController;
@@ -48,6 +50,8 @@ class AddTestScreenState {
     this.secondaryPaid = 0,
     this.primaryPaid = 0,
     this.discountList = const [],
+    this.normalSpecialRates = const [],
+
     this.specialSchemeList = const [],
     this.specialSchemeRatesList = const [],
     this.testMasterList = const [],
@@ -82,6 +86,8 @@ class AddTestScreenState {
     TextEditingController? discountReason,
     List<AccountsList>? specialSchemeList,
     List<TestMaster>? testMasterList,
+    List<SpclRateList>? normalSpecialRates,
+
     List<TestMasterSelected>? testMasterListSeeing,
     List<TestMasterSelected>? testMasterListSelected,
     List<TestMasterSelected>? testMasterListSelectedNewPrice,
@@ -125,6 +131,7 @@ class AddTestScreenState {
           specialSchemeRatesList ?? this.specialSchemeRatesList,
       specialSchemeFocusNode:
           specialSchemeFocusNode ?? this.specialSchemeFocusNode,
+      normalSpecialRates: normalSpecialRates ?? this.normalSpecialRates,
       cardName: cardName ?? this.cardName,
       testMasterListSelectedNewPrice:
           testMasterListSelectedNewPrice ?? this.testMasterListSelectedNewPrice,
