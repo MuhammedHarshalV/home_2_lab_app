@@ -15,7 +15,7 @@ import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/add_new_test_popup.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_below_card.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_card.dart';
-import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/test_add_search_value_container.dart';
+
 
 class SpotBillingTestAddScreen extends ConsumerWidget {
   final int? hiveIndex;
@@ -49,12 +49,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               bottomNavController.setIndex(0);
               context.pushReplacementNamed(AppRouteNames.bottomNavScreen.name);
               testMasterState.searchController.clear();
-              // Navigator.pushAndRemoveUntil(
-              //   context,
-              //   MaterialPageRoute(builder: (context) => BottomNavScreen()),
-              //   (route) => false,
-              // );
-              // context.pop();
+            
             },
             child: CircleAvatar(
               backgroundColor: AppColors.appPrimaryColor.withOpacity(0.2),
@@ -367,12 +362,14 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                           builder: (context) =>
                               AddNewTestPopUp(index: indexget),
                         );
+                        log('index not work');
                       } else {
                         showDialog(
                           context: context,
                           builder: (context) =>
                               AddNewTestPopUp(index: hiveIndex!),
                         );
+                        log('index work');
                       }
                     }
                   : () {

@@ -69,6 +69,8 @@ class PatientCompletedCard extends ConsumerWidget {
                   patient.patAddress ?? '';
               patientBillingDetailsState.referredByController.text = '';
               patientBillingDetailsState.assignedByController.text = '';
+              testAddState.specialSchemeController.text =
+                  patient.specialSchemeName ?? '';
 
               patientBillingController.updateState(
                 ageByYear: patient.patAgehead ?? '',
@@ -83,6 +85,11 @@ class PatientCompletedCard extends ConsumerWidget {
                   .toString();
               testAddState.upiRefferenceIdController.text =
                   patient.upiReferenceId ?? ''.toString();
+              testAddState.primaryAmountContoller.text = patient.primaryPaid
+                  .toString();
+              testAddState.secondaryAmountController.text = patient
+                  .secondaryPaid
+                  .toString();
               testAddController.updatestate(
                 isSync: patient.isSync ?? 'No',
                 balanceAmount: patient.balance ?? 0,
@@ -94,6 +101,13 @@ class PatientCompletedCard extends ConsumerWidget {
                 secondaryType: patient.secondaryType ?? '',
                 primaryType: patient.primaryType ?? '',
                 isUrgent: patient.urgent == 0 ? false : true,
+                schemeIDSelected: patient.specialSchemeID ?? 0,
+                rateIDSelected: patient.rateIdSelected ?? 0,
+                isCorporateBilling:
+                    (patient.specialSchemeName != null &&
+                        (patient.specialSchemeName ?? '').isNotEmpty)
+                    ? true
+                    : false,
               );
 
               patientBillingController.updateState(

@@ -12,7 +12,7 @@ import 'package:icon_infoware/controller/patient_billing/patient_billing_control
 import 'package:icon_infoware/core/constants/app_constance.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/models/home_screen/booking_patient_response_model.dart';
+
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/search_bar.dart';

@@ -442,6 +442,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                         );
                         context.pushReplacementNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,
+                          extra: index,
                         );
 
                         log("Success ");

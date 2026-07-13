@@ -39,6 +39,7 @@ class AddTestScreenState {
   // final List<String> checkedTestes;
   final num totalPrice;
   final int schemeIDSelected;
+  final num rateIDSelected;
   final FocusNode specialSchemeFocusNode;
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
@@ -62,6 +63,7 @@ class AddTestScreenState {
     this.isSync = 'No',
     this.totalPrice = 0,
     this.schemeIDSelected = 0,
+    this.rateIDSelected = 0,
     this.isCorporateBilling = false,
     this.isSpecialschemeOpen = false,
     required this.searchController,
@@ -107,6 +109,7 @@ class AddTestScreenState {
     List<SchemeRateList>? specialSchemeRatesList,
     // List<String>? checkedTestes,
     int? schemeIDSelected,
+    num? rateIDSelected,
     num? totalPrice,
     num? netAmount,
     num? amountPaid,
@@ -125,6 +128,7 @@ class AddTestScreenState {
       searchController: searchController ?? this.searchController,
       testMasterListSeeing: testMasterListSeeing ?? this.testMasterListSeeing,
       schemeIDSelected: schemeIDSelected ?? this.schemeIDSelected,
+      rateIDSelected: rateIDSelected ?? this.rateIDSelected,
       specialSchemeController:
           specialSchemeController ?? this.specialSchemeController,
       specialSchemeRatesList:

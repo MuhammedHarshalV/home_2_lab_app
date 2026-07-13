@@ -79,6 +79,7 @@ class BottomNavScreen extends ConsumerWidget {
               pageTransitionAnimation: PageTransitionAnimation.cupertino,
             );
           } else {
+            
             bottomNavNotifier.setIndex(index);
           }
         },

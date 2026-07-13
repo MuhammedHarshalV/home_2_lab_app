@@ -22,6 +22,7 @@ class PatientDetailsCard extends ConsumerWidget {
     final addTestState = ref.watch(addTestScreenProvider);
     final patientBillingDetailsState = ref.watch(patientBillingProvider);
     final homeState = ref.watch(homeScreenProvider);
+    final homeController = ref.read(homeScreenProvider.notifier);
 
     return Container(
       width: double.infinity,
@@ -213,13 +214,53 @@ class PatientDetailsCard extends ConsumerWidget {
                       hoverColor: Colors.transparent,
                       focusColor: Colors.transparent,
                       onTap: addTestState.isSync != 'Yes'
-                          ? () {
+                          ? () async {
                               if (addTestState.isCorporateBilling == true) {
                                 log("corparate already clicked");
                                 addTestController.updatestate(
                                   schemeIDSelected: 0,
+                                  rateIDSelected: 0,
                                 );
+                                if (index == null) {
+                                  int indexNot =
+                                      homeState
+                                          .allBookingDetails
+                                          .last
+                                          .indexClick ??
+                                      0;
+                                  homeController.updatePatient(
+                                    index: indexNot,
+                                    rateIdSelected: 0,
+                                    specialSchemeName: '',
+                                    specialSchemeID: 0,
+                                  );
+                                } else {
+                                  homeController.updatePatient(
+                                    index: index!,
+                                    rateIdSelected: 0,
+                                    specialSchemeName: '',
+                                    specialSchemeID: 0,
+                                  );
+                                }
+                                addTestController.updateNetBalanceAmounts();
                                 addTestState.specialSchemeController.clear();
+                                final testMasterState1 = ref.watch(
+                                  addTestScreenProvider,
+                                );
+                                await homeController.updatePatient(
+                                  index:
+                                      index ??
+                                      homeState
+                                          .allBookingDetails
+                                          .last
+                                          .indexClick ??
+                                      0,
+
+                                  balance: testMasterState1.balanceAmount,
+                                  netAmt: testMasterState1.netAmount,
+
+                                  grossAmt: testMasterState1.totalPrice,
+                                );
                                 // addTestController.updateSpecialSchemePrice();
                               }
                               //  else {
@@ -235,6 +276,7 @@ class PatientDetailsCard extends ConsumerWidget {
                                 isCorporateBilling:
                                     !addTestState.isCorporateBilling,
                               );
+                              addTestController.getSpecialSchemeList();
                             }
                           : () {
                               AppMessage.show(
@@ -394,16 +436,62 @@ class PatientDetailsCard extends ConsumerWidget {
                                               ),
                                             )
                                             .toList(),
-                                  onSelected: (value) {
+                                  onSelected: (value) async {
                                     log(value!.name.toString());
                                     final selectedSchemeId =
                                         value.schemeId ?? 0;
+                                    final rateIdSelected = value.key ?? 0;
+                                    if (value.schemeId == 0) {
+                                      addTestController.updatestate(
+                                        rateIDSelected: rateIdSelected,
+                                      );
+                                      log("rateid :${value.key.toString()}");
+                                    }
                                     addTestController.updatestate(
                                       schemeIDSelected: selectedSchemeId,
                                     );
                                     // addTestController
                                     //     .updateSpecialSchemePrice();
                                     log(value.schemeId.toString());
+                                    if (index == null) {
+                                      await addTestController
+                                          .updateNetBalanceAmounts();
+                                      final testMasterState1 = ref.watch(
+                                        addTestScreenProvider,
+                                      );
+                                      int indexNot =
+                                          homeState
+                                              .allBookingDetails
+                                              .last
+                                              .indexClick ??
+                                          0;
+                                      await homeController.updatePatient(
+                                        index: indexNot,
+                                        rateIdSelected: rateIdSelected,
+                                        specialSchemeName: value.name ?? '',
+                                        specialSchemeID: selectedSchemeId,
+                                        balance: testMasterState1.balanceAmount,
+                                        netAmt: testMasterState1.netAmount,
+
+                                        grossAmt: testMasterState1.totalPrice,
+                                      );
+                                    } else {
+                                      await addTestController
+                                          .updateNetBalanceAmounts();
+                                      final testMasterState1 = ref.watch(
+                                        addTestScreenProvider,
+                                      );
+                                      homeController.updatePatient(
+                                        index: index!,
+                                        rateIdSelected: rateIdSelected,
+                                        specialSchemeName: value.name ?? '',
+                                        specialSchemeID: selectedSchemeId,
+                                        balance: testMasterState1.balanceAmount,
+                                        netAmt: testMasterState1.netAmount,
+
+                                        grossAmt: testMasterState1.totalPrice,
+                                      );
+                                    }
                                   },
                                 ),
                               );

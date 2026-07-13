@@ -47,6 +47,9 @@ class PatientHiveModel {
   String? insNo;
   String? isCompleted;
   String? isSync;
+  int? specialSchemeID;
+  num? rateIdSelected;
+  String? specialSchemeName;
   List<Map<String, dynamic>>? testlists;
 
   PatientHiveModel({
@@ -98,6 +101,9 @@ class PatientHiveModel {
     this.secondaryPaid,
     this.primaryPaid,
     this.secondaryType,
+    this.rateIdSelected,
+    this.specialSchemeID,
+    this.specialSchemeName,
     this.testlists,
   });
 
@@ -153,6 +159,9 @@ class PatientHiveModel {
       primaryPaid: map['primaryPaid'] ?? "",
       secondaryPaid: map['secondaryPaid'] ?? "",
       secondaryType: map['secondaryType'] ?? "",
+      specialSchemeID: map["specialSchemeID"] ?? 0,
+      rateIdSelected: map["rateIdSelected"] ?? 0,
+      specialSchemeName: map["specialSchemeName"] ?? '',
       testlists: map['testlists'] != null
           ? (map['testlists'] as List)
                 .map((e) => Map<String, dynamic>.from(e as Map))
@@ -211,7 +220,9 @@ class PatientHiveModel {
       'primaryPaid': primaryPaid,
       'secondaryPaid': secondaryPaid,
       'secondaryType': secondaryType,
-
+      "specialSchemeName": specialSchemeName,
+      "rateIdSelected": rateIdSelected,
+      "specialSchemeID": specialSchemeID,
       'testlists': testlists,
     };
   }

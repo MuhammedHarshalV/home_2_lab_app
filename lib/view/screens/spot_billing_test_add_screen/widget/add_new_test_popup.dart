@@ -8,7 +8,7 @@ import 'package:icon_infoware/controller/home_screen_controller/home_screen_cont
 
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/test_add_search_value_container.dart';
-import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
+
 
 class AddNewTestPopUp extends ConsumerWidget {
   final int index;
@@ -84,22 +84,7 @@ class AddNewTestPopUp extends ConsumerWidget {
               ],
             ),
             SizedBox(height: 5),
-            // InkWell(
-            //   onTapDown: (details) {
-            //     showCommonDropdown(
-            //       context: context,
-            //       tapPosition: details.globalPosition,
-            //       items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
-            //       onSelected: (value) {
-            //         print(value);
-            //       },
-            //     );
-            //   },
-            //   child: Text(
-            //     'show selected tests',
-            //     style: TextStyle(color: Colors.blue),
-            //   ),
-            // ),
+           
             SizedBox(height: 5),
 
             // --- Content / Search Section ---
@@ -161,16 +146,10 @@ class AddNewTestPopUp extends ConsumerWidget {
                       log(
                         'selected lists : ${testList.toString()} \n length : ${testList.length}',
                       );
-                      final totalAmount = testMasterState.testMasterListSelected
-                          .fold<num>(
-                            0,
-                            (sum, test) => sum + (test.testRate ?? 0),
-                          );
 
                       testMasterController.updatestate(
                         testMasterListSelectedNewPrice:
                             testMasterState.testMasterListSelected,
-                        grosAmount: totalAmount,
                       );
 
                       await testMasterController.updateNetBalanceAmounts();

@@ -51,7 +51,12 @@ class PaymentOptionCard extends ConsumerWidget {
               );
 
               if (amount == 0) {
-                AppMessage.show(context, "message");
+                AppMessage.show(context, "Please enter a UPI payment amount.");
+              } else if (AppConstants.upiPaymentId.isEmpty) {
+                AppMessage.show(
+                  context,
+                  "Please select any Bank in Menu Screen.",
+                );
               } else {
                 final qrData = UpiQrService.generateUri(
                   upiId: AppConstants.upiPaymentId,

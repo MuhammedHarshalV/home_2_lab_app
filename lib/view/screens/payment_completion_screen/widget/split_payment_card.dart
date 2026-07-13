@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/widgets/common_text_field.dart';
 
 class TotalAmountCard extends ConsumerWidget {
   final int index;
@@ -14,7 +13,7 @@ class TotalAmountCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addTestState = ref.watch(addTestScreenProvider);
-    final addTestController = ref.read(addTestScreenProvider.notifier);
+   
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -318,7 +317,7 @@ class SplitPaymentDialog extends ConsumerWidget {
                         title: "Balance",
                         controller: TextEditingController(),
                         readOnly: true,
-                        balance: addTestState.balanceAmount.toString(),
+                        balance: addTestState.balanceAmount.toStringAsFixed(2),
                         isBalance: true,
                       ),
                     ),
@@ -369,8 +368,12 @@ class SplitPaymentDialog extends ConsumerWidget {
                         paidAmt: testMasterState1.amountPaid,
                         primaryPaid: testMasterState1.primaryPaid,
                         secondaryPaid: testMasterState1.secondaryPaid,
-                        secondaryType: testMasterState1.secondaryType,
-                        primaryType: testMasterState1.primaryType,
+                        secondaryType: testMasterState1.secondaryType.isEmpty
+                            ? 'UPI'
+                            : addTestState.secondaryType,
+                        primaryType: testMasterState1.primaryType.isEmpty
+                            ? 'Cash'
+                            : addTestState.primaryType,
                       );
                       context.pop();
                     },

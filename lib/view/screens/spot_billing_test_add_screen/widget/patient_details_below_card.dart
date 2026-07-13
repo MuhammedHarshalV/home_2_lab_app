@@ -5,13 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
-import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
+
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
+
 import 'package:intl/intl.dart';
 
 class PatientDetailsBelowCard extends ConsumerWidget {
@@ -99,7 +99,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                 ),
                 Text(
-                  '₹ ${testAddState.balanceAmount}',
+                  '₹ ${testAddState.balanceAmount.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),
@@ -240,13 +240,19 @@ class PatientDetailsBelowCard extends ConsumerWidget {
 
                         bool syncing = false;
 
-                        if (isConnected) {
+                        if (isConnected && testAddState.balanceAmount >= 0) {
                           syncing = await testAddController
                               .patientBillSyncingApi(
                                 homeState.allBookingDetails[patientIndex],
                               );
 
                           log('Sync status : $syncing');
+                        } else {
+                          AppMessage.show(
+                            context,
+                            'Balance amount should be zero or greater.',
+                          );
+                          await Future.delayed(Duration(seconds: 2));
                         }
 
                         final String time = DateFormat(

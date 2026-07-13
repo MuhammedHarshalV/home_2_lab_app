@@ -98,6 +98,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           "primaryPaid": 0,
           "timeToSave": '',
           'dateToSave': '',
+          "specialSchemeName": '',
+          "rateIdSelected": 0,
+          "specialSchemeID": 0,
           // Save test list also
           'testlists': [
             {"TestId": '0'},
@@ -130,14 +133,14 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'patMobno': patient.patMobno ?? '',
       'drId': '',
       "abhaId": patient.abhaId ?? '',
-      'note': patient.note??'',
+      'note': patient.note ?? '',
       'upiReferenceId': '',
       "bookTime": patient.bookTime ?? '',
       'bookMapUrl': '',
       'currentDatetime': '',
       'remarks': patient.remarks ?? '',
       'passport': patient.passport ?? '',
-      'outDr': patient.outDr??'',
+      'outDr': patient.outDr ?? '',
       'flag': '0',
       'patEmail': patient.patEmail ?? '',
       'repEmail': 1,
@@ -146,7 +149,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'ipop': '',
       'patImg': '',
       'urgent': patient.urgent,
-      'dob': patient.dob??'',
+      'dob': patient.dob ?? '',
       'driverId': '',
       'techId': '',
       'grossAmt': 0,
@@ -165,6 +168,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       "primaryPaid": 0,
       "timeToSave": '',
       'dateToSave': '',
+      "specialSchemeName": '',
+      "rateIdSelected": 0,
+      "specialSchemeID": 0,
       // Save test list also
       'testlists': [
         {"TestId": '0'},
@@ -227,7 +233,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     String? isSync,
     String? timeToSave,
     String? dateToSave,
-
+    String? specialSchemeName,
+    num? rateIdSelected,
+    int? specialSchemeID,
     List<Map<String, dynamic>>? testlists,
   }) async {
     final box = await Hive.openBox('patient_booking');
@@ -285,6 +293,10 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     oldData['secondaryType'] = secondaryType ?? oldData['secondaryType'];
     oldData['secondaryPaid'] = secondaryPaid ?? oldData['secondaryPaid'];
     oldData['primaryPaid'] = primaryPaid ?? oldData['primaryPaid'];
+    oldData['specialSchemeName'] =
+        specialSchemeName ?? oldData['specialSchemeName'];
+    oldData['rateIdSelected'] = rateIdSelected ?? oldData['rateIdSelected'];
+    oldData['specialSchemeID'] = specialSchemeID ?? oldData['specialSchemeID'];
 
     oldData['testlists'] = testlists ?? oldData['testlists'];
 
@@ -341,6 +353,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'isSync': isSync,
       "dateToSave": dateToSave,
       "timeToSave": timeToSave,
+      "specialSchemeID": specialSchemeID,
+      "rateIdSelected": rateIdSelected,
+      "specialSchemeName": specialSchemeName,
       'testlists': testlists,
     };
 
@@ -410,7 +425,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         primaryPaid: item['primaryPaid'],
         timeToSave: item['timeToSave'],
         dateToSave: item['dateToSave'],
-
+        specialSchemeID: item["specialSchemeID"],
+        rateIdSelected: item['rateIdSelected'],
+        specialSchemeName: item["specialSchemeName"],
         testlists: item['testlists'] != null
             ? (item['testlists'] as List)
                   .map((e) => Map<String, dynamic>.from(e as Map))

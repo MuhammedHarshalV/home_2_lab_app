@@ -60,9 +60,15 @@ class PatientContactCard extends ConsumerWidget {
         testAddState.discountAmountController.text = patient.discAmt.toString();
         testAddState.discountPercentageController.text =
             ((patient.discAmt! / patient.grossAmt!) * 100).toString();
+        testAddState.specialSchemeController.text =
+            patient.specialSchemeName ?? '';
         testAddState.servicesnargeController.text = patient.servChrge
             .toString();
         testAddState.upiRefferenceIdController.text = patient.upiReferenceId
+            .toString();
+        testAddState.primaryAmountContoller.text = patient.primaryPaid
+            .toString();
+        testAddState.secondaryAmountController.text = patient.secondaryPaid
             .toString();
         testAddController.updatestate(
           balanceAmount: patient.balance ?? 0,
@@ -75,6 +81,13 @@ class PatientContactCard extends ConsumerWidget {
           primaryType: patient.primaryType ?? '',
           isSync: patient.isSync ?? '',
           isUrgent: patient.urgent == 0 ? false : true,
+          schemeIDSelected: patient.specialSchemeID ?? 0,
+          rateIDSelected: patient.rateIdSelected ?? 0,
+          isCorporateBilling:
+              (patient.specialSchemeName != null &&
+                  (patient.specialSchemeName ?? '').isNotEmpty)
+              ? true
+              : false,
         );
 
         patientBillingController.updateState(
