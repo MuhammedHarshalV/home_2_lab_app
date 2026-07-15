@@ -19,7 +19,7 @@ import 'package:icon_infoware/models/spot_billing/normal_special_rates_response_
 import 'package:icon_infoware/models/spot_billing/special_scheme_rates_response_model.dart';
 import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
-import 'package:intl/intl.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddTestScreenController extends StateNotifier<AddTestScreenState> {
@@ -55,16 +55,26 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   }
 
   //store test lists to hive
-  Future<void> getTestMasterLists(PatientHiveModel? indexOfClicking) async {
+  Future<void> getTestMasterLists(
+    PatientHiveModel? indexOfClicking,
+    bool? apiCall,
+    BuildContext? context,
+  ) async {
     bool isConnected = await InternetChecker.hasConnection();
     try {
+      state = state.copyWith(isTestSync: true);
       await Future.delayed(Duration(seconds: 1));
       final box = await Hive.openBox('test_lists');
-      if (isConnected == true && box.isEmpty) {
+      if ((isConnected == true || apiCall == true) &&
+          (box.isEmpty || apiCall == true)) {
+        await box.clear();
         final TestMasterResponseModel response =
             await TestMasterApi.testMasterApi();
         if (response.success == true && response.tests != null) {
           await saveTests(response.tests ?? []); //strore to hive
+          if (context != null) {
+            AppMessage.show(context, "Tests synced successfully.");
+          }
           await getTestsFromHive(
             indexOfClicking,
           ); //read from hive and update state
@@ -80,6 +90,8 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       }
     } catch (e) {
       log(e.toString());
+    } finally {
+      state = state.copyWith(isTestSync: false);
     }
   }
 
@@ -592,50 +604,18 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   }
 
   //sync patient billing
-  Future<bool> patientBillSyncingApi(PatientHiveModel patient) async {
+  Future<bool> patientBillSyncingApi({
+    required BuildContext? context,
+    required List<PatientHiveModel> patient,
+  }) async {
     try {
       state = state.copyWith(isSyncLoading: true);
-      final String currentDate = DateFormat(
-        'yyyy-MM-dd',
-      ).format(DateTime.now());
+      // final String currentDate = DateFormat(
+      //   'yyyy-MM-dd',
+      // ).format(DateTime.now());
       final bool response = await PatientSyncingApi.patientSyncingApi(
-        patId: patient.patId?.toString(),
-        namePrefix: patient.namePrefix,
-        patName: patient.patName,
-        patAddress: patient.patAddress,
-        invNo: (patient.indexClick ?? 0) + 1,
-        patEmail: patient.patEmail,
-        patPhno: patient.patPhno,
-        patMobno: patient.patMobno,
-        patAge: patient.patAge?.toInt(),
-        patAgeHead: patient.patAgehead,
-        patGender: patient.patGender,
-        currentDateTime: currentDate,
-        drId: int.tryParse(patient.drId.toString()),
-        outDr: patient.outDr,
-        passport: patient.passport,
-        repEmail: int.tryParse(patient.repEmail.toString()),
-        repWhatsapp: int.tryParse(patient.repWhtapp.toString()),
-        urgent: patient.urgent?.toInt(),
-        remarks: patient.remarks,
-        ipop: patient.ipop,
-
-        dob: patient.dob,
-        driverId: patient.driverId ?? '',
-        technicianId: int.tryParse(patient.techId ?? ''),
-        grossAmt: patient.grossAmt,
-        discAmt: patient.discAmt,
-        servCharge: patient.servChrge,
-        netAmt: patient.netAmt,
-        paidAmt: patient.paidAmt,
-        balance: patient.balance,
-        paymentType: patient.primaryType,
-        insId: int.tryParse(patient.insid.toString()),
-        insNo: int.tryParse(patient.insNo.toString()),
-        secondaryType: patient.secondaryType ?? '',
-        primaryamount: patient.primaryPaid ?? 0,
-        secondaryamount: patient.secondaryPaid ?? 0,
-        testLists: patient.testlists,
+        patients: patient,
+        context: context,
       );
       log('syncing response :$response');
       return response;
@@ -653,10 +633,10 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     required BuildContext? context,
   }) async {
     try {
+      state = state.copyWith(isSpecialLoading: true);
       bool isConnect = await InternetChecker.hasConnection();
       final box = await Hive.openBox('special_scheme_rates');
 
-      state = state.copyWith(isSyncLoading: true);
       if (apiCall == true) {
         final SpecialSchemeRatesResponseModel response =
             await SpecialSchemeRatesApi.specialSchemesApi(context);
@@ -712,7 +692,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         AppMessage.show(context, e.toString());
       }
     } finally {
-      state = state.copyWith(isSyncLoading: false);
+      state = state.copyWith(isSpecialLoading: false);
     }
   }
 

@@ -3,22 +3,29 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class TotalAmountCard extends ConsumerWidget {
   final int index;
-  const TotalAmountCard({super.key, required this.index});
+  final Color secondColor;
+  final Color primaryColor;
+  const TotalAmountCard({
+    super.key,
+    required this.index,
+    required this.secondColor,
+    required this.primaryColor,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addTestState = ref.watch(addTestScreenProvider);
-   
 
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFFEAF3DE),
+        color: secondColor,
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -28,12 +35,12 @@ class TotalAmountCard extends ConsumerWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Text(
+              Text(
                 'Total Amount',
                 style: TextStyle(
                   fontSize: 13,
                   fontWeight: FontWeight.w500,
-                  color: Color(0xFF27500A),
+                  color: primaryColor,
                 ),
               ),
               InkWell(
@@ -43,11 +50,11 @@ class TotalAmountCard extends ConsumerWidget {
                     builder: (context) => SplitPaymentDialog(index: index),
                   );
                 },
-                child: const Text(
+                child: Text(
                   'split payment',
                   style: TextStyle(
                     fontSize: 12,
-                    color: Color(0xFF3B6D11),
+                    color: primaryColor,
                     fontWeight: FontWeight.w500,
                     decoration: TextDecoration.underline,
                   ),
@@ -61,7 +68,7 @@ class TotalAmountCard extends ConsumerWidget {
             style: TextStyle(
               fontSize: 26,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF3B6D11),
+              color: primaryColor,
             ),
           ),
           const SizedBox(height: 12),
@@ -76,6 +83,7 @@ class TotalAmountCard extends ConsumerWidget {
                       : addTestState.primaryType,
                   amount: 'Rs. ${addTestState.primaryPaid}',
                   isLeft: true,
+                  color: primaryColor,
                 ),
               ),
               const SizedBox(width: 8),
@@ -86,6 +94,7 @@ class TotalAmountCard extends ConsumerWidget {
                       : addTestState.secondaryType,
                   amount: 'Rs. ${addTestState.secondaryPaid}',
                   isLeft: false,
+                  color: primaryColor,
                 ),
               ),
             ],
@@ -105,7 +114,7 @@ class SplitPaymentDialog extends ConsumerWidget {
     final addTestState = ref.watch(addTestScreenProvider);
     final addTestController = ref.read(addTestScreenProvider.notifier);
     final homeController = ref.read(homeScreenProvider.notifier);
-
+    final colorState = ref.watch(colorProvider);
     return PopScope(
       // ignore: deprecated_member_use
       onPopInvoked: (didPop) async {
@@ -353,7 +362,7 @@ class SplitPaymentDialog extends ConsumerWidget {
                   height: 55,
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.appPrimaryColor,
+                      backgroundColor: colorState.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(15),
                       ),
@@ -421,7 +430,7 @@ class SplitPaymentDialog extends ConsumerWidget {
   }
 }
 
-class _AmountField extends StatelessWidget {
+class _AmountField extends ConsumerWidget {
   final String title;
   final TextEditingController controller;
   final bool readOnly;
@@ -436,17 +445,20 @@ class _AmountField extends StatelessWidget {
     this.isBalance = false,
     this.balance = '0',
     this.ontap,
+    super.key,
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           title,
           style: TextStyle(
-            color: AppColors.appPrimaryColor,
+            color: colorState.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),
@@ -455,7 +467,7 @@ class _AmountField extends StatelessWidget {
           height: 50,
           padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
-            color: AppColors.appPrimaryColorLight,
+            color: colorState.secondaryColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Column(
@@ -486,20 +498,22 @@ class _AmountField extends StatelessWidget {
   }
 }
 
-class DropdownPayment extends StatelessWidget {
+class DropdownPayment extends ConsumerWidget {
   final String title;
 
   const DropdownPayment({super.key, required this.title});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '',
           style: TextStyle(
-            color: AppColors.appPrimaryColor,
+            color: colorState.primaryColor,
             fontWeight: FontWeight.bold,
             fontSize: 14,
           ),
@@ -508,7 +522,7 @@ class DropdownPayment extends StatelessWidget {
           height: 50,
           padding: const EdgeInsets.symmetric(horizontal: 5),
           decoration: BoxDecoration(
-            color: AppColors.appPrimaryColorLight,
+            color: colorState.secondaryColor,
             borderRadius: BorderRadius.circular(10),
           ),
           child: Row(
@@ -529,11 +543,12 @@ class _PaymentMethodCard extends StatelessWidget {
   final String label;
   final String amount;
   final bool isLeft;
-
+  final Color color;
   const _PaymentMethodCard({
     required this.label,
     required this.amount,
     required this.isLeft,
+    required this.color,
   });
 
   @override
@@ -543,7 +558,7 @@ class _PaymentMethodCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: const Color(0xFFC0DD97)),
+        border: Border.all(color: color.withOpacity(.7)),
       ),
       child: Column(
         crossAxisAlignment: isLeft
@@ -552,15 +567,15 @@ class _PaymentMethodCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: const TextStyle(fontSize: 11, color: Color(0xFF639922)),
+            style: TextStyle(fontSize: 11, color: color.withOpacity(.7)),
           ),
           const SizedBox(height: 2),
           Text(
             amount,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF27500A),
+              color: color,
             ),
           ),
         ],

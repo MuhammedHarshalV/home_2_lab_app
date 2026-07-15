@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-class TypeContainer extends StatelessWidget {
+class TypeContainer extends ConsumerWidget {
   final String hintText;
   final TextEditingController textController;
   final bool isNumbers;
   final VoidCallback? onSearchTap;
   final List<String> items;
+
   const TypeContainer({
     super.key,
     required this.hintText,
@@ -18,12 +21,14 @@ class TypeContainer extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return Container(
       width: double.infinity,
       padding: const EdgeInsets.symmetric(horizontal: 10),
       decoration: BoxDecoration(
-        color: AppColors.appPrimaryColorLight,
+        color: colorState.secondaryColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -56,7 +61,7 @@ class TypeContainer extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: Icon(Icons.search, color: AppColors.appWhite),

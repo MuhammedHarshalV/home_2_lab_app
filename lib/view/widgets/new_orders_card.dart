@@ -110,7 +110,7 @@ class NewOrdersStatCard extends ConsumerWidget {
           //       ),
           //     ),
           //     Spacer(),
-          //     Icon(Icons.arrow_outward_rounded, color: AppColors.appPrimaryColor),
+          //     Icon(Icons.arrow_outward_rounded, color:colorState.primaryColor),
           //   ],
           // ),
         ],

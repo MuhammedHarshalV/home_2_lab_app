@@ -3,6 +3,7 @@ class AppConstants {
   static String pin = '';
   static String branchID = '';
   static String deviceID = '';
+  static String userId = '';
   static String upiPaymentId = '';
   static String name = '';
   static String address = '';

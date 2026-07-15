@@ -6,8 +6,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -15,7 +16,6 @@ import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/add_new_test_popup.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_below_card.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/patient_details_card.dart';
-
 
 class SpotBillingTestAddScreen extends ConsumerWidget {
   final int? hiveIndex;
@@ -27,6 +27,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
     final testMasterController = ref.read(addTestScreenProvider.notifier);
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
+    final colorState = ref.watch(colorProvider);
 
     final bottomNavController = ref.read(bottomNavProvider.notifier);
 
@@ -49,11 +50,10 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               bottomNavController.setIndex(0);
               context.pushReplacementNamed(AppRouteNames.bottomNavScreen.name);
               testMasterState.searchController.clear();
-            
             },
             child: CircleAvatar(
-              backgroundColor: AppColors.appPrimaryColor.withOpacity(0.2),
-              child: Icon(Icons.arrow_back, color: AppColors.appPrimaryColor),
+              backgroundColor: colorState.primaryColor.withOpacity(0.2),
+              child: Icon(Icons.arrow_back, color: colorState.primaryColor),
             ),
           ),
         ),
@@ -79,7 +79,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
             PatientDetailsCard(index: hiveIndex),
             SizedBox(height: 10),
             Container(
-              decoration: BoxDecoration(color: AppColors.appPrimaryColorLight),
+              decoration: BoxDecoration(color: colorState.secondaryColor),
               child: Table(
                 columnWidths: const {
                   0: FlexColumnWidth(1),
@@ -88,7 +88,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                 },
                 children: [
                   TableRow(
-                    decoration: BoxDecoration(color: AppColors.appPrimaryColor),
+                    decoration: BoxDecoration(color: colorState.primaryColor),
                     children: const [
                       Padding(
                         padding: EdgeInsets.all(10),
@@ -377,7 +377,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                     },
               child: Container(
                 decoration: BoxDecoration(
-                  color: AppColors.appPrimaryColorLight,
+                  color: colorState.secondaryColor,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Center(
@@ -386,7 +386,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                     child: Text(
                       '+ Add More Tests',
                       style: TextStyle(
-                        color: AppColors.appPrimaryColor,
+                        color: colorState.primaryColor,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

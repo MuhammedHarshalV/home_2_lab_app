@@ -3,14 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/view/screens/assigned_order_screen.dart';
+
 import 'package:icon_infoware/view/screens/order_details_screen/screens/assigned_order_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/completed_patient_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/new_order_screen.dart';
@@ -27,7 +28,7 @@ class OderDetailsScreen extends ConsumerWidget {
     final homeState = ref.watch(homeScreenProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
-
+    final colorState = ref.watch(colorProvider);
     return DefaultTabController(
       initialIndex: state.selectedTabIndex,
       length: 4,
@@ -55,10 +56,10 @@ class OderDetailsScreen extends ConsumerWidget {
                   highlightColor: Colors.transparent,
                   onTap: () => Navigator.pop(context),
                   child: CircleAvatar(
-                    backgroundColor: AppColors.appPrimaryColor.withOpacity(0.2),
-                    child: const Icon(
+                    backgroundColor: colorState.primaryColor.withOpacity(0.2),
+                    child: Icon(
                       Icons.arrow_back,
-                      color: AppColors.appPrimaryColor,
+                      color: colorState.primaryColor,
                     ),
                   ),
                 ),
@@ -86,9 +87,9 @@ class OderDetailsScreen extends ConsumerWidget {
               bottom: TabBar(
                 indicatorSize: TabBarIndicatorSize.label,
                 controller: DefaultTabController.of(context),
-                indicatorColor: AppColors.appPrimaryColor,
+                indicatorColor: colorState.primaryColor,
                 indicatorWeight: 6,
-                labelColor: AppColors.appPrimaryColor,
+                labelColor: colorState.primaryColor,
                 unselectedLabelColor: AppColors.appBlack,
                 labelStyle: const TextStyle(
                   fontSize: 11,
@@ -146,7 +147,11 @@ class OderDetailsScreen extends ConsumerWidget {
                 spotBillingState.addressController.clear();
                 spotBillingState.referredByController.clear();
                 spotBillingState.assignedByController.clear();
-                spotBillingState.doneByController.text = 'Sumesh';
+                spotBillingState.doneByController.text =
+                    AppConstants.userName.isNotEmpty
+                    ? AppConstants.userName[0].toUpperCase() +
+                          AppConstants.userName.substring(1)
+                    : '';
                 spotBillingState.patientEmailController.clear();
                 spotBillingState.passPortNumberController.clear();
                 spotBillingState.patientDetailsController.clear();
@@ -158,7 +163,7 @@ class OderDetailsScreen extends ConsumerWidget {
                 );
                 context.pushNamed(AppRouteNames.spotBillingScreen.name);
               },
-              backgroundColor: AppColors.appPrimaryColor,
+              backgroundColor: colorState.primaryColor,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),

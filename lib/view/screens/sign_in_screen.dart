@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -20,7 +21,7 @@ class SignInScreen extends ConsumerWidget {
     final signInState = ref.watch(loginProvider);
     final signInController = ref.read(loginProvider.notifier);
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
-
+    final colorState = ref.watch(colorProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -140,14 +141,14 @@ class SignInScreen extends ConsumerWidget {
                                   labelText: null,
 
                                   labelStyle: TextStyle(
-                                    color: AppColors.appPrimaryColor,
+                                    color: colorState.primaryColor,
                                   ),
                                   floatingLabelStyle: TextStyle(
-                                    color: AppColors.appPrimaryColor,
+                                    color: colorState.primaryColor,
                                   ),
 
                                   filled: true,
-                                  fillColor: AppColors.appPrimaryColorLight,
+                                  fillColor: colorState.secondaryColor,
 
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -181,7 +182,7 @@ class SignInScreen extends ConsumerWidget {
                               width: double.infinity,
                               child: ElevatedButton(
                                 style: ElevatedButton.styleFrom(
-                                  backgroundColor: AppColors.appPrimaryColor,
+                                  backgroundColor: colorState.primaryColor,
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 20,
                                   ),

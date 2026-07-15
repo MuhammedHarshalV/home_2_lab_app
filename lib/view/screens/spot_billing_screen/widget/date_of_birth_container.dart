@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-class DateOfBirthContainer extends StatelessWidget {
+class DateOfBirthContainer extends ConsumerWidget {
   final String hintText;
   final TextEditingController textController;
   final VoidCallback ageSetting;
@@ -13,7 +15,9 @@ class DateOfBirthContainer extends StatelessWidget {
     required this.ageSetting,
   });
 
-  Future<void> _showDatePicker(BuildContext context) async {
+  Future<void> _showDatePicker(BuildContext context, WidgetRef ref) async {
+    final colorState = ref.read(colorProvider);
+
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -24,9 +28,9 @@ class DateOfBirthContainer extends StatelessWidget {
         return Theme(
           data: Theme.of(context).copyWith(
             colorScheme: ColorScheme.light(
-              primary: AppColors.appPrimaryColor, // header & selected day color
+              primary: colorState.primaryColor, // header & selected day color
               onPrimary: Colors.white, // text on header
-              onSurface: AppColors.appPrimaryColor, // calendar text color
+              onSurface: colorState.primaryColor, // calendar text color
             ),
           ),
           child: child!,
@@ -34,7 +38,6 @@ class DateOfBirthContainer extends StatelessWidget {
       },
     );
 
-    // Only update if user picked a date (didn't cancel)
     if (picked != null) {
       final day = picked.day.toString().padLeft(2, '0');
       final month = picked.month.toString().padLeft(2, '0');
@@ -45,15 +48,17 @@ class DateOfBirthContainer extends StatelessWidget {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return GestureDetector(
-      onTap: () => _showDatePicker(context),
+      onTap: () => _showDatePicker(context, ref),
       child: Container(
         width: double.infinity,
         height: 60,
         padding: const EdgeInsets.only(left: 10),
         decoration: BoxDecoration(
-          color: AppColors.appPrimaryColorLight,
+          color: colorState.secondaryColor,
           borderRadius: BorderRadius.circular(10),
         ),
         alignment: Alignment.centerLeft,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -16,6 +17,7 @@ class DiscountDialog extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final addTeststate = ref.watch(addTestScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
+    final colorState = ref.watch(colorProvider);
 
     final addTestcontroller = ref.read(addTestScreenProvider.notifier);
 
@@ -169,7 +171,7 @@ class DiscountDialog extends ConsumerWidget {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.appPrimaryColorLight,
+                    backgroundColor: colorState.secondaryColor,
                     foregroundColor: AppColors.appBlack,
                     minimumSize: const Size(0, 50),
                     shape: RoundedRectangleBorder(
@@ -214,7 +216,7 @@ class DiscountDialog extends ConsumerWidget {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.appPrimaryColor,
+                    backgroundColor: colorState.primaryColor,
                     foregroundColor: Colors.white,
                     minimumSize: const Size(0, 50),
                     shape: RoundedRectangleBorder(

@@ -118,7 +118,8 @@ class PatientCompletedCard extends ConsumerWidget {
                 testAddState.testMasterListSelectedNewPrice.clear();
               }
               log(patient.toMap().toString());
-              testAddController.getTestMasterLists(patient);
+              testAddController.getTestMasterLists(patient, false, null);
+              testAddController.getSpecialSchemeList();
               context.pushNamed(
                 AppRouteNames.spotBillingTestAddScreen.name,
                 extra: index,

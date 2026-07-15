@@ -1,9 +1,9 @@
 import 'dart:developer';
 
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -17,6 +17,7 @@ class BaseUrlScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final signInState = ref.watch(loginProvider);
     final signInController = ref.read(loginProvider.notifier);
+    final colorState = ref.watch(colorProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -66,7 +67,7 @@ class BaseUrlScreen extends ConsumerWidget {
                     height: 50,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: AppColors.appPrimaryColor,
+                        backgroundColor: colorState.primaryColor,
                         padding: const EdgeInsets.symmetric(
                           //vertical: 10,
                           horizontal: 20,
@@ -122,8 +123,6 @@ class BaseUrlScreen extends ConsumerWidget {
                               },
                             );
                           }
-
-                        
                         }
                         // submit logic
                       },

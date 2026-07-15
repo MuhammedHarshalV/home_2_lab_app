@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
 
-class CommonTextField extends StatelessWidget {
+class CommonTextField extends ConsumerWidget {
   final String? label;
   final String hint;
   final IconData icon;
@@ -24,7 +26,9 @@ class CommonTextField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,7 +36,7 @@ class CommonTextField extends StatelessWidget {
           Text(
             label!,
             style: TextStyle(
-              color: AppColors.appPrimaryColor,
+              color: colorState.primaryColor,
               fontWeight: FontWeight.bold,
               fontSize: 14,
             ),
@@ -66,9 +70,9 @@ class CommonTextField extends StatelessWidget {
               color: AppColors.appBlack, // change to your color
               // fontSize: 14,
             ),
-            prefixIcon: Icon(icon, color: AppColors.appPrimaryColor, size: 20),
+            prefixIcon: Icon(icon, color: colorState.primaryColor, size: 20),
             filled: true,
-            fillColor: AppColors.appPrimaryColorLight,
+            fillColor: colorState.secondaryColor,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: BorderSide.none,

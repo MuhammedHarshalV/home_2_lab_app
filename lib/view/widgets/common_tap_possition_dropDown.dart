@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-class CommonTapPossitionDropdown extends StatelessWidget {
+class CommonTapPossitionDropdown extends ConsumerWidget {
   final String heading;
   final List<String> items;
   final Function(String) onSelected;
@@ -14,7 +16,9 @@ class CommonTapPossitionDropdown extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return InkWell(
       splashColor: Colors.transparent,
       highlightColor: Colors.transparent,
@@ -28,7 +32,7 @@ class CommonTapPossitionDropdown extends StatelessWidget {
         width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: AppColors.appPrimaryColorLight,
+          color: colorState.secondaryColor,
         ),
         child: Row(
           children: [

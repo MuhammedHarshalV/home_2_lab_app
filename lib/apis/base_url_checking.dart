@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:icon_infoware/core/constants/api_constants.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/services/device_details_picking/device_id_picking.dart';
 import 'package:icon_infoware/core/services/api_services/api_services.dart';
 import 'package:icon_infoware/models/base_url_response/base_url_response_model.dart';

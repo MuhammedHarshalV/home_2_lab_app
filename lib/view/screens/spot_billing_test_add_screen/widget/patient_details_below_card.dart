@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
@@ -23,7 +24,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
     final testAddState = ref.watch(addTestScreenProvider);
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
-
+    final colorState = ref.watch(colorProvider);
     final testAddController = ref.read(addTestScreenProvider.notifier);
     return Column(
       children: [
@@ -134,7 +135,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 child: Container(
                   // width: double.infinity,
                   decoration: BoxDecoration(
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
@@ -183,7 +184,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: AppColors.appPrimaryColorLight,
+                    color: colorState.secondaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
@@ -191,7 +192,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                       'Cancel visit',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: AppColors.appPrimaryColor,
+                        color: colorState.primaryColor,
                       ),
                     ),
                   ),
@@ -243,11 +244,14 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                         if (isConnected && testAddState.balanceAmount >= 0) {
                           syncing = await testAddController
                               .patientBillSyncingApi(
-                                homeState.allBookingDetails[patientIndex],
+                                context: null,
+                                patient: [
+                                  homeState.allBookingDetails[patientIndex],
+                                ],
                               );
 
                           log('Sync status : $syncing');
-                        } else {
+                        } else if (testAddState.balanceAmount < 0) {
                           AppMessage.show(
                             context,
                             'Balance amount should be zero or greater.',
@@ -287,7 +291,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(

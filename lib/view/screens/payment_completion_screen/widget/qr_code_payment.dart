@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/qr_code_image/qr_code_image_service.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -17,6 +18,7 @@ class PaymentOptionCard extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     // Example:
     final addTestState = ref.watch(addTestScreenProvider);
+    final colorState = ref.watch(colorProvider);
     // final controller = ref.read(addTestScreenProvider.notifier);
 
     return Container(
@@ -105,7 +107,7 @@ class PaymentOptionCard extends ConsumerWidget {
                                 context.pop();
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.green,
+                                backgroundColor: colorState.primaryColor,
                                 foregroundColor: Colors.white,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
@@ -132,7 +134,7 @@ class PaymentOptionCard extends ConsumerWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: const Color(0xFFEAF3DE),
+                color: colorState.secondaryColor,
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Image.asset(

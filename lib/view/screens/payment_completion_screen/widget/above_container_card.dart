@@ -4,12 +4,14 @@ class AboveContainerCard extends StatelessWidget {
   final IconData icon;
   final String label;
   final String value;
+  final Color color;
 
   const AboveContainerCard({
     super.key,
     required this.icon,
     required this.label,
     required this.value,
+    required this.color,
   });
 
   @override
@@ -17,20 +19,17 @@ class AboveContainerCard extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: const Color(0xFF3B6D11), size: 22),
+          Icon(icon, color: color.withOpacity(.8)),
           const SizedBox(height: 4),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 10, color: Color(0xFF639922)),
-          ),
+          Text(label, style: TextStyle(fontSize: 10, color: color)),
           const SizedBox(height: 2),
           Text(
             value,
             textAlign: TextAlign.center,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w600,
-              color: Color(0xFF27500A),
+              color: color,
             ),
           ),
         ],

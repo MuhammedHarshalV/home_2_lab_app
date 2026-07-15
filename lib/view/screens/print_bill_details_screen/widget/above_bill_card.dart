@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class AboveBillCard extends ConsumerWidget {

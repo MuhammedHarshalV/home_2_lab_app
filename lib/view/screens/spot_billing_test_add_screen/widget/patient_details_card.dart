@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
@@ -23,15 +24,15 @@ class PatientDetailsCard extends ConsumerWidget {
     final patientBillingDetailsState = ref.watch(patientBillingProvider);
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
-
+    final colorState = ref.watch(colorProvider);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.appPrimaryColor),
+        border: Border.all(color: colorState.primaryColor),
         // Soft gradient background matching the image
-        gradient: const LinearGradient(
+        gradient: LinearGradient(
           colors: [
-            AppColors.appPrimaryColorLight,
+            colorState.secondaryColor,
             Color.fromARGB(255, 255, 255, 255),
           ],
           begin: Alignment.topLeft,
@@ -80,7 +81,7 @@ class PatientDetailsCard extends ConsumerWidget {
                     // margin: EdgeInsets.only(left: 8),
                     // padding: EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: AppColors.appPrimaryColorLight,
+                      color: colorState.secondaryColor,
                       shape: BoxShape.circle,
                     ),
                     child: Padding(
@@ -276,7 +277,6 @@ class PatientDetailsCard extends ConsumerWidget {
                                 isCorporateBilling:
                                     !addTestState.isCorporateBilling,
                               );
-                              addTestController.getSpecialSchemeList();
                             }
                           : () {
                               AppMessage.show(
@@ -298,7 +298,7 @@ class PatientDetailsCard extends ConsumerWidget {
                           height: 30,
                           margin: const EdgeInsets.only(left: 8),
                           decoration: BoxDecoration(
-                            color: AppColors.appPrimaryColorLight,
+                            color: colorState.secondaryColor,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           child: LayoutBuilder(

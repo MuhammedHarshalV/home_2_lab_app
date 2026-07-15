@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/widget/test_add_search_value_container.dart';
-
 
 class AddNewTestPopUp extends ConsumerWidget {
   final int index;
@@ -18,7 +18,7 @@ class AddNewTestPopUp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final testMasterState = ref.watch(addTestScreenProvider);
     final testMasterController = ref.read(addTestScreenProvider.notifier);
-    final homestate = ref.watch(homeScreenProvider);
+    final colorState = ref.watch(colorProvider);
 
     final homeController = ref.read(homeScreenProvider.notifier);
 
@@ -84,7 +84,7 @@ class AddNewTestPopUp extends ConsumerWidget {
               ],
             ),
             SizedBox(height: 5),
-           
+
             SizedBox(height: 5),
 
             // --- Content / Search Section ---
@@ -115,9 +115,10 @@ class AddNewTestPopUp extends ConsumerWidget {
                       context.pop();
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: AppColors.appPrimaryColorLight
-                          .withOpacity(0.5),
-                      foregroundColor: AppColors.appPrimaryColor,
+                      backgroundColor: colorState.secondaryColor.withOpacity(
+                        0.5,
+                      ),
+                      foregroundColor: colorState.primaryColor,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(14),
                       ),
@@ -178,7 +179,7 @@ class AddNewTestPopUp extends ConsumerWidget {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.appPrimaryColor,
+                      backgroundColor: colorState.primaryColor,
                       foregroundColor: AppColors.appWhite,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),

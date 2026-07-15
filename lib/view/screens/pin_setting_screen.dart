@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/login_controller/login_controller.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -19,6 +20,7 @@ class PinSettingScreen extends ConsumerWidget {
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final pinState = ref.watch(loginProvider);
     final pinController = ref.read(loginProvider.notifier);
+    final colorState = ref.watch(colorProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: const SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -87,7 +89,7 @@ class PinSettingScreen extends ConsumerWidget {
                             width: double.infinity,
                             child: ElevatedButton(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.appPrimaryColor,
+                                backgroundColor: colorState.primaryColor,
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 10,
                                   horizontal: 20,

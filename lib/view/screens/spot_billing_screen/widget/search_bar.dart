@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -11,6 +12,7 @@ class SearchBarContainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final spotBillingState = ref.watch(patientBillingProvider);
+    final colorState = ref.watch(colorProvider);
 
     final spotBillingController = ref.read(patientBillingProvider.notifier);
 
@@ -19,7 +21,7 @@ class SearchBarContainer extends ConsumerWidget {
 
       padding: EdgeInsets.only(left: 5),
       decoration: BoxDecoration(
-        color: AppColors.appPrimaryColorLight,
+        color: colorState.secondaryColor,
         borderRadius: BorderRadius.circular(10),
       ),
       child: Column(
@@ -86,7 +88,7 @@ class SearchBarContainer extends ConsumerWidget {
                   // height: 50,
                   // width: 50,
                   decoration: BoxDecoration(
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: spotBillingState.isLoading == true

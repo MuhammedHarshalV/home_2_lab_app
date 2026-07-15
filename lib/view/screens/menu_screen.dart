@@ -6,12 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_state.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_controller.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_model.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/view/widgets/common_touch_point_dropdown.dart';
 
@@ -23,14 +29,18 @@ class MenuScreen extends ConsumerWidget {
     final bankingstate = ref.watch(bankFetchingProvider);
     final patientstate = ref.watch(patientBillingProvider);
     final addTeststate = ref.watch(addTestScreenProvider);
+    final homeState = ref.watch(homeScreenProvider);
+    final colorState = ref.watch(colorProvider);
 
     final bankingController = ref.read(bankFetchingProvider.notifier);
     final patientController = ref.read(patientBillingProvider.notifier);
     final addTestController = ref.read(addTestScreenProvider.notifier);
+    final colorController = ref.read(colorProvider.notifier);
+    final homeController = ref.read(homeScreenProvider.notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: const SystemUiOverlayStyle(
-        statusBarColor: AppColors.appPrimaryColor,
+      value: SystemUiOverlayStyle(
+        statusBarColor: colorState.primaryColor,
         statusBarIconBrightness: Brightness.dark, // Android icons
         statusBarBrightness: Brightness.light,
       ),
@@ -44,7 +54,7 @@ class MenuScreen extends ConsumerWidget {
               SliverAppBar(
                 expandedHeight: 280,
                 pinned: true,
-                backgroundColor: AppColors.appPrimaryColor,
+                backgroundColor: colorState.primaryColor,
                 elevation: 0,
                 forceElevated: false,
                 // 1. This is how you get the curved bottom on a SliverAppBar
@@ -81,8 +91,8 @@ class MenuScreen extends ConsumerWidget {
                   ),
                   background: Container(
                     // Keep your background decoration for when it is expanded
-                    decoration: const BoxDecoration(
-                      color: AppColors.appPrimaryColor,
+                    decoration: BoxDecoration(
+                      color: colorState.primaryColor,
                       borderRadius: BorderRadius.vertical(
                         bottom: Radius.circular(40),
                       ),
@@ -91,60 +101,65 @@ class MenuScreen extends ConsumerWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             radius: 40,
                             backgroundColor: Colors.white,
                             child: Text(
-                              "S",
+                              AppConstants.userName.isNotEmpty
+                                  ? AppConstants.userName[0]
+                                  : "",
                               style: TextStyle(
                                 fontSize: 32,
                                 fontWeight: FontWeight.bold,
-                                color: AppColors.appPrimaryColor,
+                                color: colorState.primaryColor,
                               ),
                             ),
                           ),
                           const SizedBox(height: 10),
-                          const Text(
-                            "Sumesh K.",
-                            style: TextStyle(
+                          Text(
+                            AppConstants.userName.isNotEmpty
+                                ? AppConstants.userName[0].toUpperCase() +
+                                      AppConstants.userName.substring(1)
+                                : '',
+                            style: const TextStyle(
                               color: Colors.white,
                               fontSize: 22,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          const Text(
-                            "Sample Collector - Bengaluru",
+                          Text(
+                            AppConstants.name,
                             style: TextStyle(
                               color: Colors.white70,
                               fontSize: 14,
                             ),
                           ),
                           const SizedBox(height: 20),
-                          Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 20),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                StatItem(label: "Today", value: "24"),
-                                // Note: Use a SizedBox with height for VerticalDivider in a Row
-                                SizedBox(
-                                  height: 20,
-                                  child: VerticalDivider(color: Colors.white24),
-                                ),
-                                StatItem(label: "Month", value: "312"),
-                                SizedBox(
-                                  height: 20,
-                                  child: VerticalDivider(color: Colors.white24),
-                                ),
-                                StatItem(label: "Rating", value: "4.9"),
-                              ],
-                            ),
-                          ),
+                          // Container(
+                          //   margin: const EdgeInsets.symmetric(horizontal: 20),
+                          //   padding: const EdgeInsets.symmetric(vertical: 12),
+                          //   decoration: BoxDecoration(
+                          //     color: Colors.white.withOpacity(0.1),
+                          //     borderRadius: BorderRadius.circular(20),
+                          //   ),
+                          //   child: const Row(
+                          //     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          //     children: [
+                          //       StatItem(label: "Today", value: "24"),
+                          //       // Note: Use a SizedBox with height for VerticalDivider in a Row
+                          //       SizedBox(
+                          //         height: 20,
+                          //         child: VerticalDivider(color: Colors.white24),
+                          //       ),
+                          //       StatItem(label: "Month", value: "312"),
+                          //       SizedBox(
+                          //         height: 20,
+                          //         child: VerticalDivider(color: Colors.white24),
+                          //       ),
+                          //       StatItem(label: "Rating", value: "4.9"),
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
@@ -188,13 +203,37 @@ class MenuScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.sync,
-                          size: 20,
-                          color: AppColors.appPrimaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () async {
+                          await addTestController.getTestMasterLists(
+                            null,
+                            true,
+                            context,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          addTeststate.isTestSync == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      color: colorState.primaryColor,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.sync,
+                                  size: 20,
+                                  color: colorState.primaryColor,
+                                ),
+                          "Test Sync",
                         ),
-                        "Test Sync",
                       ),
                       InkWell(
                         splashColor: Colors.transparent,
@@ -217,13 +256,14 @@ class MenuScreen extends ConsumerWidget {
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1,
+                                      color: colorState.primaryColor,
                                     ),
                                   ),
                                 )
                               : Icon(
                                   Icons.sync,
                                   size: 20,
-                                  color: AppColors.appPrimaryColor,
+                                  color: colorState.primaryColor,
                                 ),
                           "Account Heads Sync",
                         ),
@@ -240,6 +280,67 @@ class MenuScreen extends ConsumerWidget {
                           );
                         },
                         child: buildSettingsItem(
+                          addTeststate.isSpecialLoading == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      color: colorState.primaryColor,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.sync,
+                                  size: 20,
+                                  color: colorState.primaryColor,
+                                ),
+                          "Special Rates Sync",
+                        ),
+                      ),
+
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () async {
+                          final List<PatientHiveModel> patients = [];
+                          for (final patient in homeState.allBookingDetails) {
+                            if (patient.isCompleted == 'Yes' &&
+                                patient.isSync != 'Yes') {
+                              patients.add(patient);
+                            }
+                          }
+
+                          if (patients.isEmpty) {
+                            AppMessage.show(
+                              context,
+                              'No completed patients available for syncing.',
+                            );
+                            return;
+                          }
+
+                          final bool isSync = await addTestController
+                              .patientBillSyncingApi(
+                                patient: patients,
+                                context: context,
+                              );
+                          if (isSync == true) {
+                            for (final patient in patients) {
+                              await homeController.updatePatient(
+                                index: patient.indexClick ?? 0,
+                                isSync: "Yes",
+                              );
+                            }
+                            AppMessage.show(
+                              context,
+                              'Patient records synced successfully.',
+                            );
+                          }
+                        },
+                        child: buildSettingsItem(
                           addTeststate.isSyncLoading == true
                               ? SizedBox(
                                   height: 20,
@@ -247,28 +348,24 @@ class MenuScreen extends ConsumerWidget {
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1,
+                                      color: colorState.primaryColor,
                                     ),
                                   ),
                                 )
                               : Icon(
-                                  Icons.sync,
+                                  Icons.receipt_long_outlined,
                                   size: 20,
-                                  color: AppColors.appPrimaryColor,
+                                  color: colorState.primaryColor,
                                 ),
-                          "Special Rates Sync",
+                          "Invoice Sync",
                         ),
-                      ),
-
-                      buildSettingsItem(
-                        const Icon(
-                          Icons.receipt_long_outlined,
-                          size: 20,
-                          color: AppColors.appPrimaryColor,
-                        ),
-                        "Invoice Sync",
                       ),
 
                       InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
                         onTap: () {
                           Color selectedColor = Colors.blue;
                           showDialog(
@@ -293,29 +390,29 @@ class MenuScreen extends ConsumerWidget {
                           );
                         },
                         child: buildSettingsItem(
-                          const Icon(
+                          Icon(
                             Icons.calendar_month_outlined,
                             size: 20,
-                            color: AppColors.appPrimaryColor,
+                            color: colorState.primaryColor,
                           ),
                           "Booking Sync",
                         ),
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.manage_history_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Log Modify Sync",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.payments_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Cash Closing",
                       ),
@@ -333,70 +430,70 @@ class MenuScreen extends ConsumerWidget {
                       const SizedBox(height: 16),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.receipt_long_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "All Invoices",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.print_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Switch Printer",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.description_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Paper Size",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.message_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Seasonal Message",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.payments_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Service Charge",
                       ),
                       buildSettingsItem(
                         FaIcon(
                           FontAwesomeIcons.whatsapp,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Set Whatsapp Content",
                       ),
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.mark_email_read_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Email Content",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.receipt_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Bill Title",
                       ),
@@ -432,13 +529,14 @@ class MenuScreen extends ConsumerWidget {
                                   child: Center(
                                     child: CircularProgressIndicator(
                                       strokeWidth: 1,
+                                      color: colorState.primaryColor,
                                     ),
                                   ),
                                 )
                               : Icon(
                                   Icons.payments_outlined,
                                   size: 20,
-                                  color: AppColors.appPrimaryColor,
+                                  color: colorState.primaryColor,
                                 ),
                           "Change UPI ID",
                         ),
@@ -448,7 +546,7 @@ class MenuScreen extends ConsumerWidget {
                         Icon(
                           Icons.account_balance_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Switch Bank",
                       ),
@@ -465,37 +563,208 @@ class MenuScreen extends ConsumerWidget {
                       const SizedBox(height: 16),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.support_agent_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Help and Support",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.description_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Terms and Conditions",
                       ),
 
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.privacy_tip_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Privacy Policy",
                       ),
                       SizedBox(height: 20),
+                      const Text(
+                        "COLOR SETTING",
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 12,
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          Color selectedColor = colorState.primaryColor;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: AppColors.appWhite,
+                                title: Center(
+                                  child: Text(
+                                    "Pick Primary Color",
+                                    style: TextStyle(
+                                      color: AppColors.appBlack,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ColorPicker(
+                                    pickerColor: selectedColor,
+                                    onColorChanged: (Color color) {
+                                      selectedColor = color;
+                                    },
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      colorController.defaultColor(
+                                        primaryColor: const Color.fromARGB(
+                                          255,
+                                          21,
+                                          130,
+                                          24,
+                                        ),
+                                      );
+                                      context.pop();
+                                    },
+                                    child: const Text(
+                                      "Restore Default",
+                                      style: TextStyle(
+                                        color: AppColors.appBlack,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: colorState.primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      colorController.updateState(
+                                        primaryColor: selectedColor,
+                                      );
+                                      context.pop();
+                                    },
+                                    child: const Text(
+                                      "Done",
+                                      style: TextStyle(
+                                        color: AppColors.appWhite,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.calendar_month_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Primary Color",
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          Color selectedColor = colorState.secondaryColor;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: AppColors.appWhite,
+                                title: Center(
+                                  child: Text(
+                                    "Pick Secondary Color",
+                                    style: TextStyle(
+                                      color: AppColors.appBlack,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ColorPicker(
+                                    pickerColor: selectedColor,
+                                    onColorChanged: (Color color) {
+                                      selectedColor = color;
+                                    },
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      colorController.defaultColor(
+                                        secondaryColor: const Color.fromARGB(
+                                          255,
+                                          216,
+                                          250,
+                                          217,
+                                        ),
+                                      );
+                                      context.pop();
+                                    },
+                                    child: const Text(
+                                      "Restore Default",
+                                      style: TextStyle(
+                                        color: AppColors.appBlack,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: colorState.primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      colorController.updateState(
+                                        secondaryColor: selectedColor,
+                                      );
+                                      context.pop();
+                                    },
+                                    child: const Text(
+                                      "Done",
+                                      style: TextStyle(
+                                        color: AppColors.appWhite,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.calendar_month_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Secondary Color",
+                        ),
+                      ),
+                      SizedBox(height: 16),
                       buildSettingsItem(
-                        const Icon(
+                        Icon(
                           Icons.logout_outlined,
                           size: 20,
-                          color: AppColors.appPrimaryColor,
+                          color: colorState.primaryColor,
                         ),
                         "Logout",
                       ),
@@ -512,89 +781,30 @@ class MenuScreen extends ConsumerWidget {
   }
 }
 
-//header
-Widget buildProfileHeader() {
-  return Container(
-    padding: const EdgeInsets.fromLTRB(20, 60, 20, 30),
-    decoration: const BoxDecoration(
-      color: Color(0xFF0E8B5C),
-      borderRadius: BorderRadius.vertical(bottom: Radius.circular(40)),
-    ),
-    child: Column(
-      children: [
-        const CircleAvatar(
-          radius: 40,
-          backgroundColor: Colors.white,
-          child: Text(
-            "S",
-            style: TextStyle(
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-              color: Color(0xFF0E8B5C),
-            ),
-          ),
-        ),
-        const SizedBox(height: 16),
-        const Text(
-          "Sumesh K.",
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        const Text(
-          "Sample Collector - Bengaluru",
-          style: TextStyle(color: Colors.white70, fontSize: 14),
-        ),
-        const SizedBox(height: 30),
-        // Stats Row
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.1),
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              StatItem(label: "Today", value: "24"),
-              VerticalDivider(color: Colors.white24, thickness: 1),
-              StatItem(label: "This month", value: "312"),
-              VerticalDivider(color: Colors.white24, thickness: 1),
-              StatItem(label: "Rating", value: "4.9"),
-            ],
-          ),
-        ),
-      ],
-    ),
-  );
-}
+// class StatItem extends StatelessWidget {
+//   final String label, value;
+//   const StatItem({super.key, required this.label, required this.value});
 
-class StatItem extends StatelessWidget {
-  final String label, value;
-  const StatItem({super.key, required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          value,
-          style: const TextStyle(
-            color: Colors.white,
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        Text(
-          label,
-          style: const TextStyle(color: Colors.white70, fontSize: 12),
-        ),
-      ],
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return Column(
+//       children: [
+//         Text(
+//           value,
+//           style: const TextStyle(
+//             color: Colors.white,
+//             fontSize: 18,
+//             fontWeight: FontWeight.bold,
+//           ),
+//         ),
+//         Text(
+//           label,
+//           style: const TextStyle(color: Colors.white70, fontSize: 12),
+//         ),
+//       ],
+//     );
+//   }
+// }
 
 //
 Widget buildSettingsItem(Widget icon, String title) {

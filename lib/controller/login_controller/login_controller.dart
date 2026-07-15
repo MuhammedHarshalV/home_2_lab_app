@@ -12,7 +12,7 @@ import 'package:icon_infoware/controller/login_controller/address_save.dart';
 
 import 'package:icon_infoware/controller/login_controller/login_state.dart';
 import 'package:icon_infoware/core/constants/api_constants.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/models/base_url_response/base_url_response_model.dart';
@@ -119,7 +119,10 @@ class LoginController extends StateNotifier<LoginState> {
       if (response?.success == true) {
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setString('userName', userName);
+        await prefs.setString('userId', (response?.userId ?? 0).toString());
+
         AppConstants.userName = userName;
+        AppConstants.userId = (response?.userId ?? 0).toString();
         context.goNamed(AppRouteNames.pinSettingScreen.name);
       } else if (response?.success == false) {
         AppMessage.show(context, 'Invalid username or password');

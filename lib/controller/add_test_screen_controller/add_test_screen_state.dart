@@ -7,6 +7,8 @@ import 'package:icon_infoware/models/spot_billing/test_add_selection.dart';
 import 'package:icon_infoware/models/spot_billing/test_master_response_model.dart';
 
 class AddTestScreenState {
+  final bool isSpecialLoading;
+  final bool isTestSync;
   final bool isSyncLoading;
   final List<String> discountList;
   final List<AccountsList> specialSchemeList;
@@ -44,6 +46,8 @@ class AddTestScreenState {
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
   AddTestScreenState({
+    this.isSpecialLoading = false,
+    this.isTestSync = false,
     this.isUrgent = false,
     this.isSyncLoading = false,
     required this.discountReason,
@@ -82,6 +86,8 @@ class AddTestScreenState {
     this.primaryType = 'Cash',
   });
   AddTestScreenState copyWith({
+    bool? isSpecialLoading,
+    bool? isTestSync,
     bool? isUrgent,
     bool? isSyncLoading,
     List<String>? discountList,
@@ -120,6 +126,8 @@ class AddTestScreenState {
     bool? isSpecialschemeOpen,
   }) {
     return AddTestScreenState(
+      isSpecialLoading: isSpecialLoading ?? this.isSpecialLoading,
+      isTestSync: isTestSync ?? this.isTestSync,
       isUrgent: isUrgent ?? this.isUrgent,
       isSyncLoading: isSyncLoading ?? this.isSyncLoading,
       discountList: discountList ?? this.discountList,

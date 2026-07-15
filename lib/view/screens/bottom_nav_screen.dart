@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_state.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/view/screens/menu_screen.dart';
@@ -19,6 +22,7 @@ class BottomNavScreen extends ConsumerWidget {
     final bottomNavNotifier = ref.read(bottomNavProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
+    final colorState = ref.watch(colorProvider);
 
     return PopScope(
       canPop: false,
@@ -37,7 +41,7 @@ class BottomNavScreen extends ConsumerWidget {
         context,
         controller: controller,
         screens: _buildScreens(),
-        items: _navBarsItems(context),
+        items: _navBarsItems(context, colorState),
         navBarStyle: NavBarStyle.style15,
 
         confineToSafeArea: true,
@@ -61,7 +65,11 @@ class BottomNavScreen extends ConsumerWidget {
             spotBillingState.addressController.clear();
             spotBillingState.referredByController.clear();
             spotBillingState.assignedByController.clear();
-            spotBillingState.doneByController.text = 'Sumesh';
+            spotBillingState.doneByController.text =
+                AppConstants.userName.isNotEmpty
+                ? AppConstants.userName[0].toUpperCase() +
+                      AppConstants.userName.substring(1)
+                : '';
             spotBillingState.patientEmailController.clear();
             spotBillingState.passPortNumberController.clear();
             spotBillingState.patientDetailsController.clear();
@@ -79,7 +87,6 @@ class BottomNavScreen extends ConsumerWidget {
               pageTransitionAnimation: PageTransitionAnimation.cupertino,
             );
           } else {
-            
             bottomNavNotifier.setIndex(index);
           }
         },
@@ -98,14 +105,17 @@ class BottomNavScreen extends ConsumerWidget {
     return [HomeScreen(), SpotBillingScreen(), MenuScreen()];
   }
 
-  List<PersistentBottomNavBarItem> _navBarsItems(BuildContext context) {
+  List<PersistentBottomNavBarItem> _navBarsItems(
+    BuildContext context,
+    ColorState colorState,
+  ) {
     return [
       PersistentBottomNavBarItem(
         icon: Icon(Icons.home),
         inactiveIcon: Icon(Icons.home),
         title: "Home",
         textStyle: TextStyle(fontWeight: FontWeight.w500),
-        activeColorPrimary: AppColors.appPrimaryColor,
+        activeColorPrimary: colorState.primaryColor,
         inactiveColorPrimary: AppColors.appBlack,
       ),
       PersistentBottomNavBarItem(
@@ -122,7 +132,7 @@ class BottomNavScreen extends ConsumerWidget {
 
         title: 'Menu',
         textStyle: TextStyle(fontWeight: FontWeight.w500),
-        activeColorPrimary: AppColors.appPrimaryColor,
+        activeColorPrimary: colorState.primaryColor,
         inactiveColorPrimary: AppColors.appBlack,
       ),
     ];

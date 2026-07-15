@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-class TypeTextFormField extends StatelessWidget {
+class TypeTextFormField extends ConsumerWidget {
   final String hintText;
   final TextEditingController textController;
   final bool isSuffix;
@@ -15,7 +17,6 @@ class TypeTextFormField extends StatelessWidget {
 
   const TypeTextFormField({
     super.key,
-
     required this.hintText,
     required this.textController,
     this.isSuffix = false,
@@ -28,7 +29,9 @@ class TypeTextFormField extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return Container(
       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10)),
       child: TextFormField(
@@ -51,7 +54,7 @@ class TypeTextFormField extends StatelessWidget {
             : null,
         decoration: InputDecoration(
           prefixIcon: isPreffix
-              ? Icon(Icons.person_2_outlined, color: AppColors.appPrimaryColor)
+              ? Icon(Icons.person_2_outlined, color: colorState.primaryColor)
               : null,
           suffixIcon: isSuffix
               ? InkWell(
@@ -70,11 +73,11 @@ class TypeTextFormField extends StatelessWidget {
           hintStyle: TextStyle(color: AppColors.appBlack),
           labelText: null,
 
-          labelStyle: TextStyle(color: AppColors.appPrimaryColor),
-          floatingLabelStyle: TextStyle(color: AppColors.appPrimaryColor),
+          labelStyle: TextStyle(color: colorState.primaryColor),
+          floatingLabelStyle: TextStyle(color: colorState.primaryColor),
 
           filled: true,
-          fillColor: AppColors.appPrimaryColorLight,
+          fillColor: colorState.secondaryColor,
 
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(10),

@@ -3,18 +3,18 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
+
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 
-import 'package:icon_infoware/core/constants/app_constance.dart';
-import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/home_screen/widget/patient_details_list_shimmer.dart';
 import 'package:icon_infoware/view/screens/oder_details_screen.dart';
 import 'package:icon_infoware/view/screens/home_screen/widget/patient_details_card.dart';
-import 'package:icon_infoware/view/widgets/active_section_card.dart';
+import 'package:icon_infoware/view/screens/home_screen/widget/active_section_card.dart';
 import 'package:icon_infoware/view/widgets/new_orders_card.dart';
 
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -26,7 +26,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
-
+    final colorState = ref.watch(colorProvider);
     final orderDetailScreenController = ref.read(
       orderDetailsScreenProvider.notifier,
     );
@@ -63,11 +63,10 @@ class HomeScreen extends ConsumerWidget {
             ),
           ),
           body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10),
             child: RefreshIndicator(
-              color: AppColors.appPrimaryColor, // spinner color
-              backgroundColor:
-                  AppColors.appPrimaryColorLight, // circle background
+              color: colorState.primaryColor, // spinner color
+              backgroundColor: colorState.primaryColor, // circle background
               strokeWidth: 2,
               onRefresh: () async {
                 await homeController.getPatientBookingDetails(null);

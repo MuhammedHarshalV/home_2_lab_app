@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 
-import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/discount_popup.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/service_charge_popup.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/upi_reffernce_id_popup.dart';
@@ -15,6 +15,7 @@ class BillDetailsCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addTeststate = ref.watch(addTestScreenProvider);
+    final colorState = ref.watch(colorProvider);
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -30,11 +31,13 @@ class BillDetailsCard extends ConsumerWidget {
             label: 'Number of tests',
             value: addTeststate.testMasterListSelectedNewPrice.length
                 .toString(),
+            color: colorState.primaryColor,
           ),
           _BillRow(
             index: index,
             label: 'Gross Amount',
             value: addTeststate.totalPrice.toString(),
+            color: colorState.primaryColor,
           ),
           _BillRow(
             index: index,
@@ -42,6 +45,7 @@ class BillDetailsCard extends ConsumerWidget {
             value: addTeststate.discountAmountController.text.isEmpty
                 ? '00'
                 : addTeststate.discountAmountController.text,
+            color: colorState.primaryColor,
             isEditable: true,
             isDiscount: true,
           ),
@@ -53,24 +57,28 @@ class BillDetailsCard extends ConsumerWidget {
                 : addTeststate.servicesnargeController.text,
             isEditable: true,
             isService: true,
+            color: colorState.primaryColor,
           ),
           _BillRow(
             index: index,
             label: 'Net Total',
             value: addTeststate.netAmount.toString(),
+            color: colorState.primaryColor,
           ),
           _BillRow(
             index: index,
             label: 'Amount Paid',
             value: addTeststate.amountPaid.toString(),
+            color: colorState.primaryColor,
           ),
           _BillRow(
             index: index,
             label: 'Balance',
             value: addTeststate.balanceAmount.toString(),
             valueColor: const Color(0xFFA32D2D),
+            color: colorState.primaryColor,
           ),
-          Divider(color: AppColors.appPrimaryColor, height: 20),
+          Divider(color: colorState.primaryColor, height: 20),
           _BillRow(
             index: index,
             label: 'UPI Reference ID',
@@ -78,6 +86,7 @@ class BillDetailsCard extends ConsumerWidget {
                 ? ''
                 : addTeststate.upiRefferenceIdController.text,
             isEditable: true,
+            color: colorState.primaryColor,
             // showEditOnly: true,
           ),
         ],
@@ -91,7 +100,7 @@ class _BillRow extends StatelessWidget {
   final String label;
   final String value;
   final bool isEditable;
-
+  final Color color;
   final Color? valueColor;
   final bool isDiscount;
   final bool isService;
@@ -105,6 +114,7 @@ class _BillRow extends StatelessWidget {
     this.valueColor,
     this.isService = false,
     required this.index,
+    required this.color,
   });
 
   @override
@@ -144,11 +154,7 @@ class _BillRow extends StatelessWidget {
                         : RefferenceIdDialog(index: index),
                   );
                 },
-                child: const Icon(
-                  Icons.edit,
-                  size: 20,
-                  color: Color(0xFF639922),
-                ),
+                child: Icon(Icons.edit, size: 20, color: color),
               ),
             ),
 

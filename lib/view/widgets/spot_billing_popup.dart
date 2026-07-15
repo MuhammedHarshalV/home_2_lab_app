@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart'
+    show colorProvider;
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -10,16 +12,16 @@ class SpotBillingPopUp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final patientBillingController = ref.read(patientBillingProvider.notifier);
-
+    final colorState = ref.watch(colorProvider);
     return AlertDialog(
       backgroundColor: AppColors.appWhite,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.center,
-        children: const [
+        children: [
           Icon(
             Icons.warning_outlined,
-            color: AppColors.appPrimaryColor,
+            color: colorState.primaryColor,
             size: 30,
           ),
           SizedBox(width: 8),
@@ -38,7 +40,7 @@ class SpotBillingPopUp extends ConsumerWidget {
               child: ElevatedButton(
                 onPressed: () => context.pop(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColor,
+                  backgroundColor: colorState.primaryColor,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -72,10 +74,10 @@ class SpotBillingPopUp extends ConsumerWidget {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                child: const Text(
+                child: Text(
                   "YES",
                   style: TextStyle(
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                     fontWeight: FontWeight.bold,
                   ),
                 ),

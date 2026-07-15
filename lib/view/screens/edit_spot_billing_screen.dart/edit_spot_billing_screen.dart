@@ -7,13 +7,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-import 'package:icon_infoware/view/widgets/common_tap_possition_dropDown.dart';
+import 'package:icon_infoware/view/widgets/common_tap_possition_dropdown.dart';
 
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/date_of_birth_container.dart';
@@ -29,7 +30,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final testMasterState = ref.watch(addTestScreenProvider);
+    final colorState = ref.watch(colorProvider);
     final testMasterController = ref.read(addTestScreenProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
@@ -88,8 +89,8 @@ class EditSpotBillingScreen extends ConsumerWidget {
                 // Navigator.pop(context);
               },
               child: CircleAvatar(
-                backgroundColor: AppColors.appPrimaryColor.withOpacity(0.2),
-                child: Icon(Icons.arrow_back, color: AppColors.appPrimaryColor),
+                backgroundColor: colorState.primaryColor.withOpacity(0.2),
+                child: Icon(Icons.arrow_back, color: colorState.primaryColor),
               ),
             ),
           ),
@@ -119,7 +120,10 @@ class EditSpotBillingScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TopText(heading: 'Patient Details'),
+                  TopText(
+                    heading: 'Patient Details',
+                    color: colorState.primaryColor,
+                  ),
                   SizedBox(height: 8),
                   // ShowMenu(heading: 'Ms'),
                   CommonTapPossitionDropdown(
@@ -137,7 +141,10 @@ class EditSpotBillingScreen extends ConsumerWidget {
                   ),
                   SizedBox(height: 8),
 
-                  TopText(heading: 'Patient Name *'),
+                  TopText(
+                    heading: 'Patient Name *',
+                    color: colorState.primaryColor,
+                  ),
                   SizedBox(height: 7),
                   TypeTextFormField(
                     hintText: 'Patient Name',
@@ -218,7 +225,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                     controller: spotBillingState.addressController,
                   ),
                   SizedBox(height: 8),
-                  TopText(heading: 'Done by *'),
+                  TopText(heading: 'Done by *', color: colorState.primaryColor),
                   SizedBox(height: 8),
 
                   Focus(
@@ -258,7 +265,11 @@ class EditSpotBillingScreen extends ConsumerWidget {
                   ),
                   if ((spotBillingState.doneByAccountListSearch.isNotEmpty ||
                           spotBillingState.isDoneByApi == true) &&
-                      spotBillingState.doneByController.text != 'Sumesh')
+                      spotBillingState.doneByController.text !=
+                          (AppConstants.userName.isNotEmpty
+                              ? AppConstants.userName[0].toUpperCase() +
+                                    AppConstants.userName.substring(1)
+                              : ''))
                     Container(
                       height: 70,
                       width: double.infinity,
@@ -332,7 +343,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                       // Container(
                       //   height: 20,
                       //   width: 20,
-                      //   decoration: BoxDecoration(color: AppColors.appPrimaryColorLight),
+                      //   decoration: BoxDecoration(color:colorState.primaryColorLight),
                       //   child: Center(child: Icon(Icons.che),),
                       // ),
                       InkWell(
@@ -440,6 +451,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                           note: spotBillingState.noteController.text,
                           urgent: spotBillingState.isUrgent == false ? 0 : 1,
                         );
+                        testMasterController.getSpecialSchemeList();
                         context.pushReplacementNamed(
                           AppRouteNames.spotBillingTestAddScreen.name,
                           extra: index,
@@ -455,7 +467,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                       height: 50,
                       width: double.infinity,
                       decoration: BoxDecoration(
-                        color: AppColors.appPrimaryColor,
+                        color: colorState.primaryColor,
                         borderRadius: BorderRadius.circular(10),
                       ),
                       child: Center(

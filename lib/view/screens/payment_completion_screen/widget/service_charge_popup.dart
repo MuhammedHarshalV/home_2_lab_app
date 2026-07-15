@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
@@ -15,6 +16,7 @@ class ServiceChangeDialog extends ConsumerWidget {
     final addTeststate = ref.watch(addTestScreenProvider);
     final addTestController = ref.read(addTestScreenProvider.notifier);
     final homeController = ref.read(homeScreenProvider.notifier);
+    final colorState = ref.watch(colorProvider);
 
     return PopScope(
       onPopInvoked: (didPop) async {
@@ -74,7 +76,7 @@ class ServiceChangeDialog extends ConsumerWidget {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.appPrimaryColorLight,
+                    backgroundColor: colorState.secondaryColor,
                     foregroundColor: AppColors.appBlack,
                     minimumSize: const Size(0, 50),
                     shape: RoundedRectangleBorder(
@@ -119,7 +121,7 @@ class ServiceChangeDialog extends ConsumerWidget {
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.appPrimaryColor,
+                    backgroundColor: colorState.primaryColor,
                     foregroundColor: Colors.white,
                     minimumSize: const Size(0, 50),
                     shape: RoundedRectangleBorder(

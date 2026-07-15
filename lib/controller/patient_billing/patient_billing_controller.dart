@@ -7,6 +7,7 @@ import 'package:icon_infoware/apis/spot_billing/done_by_search_api.dart';
 import 'package:icon_infoware/apis/spot_billing/search_patient_api.dart';
 
 import 'package:icon_infoware/controller/patient_billing/patient_billing_state.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
@@ -31,7 +32,12 @@ class PatientBillingController extends StateNotifier<PatientBillingState> {
           addressController: TextEditingController(),
           referredByController: TextEditingController(),
           assignedByController: TextEditingController(),
-          doneByController: TextEditingController(text: 'Sumesh'),
+          doneByController: TextEditingController(
+            text: AppConstants.userName.isNotEmpty
+                ? AppConstants.userName[0].toUpperCase() +
+                      AppConstants.userName.substring(1)
+                : '',
+          ),
           abhaIdController: TextEditingController(),
           passPortNumberController: TextEditingController(),
           noteController: TextEditingController(),

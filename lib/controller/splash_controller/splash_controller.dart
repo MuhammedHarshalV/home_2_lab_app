@@ -3,7 +3,7 @@ import 'dart:developer';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/splash_controller/splash_state.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -31,10 +31,17 @@ class SplashNotifierController extends StateNotifier<SplashState> {
     final String? pin = prefs.getString('PIN');
     final String? baseUrl = prefs.getString('BaseURL');
     final String? upiId = prefs.getString('upiId');
+    final String? userId = prefs.getString('userId');
+
     if ((upiId ?? '').isNotEmpty && (upiId != null)) {
       AppConstants.upiPaymentId = upiId;
 
       log('upiid : $upiId');
+    }
+    if ((userId ?? '').isNotEmpty && (userId != null)) {
+      AppConstants.userId = userId;
+
+      log('userId : $userId');
     }
 
     await Future.delayed(const Duration(seconds: 2)).then((value) async {

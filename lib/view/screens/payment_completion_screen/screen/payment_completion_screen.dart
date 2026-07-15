@@ -4,8 +4,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/services/qr_code_image/qr_code_image_service.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -24,6 +25,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final patientBillingstate = ref.watch(patientBillingProvider);
+    final colorState = ref.watch(colorProvider);
     return Scaffold(
       backgroundColor: AppColors.appWhite,
       appBar: AppBar(
@@ -41,8 +43,8 @@ class PaymentCompletionScreen extends ConsumerWidget {
               context.pop();
             },
             child: CircleAvatar(
-              backgroundColor: AppColors.appPrimaryColor.withOpacity(0.2),
-              child: Icon(Icons.arrow_back, color: AppColors.appPrimaryColor),
+              backgroundColor: colorState.primaryColor.withOpacity(0.2),
+              child: Icon(Icons.arrow_back, color: colorState.primaryColor),
             ),
           ),
         ),
@@ -70,7 +72,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
             Container(
               padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 16),
               decoration: BoxDecoration(
-                color: AppColors.appPrimaryColorLight,
+                color: colorState.secondaryColor,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
@@ -79,23 +81,26 @@ class PaymentCompletionScreen extends ConsumerWidget {
                     icon: Icons.account_balance_wallet_outlined,
                     label: 'Paying with',
                     value: patientBillingstate.patientNameController.text,
+                    color: colorState.primaryColor,
                   ),
                   Container(
                     height: 50,
                     width: 0.5,
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                   ),
                   AboveContainerCard(
                     icon: Icons.calendar_today_outlined,
                     label: 'Paying Date',
                     value: DateFormat('MMM d, yyyy').format(DateTime.now()),
+                    color: colorState.primaryColor,
                   ),
                   Container(
                     height: 50,
                     width: 0.5,
-                    color: AppColors.appPrimaryColor,
+                    color: colorState.primaryColor,
                   ),
                   AboveContainerCard(
+                    color: colorState.primaryColor,
                     icon: Icons.qr_code_outlined,
                     label: 'Paying No',
                     value: AppConstants.devCode,
@@ -114,7 +119,11 @@ class PaymentCompletionScreen extends ConsumerWidget {
             SizedBox(height: 16),
 
             //  Total Amount Card
-            TotalAmountCard(index: index),
+            TotalAmountCard(
+              index: index,
+              secondColor: colorState.secondaryColor,
+              primaryColor: colorState.primaryColor,
+            ),
             SizedBox(height: 16),
 
             //  Dashed Divider
@@ -134,7 +143,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   context.pushNamed(AppRouteNames.printBillScreen.name);
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.appPrimaryColor,
+                  backgroundColor: colorState.primaryColor,
                   foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),
@@ -159,9 +168,13 @@ class PaymentCompletionScreen extends ConsumerWidget {
   }
 }
 
-class _DashedDivider extends StatelessWidget {
+class _DashedDivider extends ConsumerWidget {
+  const _DashedDivider();
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorState = ref.watch(colorProvider);
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final dashCount = (constraints.maxWidth / 8).floor();
@@ -171,7 +184,7 @@ class _DashedDivider extends StatelessWidget {
             return Container(
               width: 4,
               height: 1.5,
-              color: AppColors.appPrimaryColor,
+              color: colorState.primaryColor,
             );
           }),
         );

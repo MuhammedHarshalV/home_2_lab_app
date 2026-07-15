@@ -5,7 +5,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
-import 'package:icon_infoware/core/constants/app_constance.dart';
+import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/above_bill_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/below_info_card.dart';
@@ -13,11 +14,8 @@ import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/bill
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/lab_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/share_bill.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/test_listing_card.dart';
-import 'package:icon_infoware/view/widgets/print_bill_details.dart';
-import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:screenshot/screenshot.dart';
-import 'package:share_plus/share_plus.dart';
 
 final ScreenshotController screenshotController = ScreenshotController();
 
@@ -28,6 +26,7 @@ class PrintBillDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final addTestState = ref.watch(addTestScreenProvider);
+    final colorState = ref.watch(colorProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -128,7 +127,7 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: colorState.primaryColor,
                             foregroundColor: Colors.white,
                             elevation: 2,
                             shape: RoundedRectangleBorder(
@@ -151,7 +150,7 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: colorState.primaryColor,
                             foregroundColor: Colors.white,
                             elevation: 2,
                             shape: RoundedRectangleBorder(
@@ -174,7 +173,7 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                             );
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
+                            backgroundColor: colorState.primaryColor,
                             foregroundColor: Colors.white,
                             elevation: 2,
                             shape: RoundedRectangleBorder(
