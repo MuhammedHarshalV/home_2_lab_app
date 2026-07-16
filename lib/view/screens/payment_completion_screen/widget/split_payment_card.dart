@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class TotalAmountCard extends ConsumerWidget {
@@ -222,12 +223,7 @@ class SplitPaymentDialog extends ConsumerWidget {
                         hoverColor: Colors.transparent,
 
                         onTapDown: (details) async {
-                          List<String> item = [
-                            'Cash',
-                            'UPI',
-                            'Card',
-                            'Credit/Debit',
-                          ];
+                          List<String> item = ['Cash', 'UPI', 'Card'];
                           final String? result = await showDropDown(
                             context,
                             details.globalPosition,
@@ -290,12 +286,7 @@ class SplitPaymentDialog extends ConsumerWidget {
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         onTapDown: (details) async {
-                          List<String> item = [
-                            'Cash',
-                            'UPI',
-                            'Card',
-                            'Credit/Debit',
-                          ];
+                          List<String> item = ['Cash', 'UPI', 'Card'];
                           final String? result = await showDropDown(
                             context,
                             details.globalPosition,
@@ -339,16 +330,16 @@ class SplitPaymentDialog extends ConsumerWidget {
                         hoverColor: Colors.transparent,
 
                         onTapDown: (details) async {
-                          List<String> item = ['Pending'];
-                          final String? result = await showDropDown(
-                            context,
-                            details.globalPosition,
-                            item,
-                          );
-                          if (result != null) {
-                            addTestController.updatestate(primaryType: result);
-                          }
-                          ;
+                          // List<String> item = ['Pending'];
+                          // final String? result = await showDropDown(
+                          //   context,
+                          //   details.globalPosition,
+                          //   item,
+                          // );
+                          // if (result != null) {
+                          //   addTestController.updatestate(primaryType: result);
+                          // }
+                          // ;
                         },
                         child: DropdownPayment(title: 'Pending'),
                       ),
@@ -369,22 +360,30 @@ class SplitPaymentDialog extends ConsumerWidget {
                     ),
                     onPressed: () async {
                       final testMasterState1 = ref.watch(addTestScreenProvider);
-                      await homeController.updatePatient(
-                        index: index,
+                      if (testMasterState1.secondaryType ==
+                          testMasterState1.primaryType) {
+                        AppMessage.show(
+                          context,
+                          'Payment method cannot be same.',
+                        );
+                      } else {
+                        await homeController.updatePatient(
+                          index: index,
 
-                        balance: testMasterState1.balanceAmount,
-                        netAmt: testMasterState1.netAmount,
-                        paidAmt: testMasterState1.amountPaid,
-                        primaryPaid: testMasterState1.primaryPaid,
-                        secondaryPaid: testMasterState1.secondaryPaid,
-                        secondaryType: testMasterState1.secondaryType.isEmpty
-                            ? 'UPI'
-                            : addTestState.secondaryType,
-                        primaryType: testMasterState1.primaryType.isEmpty
-                            ? 'Cash'
-                            : addTestState.primaryType,
-                      );
-                      context.pop();
+                          balance: testMasterState1.balanceAmount,
+                          netAmt: testMasterState1.netAmount,
+                          paidAmt: testMasterState1.amountPaid,
+                          primaryPaid: testMasterState1.primaryPaid,
+                          secondaryPaid: testMasterState1.secondaryPaid,
+                          secondaryType: testMasterState1.secondaryType.isEmpty
+                              ? 'UPI'
+                              : addTestState.secondaryType,
+                          primaryType: testMasterState1.primaryType.isEmpty
+                              ? 'Cash'
+                              : addTestState.primaryType,
+                        );
+                        context.pop();
+                      }
                     },
                     child: const Text(
                       "Confirm",

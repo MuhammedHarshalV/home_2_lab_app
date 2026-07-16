@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
-import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-import 'package:icon_infoware/models/spot_billing/search_patient_response_model.dart';
+
 import 'package:icon_infoware/view/screens/base_URL.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
 import 'package:icon_infoware/view/screens/edit_spot_billing_screen.dart/edit_spot_billing_screen.dart';
@@ -12,6 +11,7 @@ import 'package:icon_infoware/view/screens/menu_screen.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
 import 'package:icon_infoware/view/screens/pin_setting_screen.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/screen/print_bill_details_screen.dart';
+import 'package:icon_infoware/view/screens/print_cash_closer_screen/screen/print_cash_closer_screen.dart';
 import 'package:icon_infoware/view/screens/sign_in_screen.dart';
 import 'package:icon_infoware/view/screens/splash_screen.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/screen/spot_billing_screen.dart';
@@ -94,6 +94,13 @@ final GoRouter router = GoRouter(
       name: AppRouteNames.printBillScreen.name,
       builder: (BuildContext context, GoRouterState state) {
         return const PrintBillDetailsScreen();
+      },
+    ),
+    GoRoute(
+      path: AppRouteNames.printCashCloserScreenroute.route,
+      name: AppRouteNames.printCashCloserScreenroute.name,
+      builder: (BuildContext context, GoRouterState state) {
+        return const PrintCashCloserScreen();
       },
     ),
     GoRoute(

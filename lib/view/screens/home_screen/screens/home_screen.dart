@@ -66,7 +66,7 @@ class HomeScreen extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: RefreshIndicator(
               color: colorState.primaryColor, // spinner color
-              backgroundColor: colorState.primaryColor, // circle background
+              backgroundColor: colorState.secondaryColor, // circle background
               strokeWidth: 2,
               onRefresh: () async {
                 await homeController.getPatientBookingDetails(null);

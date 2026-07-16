@@ -8,6 +8,10 @@ enum AppRouteNames {
   spotBillingScreen(route: '/spotBillingScreen', name: 'spotBillingScreen'),
   menuScreen(route: '/menuScreen', name: 'menuScreen'),
   printBillScreen(route: '/printBillScreen', name: 'printBillScreen'),
+  printCashCloserScreenroute(
+    route: '/printCashCloserScreenroute',
+    name: 'printCashCloserScreenroute',
+  ),
   paymentCompletionScreen(
     route: '/paymentCompletionScreen',
     name: 'paymentCompletionScreen',

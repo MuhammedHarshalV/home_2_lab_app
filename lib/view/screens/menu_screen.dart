@@ -15,6 +15,7 @@ import 'package:icon_infoware/controller/patient_billing/patient_billing_control
 import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
+import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
@@ -247,6 +248,10 @@ class MenuScreen extends ConsumerWidget {
                             context: context,
                           );
                           addTestController.getspecialSchemeAccounts();
+                          await addTestController.specialRatesFetch(
+                            apiCall: false,
+                            context: null,
+                          );
                         },
                         child: buildSettingsItem(
                           patientstate.isLoading == true
@@ -278,6 +283,7 @@ class MenuScreen extends ConsumerWidget {
                             apiCall: true,
                             context: context,
                           );
+                          addTestController.getspecialSchemeAccounts();
                         },
                         child: buildSettingsItem(
                           addTeststate.isSpecialLoading == true
@@ -408,13 +414,24 @@ class MenuScreen extends ConsumerWidget {
                         "Log Modify Sync",
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.payments_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          context.pushNamed(
+                            AppRouteNames.printCashCloserScreenroute.name,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.payments_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Cash Closing",
                         ),
-                        "Cash Closing",
                       ),
 
                       const SizedBox(height: 24),

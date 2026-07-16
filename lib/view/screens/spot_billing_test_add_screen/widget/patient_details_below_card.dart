@@ -166,21 +166,9 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 focusColor: Colors.transparent,
-                onTap: testAddState.isSync != 'Yes'
-                    ? () async {
-                        if (index == null) {
-                          int indexGet =
-                              homeState.allBookingDetails.last.indexClick ?? 0;
-                          await homeController.deletePatient(indexGet);
-                          context.pop();
-                        } else {
-                          await homeController.deletePatient(index!);
-                          context.pop();
-                        }
-                      }
-                    : () {
-                        AppMessage.show(context, 'Bill is already synced.');
-                      },
+                onTap: () {
+                  context.pop();
+                },
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
