@@ -12,7 +12,9 @@ import 'package:icon_infoware/controller/color_controller/color_controller.dart'
 import 'package:icon_infoware/controller/color_controller/color_state.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_controller.dart';
+import 'package:icon_infoware/controller/bank_fetching_controller/bank_fetching_controller.dart';
+import 'package:icon_infoware/controller/print_controller/print_controller.dart';
+import 'package:icon_infoware/controller/print_controller/print_state.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
@@ -21,6 +23,7 @@ import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/view/widgets/common_touch_point_dropdown.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 class MenuScreen extends ConsumerWidget {
   const MenuScreen({super.key});
@@ -32,6 +35,7 @@ class MenuScreen extends ConsumerWidget {
     final addTeststate = ref.watch(addTestScreenProvider);
     final homeState = ref.watch(homeScreenProvider);
     final colorState = ref.watch(colorProvider);
+    final printState = ref.watch(printProvider);
 
     final bankingController = ref.read(bankFetchingProvider.notifier);
     final patientController = ref.read(patientBillingProvider.notifier);
@@ -372,29 +376,7 @@ class MenuScreen extends ConsumerWidget {
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
-                        onTap: () {
-                          Color selectedColor = Colors.blue;
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text("Pick a Color"),
-                                content: SingleChildScrollView(
-                                  child: ColorPicker(
-                                    pickerColor: selectedColor,
-                                    onColorChanged: (Color color) {},
-                                  ),
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.pop(context),
-                                    child: const Text("Done"),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
-                        },
+                        onTap: () {},
                         child: buildSettingsItem(
                           Icon(
                             Icons.calendar_month_outlined,
@@ -455,22 +437,80 @@ class MenuScreen extends ConsumerWidget {
                         "All Invoices",
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.print_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTapDown: (details) async {
+                          final List<BluetoothInfo> listResult =
+                              await PrintBluetoothThermal.pairedBluetooths;
+                          ref
+                              .read(printProvider.notifier)
+                              .updateState(item: listResult);
+                          log(listResult.toString());
+                          if (printState.printDevices.isNotEmpty) {
+                            await commonTouchPointDropdown<BluetoothInfo>(
+                              context: context,
+
+                              tapPosition: details.globalPosition,
+                              items: printState.printDevices,
+                              itemText: (item) => item.name.isNotEmpty
+                                  ? item.name
+                                  : "Unknown Device",
+                              onSelected: (item) async {
+                                ref
+                                    .read(printProvider.notifier)
+                                    .selectPrinter(item);
+                                // context.pop();
+                              },
+                            );
+                          }
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.print_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Switch Printer",
                         ),
-                        "Switch Printer",
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.description_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTapDown: (details) async {
+                          List<PaperType> item = [
+                            PaperType.mm58,
+                            PaperType.mm72,
+                            PaperType.mm80,
+                          ];
+                          await commonTouchPointDropdown<PaperType>(
+                            context: context,
+
+                            tapPosition: details.globalPosition,
+                            items: item,
+                            itemText: (item) => item.toString(),
+
+                            onSelected: (item) async {
+                              ref
+                                  .read(printProvider.notifier)
+                                  .changePaper(item);
+                              // context.pop();
+                            },
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.description_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Paper Size",
                         ),
-                        "Paper Size",
                       ),
 
                       buildSettingsItem(

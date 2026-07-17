@@ -65,12 +65,26 @@ class TestTableWidget extends ConsumerWidget {
   Widget _buildTestRow(String slNo, String testName, String rate) {
     return Container(
       color: Colors.transparent,
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
         children: [
-          SizedBox(width: 50, child: Text(slNo)),
-          Expanded(child: Text(testName)),
-          Text(rate),
+          SizedBox(
+            width: 50,
+            child: Text(
+              slNo,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              testName,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            ),
+          ),
+          Text(
+            rate,
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
         ],
       ),
     );

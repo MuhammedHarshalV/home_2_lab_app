@@ -1,18 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:intl/intl.dart';
 
 class LabInfoCard extends ConsumerWidget {
-  const LabInfoCard({super.key});
+  final bool isCloser;
+  const LabInfoCard({super.key, required this.isCloser});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
         children: [
+          if (isCloser == false)
+            _buildInfoRow('LAB NO', ': ${AppConstants.devCode}', null),
           _buildInfoRow(
             'DATE',
             ': ${DateFormat('MMM d, yyyy').format(DateTime.now())}',
@@ -35,12 +39,12 @@ class LabInfoCard extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 80,
+            width: 120,
             child: Text(
               title,
               style: TextStyle(
                 color: color != null ? Colors.green : AppColors.appBlack,
-                fontSize: 13,
+                fontSize: 20,
                 fontWeight: FontWeight.w500,
               ),
             ),
@@ -48,7 +52,11 @@ class LabInfoCard extends ConsumerWidget {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: AppColors.appBlack, fontSize: 13),
+              style: TextStyle(
+                color: AppColors.appBlack,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
             ),
           ),
         ],

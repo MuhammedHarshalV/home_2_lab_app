@@ -5,6 +5,7 @@
 list(APPEND FLUTTER_PLUGIN_LIST
   connectivity_plus
   geolocator_windows
+  print_bluetooth_thermal
   share_plus
   url_launcher_windows
 )

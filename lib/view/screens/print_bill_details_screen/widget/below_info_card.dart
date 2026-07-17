@@ -17,7 +17,7 @@ class BillFooterWidget extends ConsumerWidget {
       children: [
         Text(
           'User: ${AppConstants.userName.isNotEmpty ? AppConstants.userName[0].toUpperCase() + AppConstants.userName.substring(1) : ''}',
-          style: const TextStyle(fontSize: 14),
+          style: const TextStyle(fontSize: 20),
         ),
 
         Container(
@@ -36,14 +36,14 @@ class BillFooterWidget extends ConsumerWidget {
 
         const Text(
           'Thank you',
-          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 14),
+          style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20),
         ),
 
         const SizedBox(height: 4),
 
         Text(
           AppConstants.tagLine,
-          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
         ),
 
         const SizedBox(height: 15),

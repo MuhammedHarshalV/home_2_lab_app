@@ -36,14 +36,14 @@ class AboveBillCard extends ConsumerWidget {
           const SizedBox(height: 10),
           Text(
             AppConstants.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           const SizedBox(height: 5),
           Text(
             AppConstants.address,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 15,
               height: 1.4,
               fontWeight: FontWeight.w500,
             ),
@@ -53,7 +53,7 @@ class AboveBillCard extends ConsumerWidget {
             AppConstants.phoneNumber,
             textAlign: TextAlign.center,
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               height: 1.4,
               fontWeight: FontWeight.w500,
             ),
@@ -62,9 +62,9 @@ class AboveBillCard extends ConsumerWidget {
           Text(
             'Web: ${AppConstants.webUrl}',
             style: TextStyle(
-              fontSize: 14,
+              fontSize: 16,
               color: AppColors.primaryBlue,
-              fontWeight: FontWeight.w300,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ],

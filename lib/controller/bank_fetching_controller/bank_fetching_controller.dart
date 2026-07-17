@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/apis/banking_details_fetching/banking_details_fetching_api.dart';
-import 'package:icon_infoware/controller/progress_screen_controller/bank_fetching_state.dart';
+import 'package:icon_infoware/controller/bank_fetching_controller/bank_fetching_state.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_model.dart';
 import 'package:flutter/material.dart';

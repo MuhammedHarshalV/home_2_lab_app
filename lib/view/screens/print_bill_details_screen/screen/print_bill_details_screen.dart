@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/controller/print_controller/print_controller.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/above_bill_card.dart';
@@ -25,6 +28,8 @@ class PrintBillDetailsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final addTestState = ref.watch(addTestScreenProvider);
     final colorState = ref.watch(colorProvider);
+    final printState = ref.watch(printProvider);
+    final spotbillingState = ref.watch(patientBillingProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -55,9 +60,29 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                           children: [
                             AboveBillCard(),
                             _buildDivider(),
-                            LabInfoCard(),
+                            LabInfoCard(isCloser: false),
                             _buildDivider(),
 
+                            _buildInfoRow(
+                              'NAME',
+                              ': ${spotbillingState.patientNameController.text}',
+                              null,
+                            ),
+                            _buildInfoRow(
+                              'AGE/SEX',
+                              ': ${spotbillingState.ageController.text} Years/${spotbillingState.genderController.text}',
+                              null,
+                            ),
+                            _buildInfoRow(
+                              'PHONE',
+                              ': ${spotbillingState.patientPhoneController.text}',
+                              null,
+                            ),
+                            _buildInfoRow(
+                              'EMAIL',
+                              ': ${spotbillingState.patientEmailController.text}',
+                              null,
+                            ),
                             TestTableWidget(),
 
                             _buildDivider(),
@@ -166,9 +191,19 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            await ScreenshotUtils.shareBill(
-                              controller: screenshotController,
-                            );
+                            final printer = printState.selectedPrinter;
+
+                            if (printer == null) {
+                              AppMessage.show(
+                                context,
+                                "Please select any printer",
+                              );
+                              return;
+                            } else {
+                              await ref
+                                  .read(printProvider.notifier)
+                                  .printWidget(screenshotController);
+                            }
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: colorState.primaryColor,
@@ -179,10 +214,21 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.print,
-                            color: AppColors.appWhite,
-                          ),
+                          child: printState.isLoading == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: AppColors.appWhite,
+                                    ),
+                                  ),
+                                )
+                              : FaIcon(
+                                  FontAwesomeIcons.print,
+                                  color: AppColors.appWhite,
+                                ),
                         ),
                       ),
                     ],
@@ -192,6 +238,38 @@ class PrintBillDetailsScreen extends ConsumerWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(String title, String value, Color? color) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 4.0),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            width: 120,
+            child: Text(
+              title,
+              style: TextStyle(
+                color: color != null ? Colors.green : AppColors.appBlack,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+          Expanded(
+            child: Text(
+              value,
+              style: TextStyle(
+                color: AppColors.appBlack,
+                fontSize: 20,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -206,6 +284,6 @@ class PrintBillDetailsScreen extends ConsumerWidget {
   }
 
   Widget _buildDivider() {
-    return Divider(color: Colors.grey.shade400, thickness: 1.5, height: 20);
+    return Divider(color: Colors.black, thickness: 1.5, height: 20);
   }
 }
