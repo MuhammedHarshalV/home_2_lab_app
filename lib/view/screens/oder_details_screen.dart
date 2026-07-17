@@ -3,12 +3,15 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 
 import 'package:icon_infoware/core/constants/app_constants.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
@@ -29,6 +32,9 @@ class OderDetailsScreen extends ConsumerWidget {
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
     final colorState = ref.watch(colorProvider);
+    final timerState = ref.watch(customTimerProvider);
+    final tabControllerState = ref.watch(tabControllerProvider);
+    final bottomNavState = ref.watch(bottomNavProvider);
     return DefaultTabController(
       initialIndex: state.selectedTabIndex,
       length: 4,
@@ -135,6 +141,16 @@ class OderDetailsScreen extends ConsumerWidget {
 
             floatingActionButton: FloatingActionButton(
               onPressed: () {
+                if (timerState.isRunning == false) {
+                  AppMessage.show(
+                    context,
+                    "Please press the Start button first.",
+                  );
+
+                  // Stay on the current tab
+                  tabControllerState.jumpToTab(bottomNavState.currentIndex);
+                  return;
+                }
                 spotBillingState.patientDetailsController.clear();
                 spotBillingState.patientNameController.clear();
                 spotBillingState.patientPhoneController.clear();

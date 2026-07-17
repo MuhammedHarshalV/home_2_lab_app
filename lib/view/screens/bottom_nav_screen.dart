@@ -5,7 +5,9 @@ import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_state.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/view/screens/menu_screen.dart';
@@ -23,6 +25,7 @@ class BottomNavScreen extends ConsumerWidget {
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final colorState = ref.watch(colorProvider);
+    final timerState = ref.watch(customTimerProvider);
 
     return PopScope(
       canPop: false,
@@ -41,8 +44,8 @@ class BottomNavScreen extends ConsumerWidget {
         context,
         controller: controller,
         screens: _buildScreens(),
-        items: _navBarsItems(context, colorState),
-        navBarStyle: NavBarStyle.style15,
+        items: _navBarsItems(context, colorState, bottomNavState.currentIndex),
+        navBarStyle: NavBarStyle.style1,
 
         confineToSafeArea: true,
         backgroundColor: AppColors.appWhite,
@@ -52,7 +55,14 @@ class BottomNavScreen extends ConsumerWidget {
         stateManagement: true,
         onItemSelected: (index) {
           if (index == 1) {
-            bottomNavNotifier.setIndex(0);
+            if (timerState.isRunning == false) {
+              AppMessage.show(context, "Please press the Start button first.");
+
+              // Stay on the current tab
+              controller.jumpToTab(bottomNavState.currentIndex);
+              return;
+            }
+            //  bottomNavNotifier.setIndex(0);
             spotBillingState.patientDetailsController.clear();
             spotBillingState.patientNameController.clear();
             spotBillingState.patientPhoneController.clear();
@@ -79,13 +89,13 @@ class BottomNavScreen extends ConsumerWidget {
               ageByYear: 'Year',
               isUrgent: false,
             );
-            controller.jumpToTab(0);
-            PersistentNavBarNavigator.pushNewScreen(
-              context,
-              screen: SpotBillingScreen(),
-              withNavBar: false, //  hide bottom nav
-              pageTransitionAnimation: PageTransitionAnimation.cupertino,
-            );
+            //  controller.jumpToTab(0);
+            // PersistentNavBarNavigator.pushNewScreen(
+            //   context,
+            //   screen: SpotBillingScreen(),
+            //   withNavBar: false, //  hide bottom nav
+            //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
+            // );
           } else {
             bottomNavNotifier.setIndex(index);
           }
@@ -108,6 +118,7 @@ class BottomNavScreen extends ConsumerWidget {
   List<PersistentBottomNavBarItem> _navBarsItems(
     BuildContext context,
     ColorState colorState,
+    int index,
   ) {
     return [
       PersistentBottomNavBarItem(
@@ -123,7 +134,7 @@ class BottomNavScreen extends ConsumerWidget {
         icon: Icon(Icons.add_box_outlined),
         textStyle: TextStyle(fontWeight: FontWeight.w500),
         inactiveIcon: Icon(Icons.add_box_outlined, color: AppColors.appBlack),
-        activeColorPrimary: AppColors.appLightGreen,
+        activeColorPrimary: colorState.primaryColor,
         inactiveColorPrimary: AppColors.appBlack,
       ),
       PersistentBottomNavBarItem(

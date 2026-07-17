@@ -7,9 +7,10 @@ import 'package:icon_infoware/controller/add_test_screen_controller/add_test_scr
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
-import 'package:icon_infoware/core/themes/colors.dart';
+
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -25,6 +26,7 @@ class PatientDetailsCard extends ConsumerWidget {
     final homeState = ref.watch(homeScreenProvider);
     final homeController = ref.read(homeScreenProvider.notifier);
     final colorState = ref.watch(colorProvider);
+    final timerState = ref.watch(customTimerProvider);
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -159,25 +161,33 @@ class PatientDetailsCard extends ConsumerWidget {
             ),
 
             GestureDetector(
-              onTap: addTestState.isSync != 'Yes'
-                  ? () {
-                      if (index == null) {
-                        int indexNot =
-                            homeState.allBookingDetails.last.indexClick ?? 0;
-                        context.pushNamed(
-                          AppRouteNames.editSpotBillingScreen.name,
-                          pathParameters: {'index': indexNot.toString()},
-                        );
-                      } else {
-                        context.pushNamed(
-                          AppRouteNames.editSpotBillingScreen.name,
-                          pathParameters: {'index': index.toString()},
-                        );
-                      }
-                    }
-                  : () {
-                      AppMessage.show(context, 'Bill is already synced.');
-                    },
+              onTap: () {
+                if (timerState.isRunning == false &&
+                    addTestState.isSync != 'Yes') {
+                  AppMessage.show(
+                    context,
+                    "You must press the Start button first.",
+                  );
+                  return;
+                }
+                if (addTestState.isSync != 'Yes') {
+                  if (index == null) {
+                    int indexNot =
+                        homeState.allBookingDetails.last.indexClick ?? 0;
+                    context.pushNamed(
+                      AppRouteNames.editSpotBillingScreen.name,
+                      pathParameters: {'index': indexNot.toString()},
+                    );
+                  } else {
+                    context.pushNamed(
+                      AppRouteNames.editSpotBillingScreen.name,
+                      pathParameters: {'index': index.toString()},
+                    );
+                  }
+                } else {
+                  AppMessage.show(context, 'Bill is already synced.');
+                }
+              },
               child: const Text(
                 'Edit Patient Info',
                 style: TextStyle(
@@ -214,76 +224,67 @@ class PatientDetailsCard extends ConsumerWidget {
                       highlightColor: Colors.transparent,
                       hoverColor: Colors.transparent,
                       focusColor: Colors.transparent,
-                      onTap: addTestState.isSync != 'Yes'
-                          ? () async {
-                              if (addTestState.isCorporateBilling == true) {
-                                log("corparate already clicked");
-                                addTestController.updatestate(
-                                  schemeIDSelected: 0,
-                                  rateIDSelected: 0,
-                                );
-                                if (index == null) {
-                                  int indexNot =
-                                      homeState
-                                          .allBookingDetails
-                                          .last
-                                          .indexClick ??
-                                      0;
-                                  homeController.updatePatient(
-                                    index: indexNot,
-                                    rateIdSelected: 0,
-                                    specialSchemeName: '',
-                                    specialSchemeID: 0,
-                                  );
-                                } else {
-                                  homeController.updatePatient(
-                                    index: index!,
-                                    rateIdSelected: 0,
-                                    specialSchemeName: '',
-                                    specialSchemeID: 0,
-                                  );
-                                }
-                                addTestController.updateNetBalanceAmounts();
-                                addTestState.specialSchemeController.clear();
-                                final testMasterState1 = ref.watch(
-                                  addTestScreenProvider,
-                                );
-                                await homeController.updatePatient(
-                                  index:
-                                      index ??
-                                      homeState
-                                          .allBookingDetails
-                                          .last
-                                          .indexClick ??
-                                      0,
-
-                                  balance: testMasterState1.balanceAmount,
-                                  netAmt: testMasterState1.netAmount,
-
-                                  grossAmt: testMasterState1.totalPrice,
-                                );
-                                // addTestController.updateSpecialSchemePrice();
-                              }
-                              //  else {
-                              //   log(
-                              //     "Special scheme ID selected ${addTestState.schemeIDSelected.toString()}",
-                              //   );
-                              //   addTestController.updatestate(
-                              //     schemeIDSelected: addTestState.schemeIDSelected,
-                              //   );
-                              //   addTestController.updateSpecialSchemePrice();
-                              // }
-                              addTestController.updatestate(
-                                isCorporateBilling:
-                                    !addTestState.isCorporateBilling,
+                      onTap: () async {
+                        if (timerState.isRunning == false &&
+                            addTestState.isSync != 'Yes') {
+                          AppMessage.show(
+                            context,
+                            "You must press the Start button first.",
+                          );
+                          return;
+                        }
+                        if (addTestState.isSync != 'Yes') {
+                          if (addTestState.isCorporateBilling == true) {
+                            log("corparate already clicked");
+                            addTestController.updatestate(
+                              schemeIDSelected: 0,
+                              rateIDSelected: 0,
+                            );
+                            if (index == null) {
+                              int indexNot =
+                                  homeState.allBookingDetails.last.indexClick ??
+                                  0;
+                              homeController.updatePatient(
+                                index: indexNot,
+                                rateIdSelected: 0,
+                                specialSchemeName: '',
+                                specialSchemeID: 0,
+                              );
+                            } else {
+                              homeController.updatePatient(
+                                index: index!,
+                                rateIdSelected: 0,
+                                specialSchemeName: '',
+                                specialSchemeID: 0,
                               );
                             }
-                          : () {
-                              AppMessage.show(
-                                context,
-                                'Bill is already synced.',
-                              );
-                            },
+                            addTestController.updateNetBalanceAmounts();
+                            addTestState.specialSchemeController.clear();
+                            final testMasterState1 = ref.watch(
+                              addTestScreenProvider,
+                            );
+                            await homeController.updatePatient(
+                              index:
+                                  index ??
+                                  homeState.allBookingDetails.last.indexClick ??
+                                  0,
+
+                              balance: testMasterState1.balanceAmount,
+                              netAmt: testMasterState1.netAmount,
+
+                              grossAmt: testMasterState1.totalPrice,
+                            );
+                            // addTestController.updateSpecialSchemePrice();
+                          }
+
+                          addTestController.updatestate(
+                            isCorporateBilling:
+                                !addTestState.isCorporateBilling,
+                          );
+                        } else {
+                          AppMessage.show(context, 'Bill is already synced.');
+                        }
+                      },
                       child: Icon(
                         addTestState.isCorporateBilling
                             ? Icons.check_box_outlined

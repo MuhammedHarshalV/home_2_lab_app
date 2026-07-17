@@ -18,7 +18,7 @@ import 'package:icon_infoware/view/widgets/common_tap_possition_dropdown.dart';
 
 import 'package:icon_infoware/view/widgets/common_text_field.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/widget/date_of_birth_container.dart';
-import 'package:icon_infoware/view/widgets/spot_billing_popup.dart';
+
 import 'package:icon_infoware/view/widgets/top_texts.dart';
 
 import 'package:icon_infoware/view/widgets/type_text_form_field.dart';
@@ -36,6 +36,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
     final homeController = ref.read(homeScreenProvider.notifier);
+    final homeState = ref.watch(homeScreenProvider);
     log('initial');
     log(spotBillingState.searchPatientList.length.toString());
     final List<String> patientTitles = [
@@ -63,7 +64,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        showDialog(context: context, builder: (context) => SpotBillingPopUp());
+        context.pop();
       },
       child: Scaffold(
         backgroundColor: Colors.white,
@@ -82,10 +83,43 @@ class EditSpotBillingScreen extends ConsumerWidget {
               focusColor: Colors.transparent,
               onTap: () {
                 // showCancelWarningDialog(context);
-                showDialog(
-                  context: context,
-                  builder: (context) => SpotBillingPopUp(),
+                // showDialog(
+                //   context: context,
+                //   builder: (context) => SpotBillingPopUp(),
+                // );
+                spotBillingState.patientDetailsController.text =
+                    homeState.allBookingDetails[index].namePrefix ?? '';
+                spotBillingState.patientNameController.text =
+                    homeState.allBookingDetails[index].patName ?? '';
+                spotBillingState.patientPhoneController.text =
+                    homeState.allBookingDetails[index].patPhno ?? '';
+                spotBillingState.patientEmailController.text =
+                    homeState.allBookingDetails[index].patEmail ?? '';
+                spotBillingState.patientDateOfBirthController.text =
+                    homeState.allBookingDetails[index].dob ?? '';
+                spotBillingState.ageController.text = homeState
+                    .allBookingDetails[index]
+                    .patAge
+                    .toString();
+
+                spotBillingState.genderController.text =
+                    homeState.allBookingDetails[index].patGender ?? '';
+                spotBillingState.addressController.text =
+                    homeState.allBookingDetails[index].patAddress ?? '';
+                spotBillingState.passPortNumberController.text =
+                    homeState.allBookingDetails[index].passport ?? '';
+                spotBillingState.outDoctorController.text =
+                    homeState.allBookingDetails[index].outDr ?? '';
+                spotBillingState.abhaIdController.text =
+                    homeState.allBookingDetails[index].abhaId ?? '';
+                spotBillingState.noteController.text =
+                    homeState.allBookingDetails[index].note ?? '';
+                spotBillingController.updateState(
+                  isUrgent: homeState.allBookingDetails[index].urgent == 1
+                      ? true
+                      : false,
                 );
+                context.pop();
                 // Navigator.pop(context);
               },
               child: CircleAvatar(

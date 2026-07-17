@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 
@@ -26,6 +27,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
     final homeController = ref.read(homeScreenProvider.notifier);
     final colorState = ref.watch(colorProvider);
     final testAddController = ref.read(addTestScreenProvider.notifier);
+    final timerState = ref.watch(customTimerProvider);
     return Column(
       children: [
         Divider(color: Colors.grey, thickness: 2),
@@ -112,26 +114,35 @@ class PatientDetailsBelowCard extends ConsumerWidget {
 
             Expanded(
               child: InkWell(
-                onTap: testAddState.isSync != 'Yes'
-                    ? () {
-                        testAddController.storingAndFetchingDiscount();
-                        if (index == null) {
-                          int indexGet =
-                              homeState.allBookingDetails.last.indexClick ?? 0;
-                          context.pushNamed(
-                            AppRouteNames.paymentCompletionScreen.name,
-                            extra: indexGet,
-                          );
-                        } else {
-                          context.pushNamed(
-                            AppRouteNames.paymentCompletionScreen.name,
-                            extra: index!,
-                          );
-                        }
-                      }
-                    : () {
-                        AppMessage.show(context, 'Bill is already synced.');
-                      },
+                onTap: () {
+                  if (timerState.isRunning == false &&
+                      testAddState.isSync != 'Yes') {
+                    AppMessage.show(
+                      context,
+                      "You must press the Start button first.",
+                    );
+                    return;
+                  }
+                  if (testAddState.isSync != 'Yes') {
+                    testAddController.storingAndFetchingDiscount();
+                    if (index == null) {
+                      int indexGet =
+                          homeState.allBookingDetails.last.indexClick ?? 0;
+                      context.pushNamed(
+                        AppRouteNames.paymentCompletionScreen.name,
+                        extra: indexGet,
+                      );
+                    } else {
+                      context.pushNamed(
+                        AppRouteNames.paymentCompletionScreen.name,
+                        extra: index!,
+                      );
+                    }
+                  } else {
+                    AppMessage.show(context, 'Bill is already synced.');
+                  }
+                },
+
                 child: Container(
                   // width: double.infinity,
                   decoration: BoxDecoration(
@@ -193,89 +204,92 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 highlightColor: Colors.transparent,
                 hoverColor: Colors.transparent,
                 focusColor: Colors.transparent,
-                onTap: testAddState.isSync != 'Yes'
-                    ? () async {
-                        final bool isConnected =
-                            await InternetChecker.hasConnection();
+                onTap: () {
+                  if (timerState.isRunning == false &&
+                      testAddState.isSync != 'Yes') {
+                    AppMessage.show(
+                      context,
+                      "You must press the Start button first.",
+                    );
+                    return;
+                  }
+                  if (testAddState.isSync != 'Yes') {
+                    () async {
+                      final bool isConnected =
+                          await InternetChecker.hasConnection();
 
-                        final int patientIndex =
-                            index ??
-                            (homeState.allBookingDetails.last.indexClick ?? 0);
+                      final int patientIndex =
+                          index ??
+                          (homeState.allBookingDetails.last.indexClick ?? 0);
 
-                        if (testAddState
-                            .testMasterListSelectedNewPrice
-                            .isEmpty) {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                backgroundColor: AppColors.appWhite,
-                                title: const Center(
-                                  child: Text(
-                                    'Alert',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
+                      if (testAddState.testMasterListSelectedNewPrice.isEmpty) {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              backgroundColor: AppColors.appWhite,
+                              title: const Center(
+                                child: Text(
+                                  'Alert',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
                                 ),
-                                content: const Text(
-                                  'Please add at least one test.',
-                                ),
-                              );
-                            },
-                          );
-                          return;
-                        }
+                              ),
+                              content: const Text(
+                                'Please add at least one test.',
+                              ),
+                            );
+                          },
+                        );
+                        return;
+                      }
 
-                        bool syncing = false;
+                      bool syncing = false;
 
-                        if (isConnected && testAddState.balanceAmount >= 0) {
-                          syncing = await testAddController
-                              .patientBillSyncingApi(
-                                context: null,
-                                patient: [
-                                  homeState.allBookingDetails[patientIndex],
-                                ],
-                              );
-
-                          log('Sync status : $syncing');
-                        } else if (testAddState.balanceAmount < 0) {
-                          AppMessage.show(
-                            context,
-                            'Balance amount should be zero or greater.',
-                          );
-                          await Future.delayed(Duration(seconds: 2));
-                        }
-
-                        final String time = DateFormat(
-                          'hh:mm a',
-                        ).format(DateTime.now());
-
-                        final String date = DateFormat(
-                          'dd-MMM-yyyy',
-                        ).format(DateTime.now());
-
-                        await homeController.updatePatient(
-                          index: patientIndex,
-                          isCompleted: 'Yes',
-                          isSync: syncing ? 'Yes' : 'No',
-                          timeToSave: time,
-                          dateToSave: date,
+                      if (isConnected && testAddState.balanceAmount >= 0) {
+                        syncing = await testAddController.patientBillSyncingApi(
+                          context: null,
+                          patient: [homeState.allBookingDetails[patientIndex]],
                         );
 
-                        if (!context.mounted) return;
-
-                        if (index == null) {
-                          context.pushReplacementNamed(
-                            AppRouteNames.bottomNavScreen.name,
-                          );
-                        } else {
-                          context.pop();
-                        }
+                        log('Sync status : $syncing');
+                      } else if (testAddState.balanceAmount < 0) {
+                        AppMessage.show(
+                          context,
+                          'Balance amount should be zero or greater.',
+                        );
+                        await Future.delayed(Duration(seconds: 2));
                       }
-                    : () {
-                        context.pushNamed(AppRouteNames.printBillScreen.name);
-                      },
+
+                      final String time = DateFormat(
+                        'hh:mm a',
+                      ).format(DateTime.now());
+
+                      final String date = DateFormat(
+                        'dd-MMM-yyyy',
+                      ).format(DateTime.now());
+
+                      await homeController.updatePatient(
+                        index: patientIndex,
+                        isCompleted: 'Yes',
+                        isSync: syncing ? 'Yes' : 'No',
+                        timeToSave: time,
+                        dateToSave: date,
+                      );
+
+                      if (!context.mounted) return;
+
+                      if (index == null) {
+                        context.pushReplacementNamed(
+                          AppRouteNames.bottomNavScreen.name,
+                        );
+                      } else {
+                        context.pop();
+                      }
+                    };
+                  } else {
+                    context.pushNamed(AppRouteNames.printBillScreen.name);
+                  }
+                },
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(

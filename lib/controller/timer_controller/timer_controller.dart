@@ -11,17 +11,7 @@ class TimerController extends StateNotifier<CustomTimerState> {
 
   Timer? _timer;
 
-  // void toggleTimer() {
-  //   if (state.isRunning) {
-  //     _timer?.cancel();
-  //     state = state.copyWith(isRunning: false, label: 'Start');
-  //   } else {
-  //     state = state.copyWith(isRunning: true, label: 'Stop');
-  //     resetTimer();
-
-  //     state = state.copyWith(seconds: state.seconds + 1);
-  //   }
-  // }
+  
   void toggleTimer() {
     if (state.isRunning) {
       // STOP
