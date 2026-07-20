@@ -33,8 +33,8 @@ class SpotBillingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    
     final testMasterController = ref.read(addTestScreenProvider.notifier);
+    final addTestState = ref.watch(addTestScreenProvider);
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
@@ -530,14 +530,21 @@ class SpotBillingScreen extends ConsumerWidget {
                           outDr: spotBillingState.outDoctorController.text,
                           passport:
                               spotBillingState.passPortNumberController.text,
+                          discAmt: num.tryParse(
+                            addTestState.discountAmountController.text,
+                          ),
+                          servChrge: num.tryParse(
+                            addTestState.servicesnargeController.text,
+                          ),
                         );
                         ref.read(addTestScreenProvider.notifier).clearState();
                         await ref
                             .read(homeScreenProvider.notifier)
                             .savePatient(patient);
-                        log("save to hive :${patient.toString()}");
-                        log("save to urgent :${patient.urgent.toString()}");
+                        log(patient.toMap().toString());
                         bottomNavController.setIndex(0);
+                        log(patient.discAmt.toString());
+                        log(patient.servChrge.toString());
                       } else {
                         log("Show errors ");
                       }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -15,6 +16,7 @@ class SearchBarContainer extends ConsumerWidget {
     final colorState = ref.watch(colorProvider);
 
     final spotBillingController = ref.read(patientBillingProvider.notifier);
+    final addTestScreenState = ref.watch(addTestScreenProvider);
 
     return Container(
       width: double.infinity,
@@ -161,6 +163,15 @@ class SearchBarContainer extends ConsumerWidget {
                                 patient.patAge != null
                                 ? patient.patAge.toString()
                                 : '';
+                            if (patient.discAmt != null) {
+                              addTestScreenState.discountAmountController.text =
+                                  patient.discAmt.toString();
+                            }
+                            if (patient.scharge != null) {
+                              addTestScreenState.servicesnargeController.text =
+                                  patient.scharge.toString();
+                            }
+
                             spotBillingState.genderController.text =
                                 patient.patGender ?? '';
                             spotBillingState.addressController.text =

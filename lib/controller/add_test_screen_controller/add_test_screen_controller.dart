@@ -799,9 +799,9 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     // Clear controllers
     state.searchController.clear();
     state.specialSchemeController.clear();
-    state.discountAmountController.clear();
-    state.discountPercentageController.clear();
-    state.servicesnargeController.clear();
+    // state.discountAmountController.clear();
+    // state.discountPercentageController.clear();
+    // state.servicesnargeController.clear();
     state.upiRefferenceIdController.clear();
     state.primaryAmountContoller.clear();
     state.secondaryAmountController.clear();
