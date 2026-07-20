@@ -13,4 +13,6 @@ class AppConstants {
   static String tagLine = '';
   static String qrUrl = '';
   static String userName = '';
+  static String yearId = '';
+  static String syncId = '';
 }

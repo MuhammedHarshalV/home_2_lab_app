@@ -33,7 +33,7 @@ class SpotBillingScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final testMasterState = ref.watch(addTestScreenProvider);
+    
     final testMasterController = ref.read(addTestScreenProvider.notifier);
     final spotBillingState = ref.watch(patientBillingProvider);
     final spotBillingController = ref.read(patientBillingProvider.notifier);

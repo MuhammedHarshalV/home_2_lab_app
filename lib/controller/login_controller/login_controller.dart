@@ -6,8 +6,10 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:icon_infoware/apis/base_url_checking.dart';
-import 'package:icon_infoware/apis/sign_in_checking.dart';
+import 'package:hive/hive.dart';
+import 'package:icon_infoware/apis/login_screen/base_url_checking.dart';
+import 'package:icon_infoware/apis/login_screen/sign_in_checking.dart';
+import 'package:icon_infoware/apis/login_screen/year_id_fetching.dart';
 import 'package:icon_infoware/controller/login_controller/address_save.dart';
 
 import 'package:icon_infoware/controller/login_controller/login_state.dart';
@@ -17,6 +19,7 @@ import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/models/base_url_response/base_url_response_model.dart';
 import 'package:icon_infoware/models/sign_in/login_response_model.dart';
+import 'package:intl/intl.dart';
 
 import 'package:path_provider/path_provider.dart';
 
@@ -46,6 +49,46 @@ class LoginController extends StateNotifier<LoginState> {
       'Login controller disposed----------------------------------------------------',
     );
     super.dispose();
+  }
+
+  Future<bool> yearIdFetching({required BuildContext context}) async {
+    try {
+      state = state.copyWith(isSubmitted: true);
+      String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      final String date = await prefs.getString('Today_date') ?? '';
+      if (currentDate != date) {
+        log('not equal time');
+        log(date.toString());
+        log(currentDate);
+        final box = await Hive.openBox('patient_booking');
+        await box.clear();
+        await prefs.remove('syncId');
+        await prefs.remove('Today_date');
+      }
+
+      final dynamic response = await YearIdFetching.yearIdFetching(
+        context: context,
+      );
+      if (response['Message'] == 'Success') {
+        int? syncId = prefs.getInt('syncId');
+        if (syncId == null || syncId == 0) {
+          await prefs.setInt('syncId', response['InvNo']);
+          await prefs.setString('Today_date', currentDate);
+          log('response time');
+          log(currentDate);
+        }
+
+        return true;
+      }
+      return false;
+    } catch (e) {
+      log(e.toString());
+      return false;
+    } finally {
+      state = state.copyWith(isSubmitted: false);
+    }
   }
 
   Future<void> baseUrlAndBranchcheck({

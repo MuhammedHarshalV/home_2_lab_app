@@ -31,9 +31,9 @@ class SearchBarContainer extends ConsumerWidget {
               /// TEXTFIELD
               Expanded(
                 child: TextField(
-                  onTapOutside: (_) {
-                    FocusManager.instance.primaryFocus?.unfocus();
-                  },
+                  // onTapOutside: (_) {
+                  //   FocusManager.instance.primaryFocus?.unfocus();
+                  // },
                   controller: textController,
                   keyboardType: TextInputType.text,
                   onChanged: (value) async {

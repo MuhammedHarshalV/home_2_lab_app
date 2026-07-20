@@ -11,6 +11,7 @@ class PatientSyncingApi {
   static Future<dynamic> patientSyncingApi({
     required List<PatientHiveModel> patients,
     required BuildContext? context,
+    required int? syncId,
   }) async {
     try {
       final List<Map<String, dynamic>> patList = [];
@@ -22,7 +23,10 @@ class PatientSyncingApi {
         body["NamePrefix"] = patient.namePrefix ?? '';
         body["patName"] = patient.patName ?? '';
         body["patAddress"] = patient.patAddress ?? '';
-        body["Inv_No"] = (patient.indexClick ?? 0) + 1;
+        body["Inv_No"] = syncId == null
+            ? '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${patient.invNo}'
+            : '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-$syncId';
+
         body["patEmail"] = patient.patEmail ?? '';
         body["patPhno"] = patient.patPhno ?? '';
         body["patMobno"] = patient.patMobno ?? '';
@@ -66,7 +70,7 @@ class PatientSyncingApi {
         context: context,
         url: ApiConstants.patientSync,
         body: {
-          "YrId": 2425,
+          "YrId": AppConstants.yearId,
           "BrId": int.tryParse(AppConstants.branchID) ?? 0,
           "DevCode": AppConstants.deviceID,
           "Pat_List": patList,

@@ -12,4 +12,5 @@ class ApiConstants {
   static String patientSync = '/Sync_patients_Bill';
   static String normalSpecialRates = '/SpecialRates';
   static String userLocation = '/UserLocationDet';
+  static String yearIdFetching = '/InitialLoadGet';
 }

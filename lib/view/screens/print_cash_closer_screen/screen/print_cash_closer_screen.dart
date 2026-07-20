@@ -13,10 +13,11 @@ import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/above_bill_card.dart';
-import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/below_info_card.dart';
+
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/bill_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/lab_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/share_bill.dart';
+import 'package:intl/intl.dart';
 
 import 'package:screenshot/screenshot.dart';
 
@@ -29,7 +30,6 @@ class PrintCashCloserScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final addTestState = ref.watch(addTestScreenProvider);
     final colorState = ref.watch(colorProvider);
     final homeState = ref.watch(homeScreenProvider);
     final printState = ref.watch(printProvider);
@@ -101,8 +101,8 @@ class PrintCashCloserScreen extends ConsumerWidget {
 
                                     return BillingRowWidget(
                                       label:
-                                          ((newList[index].indexClick ?? 0) + 1)
-                                              .toString(),
+                                          '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${newList[index].invNo}',
+
                                       amount: newList[index].netAmt.toString(),
                                       isLightBlue: false,
                                     );
@@ -221,7 +221,7 @@ class PrintCashCloserScreen extends ConsumerWidget {
                               AppConstants.tagLine,
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontSize: 20,
                               ),
                             ),
                           ),

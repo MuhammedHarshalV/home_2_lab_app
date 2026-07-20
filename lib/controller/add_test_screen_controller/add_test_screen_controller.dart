@@ -47,7 +47,9 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   //getdata from hive special scheme list
   Future<void> getspecialSchemeAccounts() async {
     final box = await Hive.openBox('special_scheme');
-
+    final prefs = await SharedPreferences.getInstance();
+    int syncId = prefs.getInt('syncId') ?? 0;
+    state = state.copyWith(syncId: syncId);
     List<AccountsList> data = box.values
         .map((item) => AccountsList.fromJson(Map<String, dynamic>.from(item)))
         .toList();
@@ -442,6 +444,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     num? grosAmount,
     String? primaryType,
     String? secondaryType,
+    int? syncId,
   }) {
     state = state.copyWith(
       rateIDSelected: rateIDSelected,
@@ -462,6 +465,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       isSync: isSync,
       cardName: cardName,
       isUrgent: isUrgent,
+      syncId: syncId,
     );
   }
 
@@ -607,6 +611,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   Future<bool> patientBillSyncingApi({
     required BuildContext? context,
     required List<PatientHiveModel> patient,
+    required bool? sync,
   }) async {
     try {
       state = state.copyWith(isSyncLoading: true);
@@ -616,8 +621,12 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       final bool response = await PatientSyncingApi.patientSyncingApi(
         patients: patient,
         context: context,
+        syncId: sync == true ? state.syncId + 1 : null,
       );
       log('syncing response :$response');
+      if (response == true) {
+        state = state.copyWith(syncId: state.syncId + 1);
+      }
       return response;
     } catch (e) {
       log(e.toString());

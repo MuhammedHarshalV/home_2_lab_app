@@ -281,6 +281,9 @@ class PatientDetailsCard extends ConsumerWidget {
                             isCorporateBilling:
                                 !addTestState.isCorporateBilling,
                           );
+                          if (addTestState.specialSchemeList.isEmpty) {
+                            addTestController.getspecialSchemeAccounts();
+                          }
                         } else {
                           AppMessage.show(context, 'Bill is already synced.');
                         }

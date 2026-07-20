@@ -23,6 +23,7 @@ class LoginScreen extends ConsumerWidget {
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
     final pinState = ref.watch(loginProvider);
     final colorState = ref.watch(colorProvider);
+    final loginController = ref.read(loginProvider.notifier);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
@@ -219,6 +220,7 @@ class LoginScreen extends ConsumerWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                         child: SizedBox(
                           width: double.infinity,
+                          height: 50,
                           child: ElevatedButton(
                             style: ElevatedButton.styleFrom(
                               backgroundColor: colorState.primaryColor,
@@ -230,18 +232,23 @@ class LoginScreen extends ConsumerWidget {
                                 borderRadius: BorderRadius.circular(10),
                               ),
                             ),
-                            onPressed: () {
+                            onPressed: () async {
                               // submit logic
                               if (pinState.loginController.text.isNotEmpty) {
                                 if (pinState.loginController.text ==
                                     AppConstants.pin) {
-                                  ref.invalidate(loginProvider);
-                                  ref.invalidate(splashDisposeProvider);
+                                  final bool response = await loginController
+                                      .yearIdFetching(context: context);
+                                  if (response == true) {
+                                    context.goNamed(
+                                      AppRouteNames.bottomNavScreen.name,
+                                    );
+                                    ref.invalidate(loginProvider);
+                                    ref.invalidate(splashDisposeProvider);
+                                  }
+
                                   log(
                                     '${pinState.loginController.text} : ${pinState.pinNumber}',
-                                  );
-                                  context.goNamed(
-                                    AppRouteNames.bottomNavScreen.name,
                                   );
                                 } else {
                                   showDialog(
@@ -290,14 +297,25 @@ class LoginScreen extends ConsumerWidget {
                                 );
                               }
                             },
-                            child: const Text(
-                              "Login",
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
+                            child: pinState.isSubmitted == true
+                                ? SizedBox(
+                                    height: 20,
+                                    width: 20,
+                                    child: Center(
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: AppColors.appWhite,
+                                      ),
+                                    ),
+                                  )
+                                : Text(
+                                    "Login",
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
                           ),
                         ),
                       ),

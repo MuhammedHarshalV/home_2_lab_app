@@ -65,10 +65,13 @@ class SpotBillingPopUp extends ConsumerWidget {
                   //  Example: update provider before leaving
                   // ref.read(yourProvider.notifier).reset();
 
-                  context.pop(); // close dialog
+                  patientBillingController.updateState(
+                    isAdditional: false,
+                    isUrgent: false,
+                  );
 
-                  controller.jumpToTab(0);
-                  context.goNamed(AppRouteNames.bottomNavScreen.name);
+                  context.pop(); // close dialog
+                  context.pop(); // close SpotBillingScreen
                   patientBillingController.updateState(isAdditional: false);
                   patientBillingController.updateState(isUrgent: false);
                 },

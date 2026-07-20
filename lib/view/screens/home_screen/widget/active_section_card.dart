@@ -166,6 +166,7 @@ class ActiveSessionCard extends ConsumerWidget {
                                   .patientBillSyncingApi(
                                     patient: patients,
                                     context: context,
+                                    sync: null,
                                   );
                               if (isSync == true) {
                                 for (final patient in patients) {

@@ -62,7 +62,7 @@ class BottomNavScreen extends ConsumerWidget {
               controller.jumpToTab(bottomNavState.currentIndex);
               return;
             }
-            //  bottomNavNotifier.setIndex(0);
+            bottomNavNotifier.setIndex(index);
             spotBillingState.patientDetailsController.clear();
             spotBillingState.patientNameController.clear();
             spotBillingState.patientPhoneController.clear();
@@ -89,16 +89,16 @@ class BottomNavScreen extends ConsumerWidget {
               ageByYear: 'Year',
               isUrgent: false,
             );
-            //  controller.jumpToTab(0);
-            // PersistentNavBarNavigator.pushNewScreen(
-            //   context,
-            //   screen: SpotBillingScreen(),
-            //   withNavBar: false, //  hide bottom nav
-            //   pageTransitionAnimation: PageTransitionAnimation.cupertino,
-            // );
-          } else {
-            bottomNavNotifier.setIndex(index);
-          }
+            bottomNavNotifier.setIndex(0);
+
+            controller.jumpToTab(0);
+            PersistentNavBarNavigator.pushNewScreen(
+              context,
+              screen: SpotBillingScreen(),
+              withNavBar: true, //  hide bottom nav
+              pageTransitionAnimation: PageTransitionAnimation.cupertino,
+            );
+          } else {}
         },
         decoration: NavBarDecoration(
           borderRadius: BorderRadius.circular(10),
@@ -112,7 +112,7 @@ class BottomNavScreen extends ConsumerWidget {
   }
 
   List<Widget> _buildScreens() {
-    return [HomeScreen(), SpotBillingScreen(), MenuScreen()];
+    return [HomeScreen(), SizedBox(), MenuScreen()];
   }
 
   List<PersistentBottomNavBarItem> _navBarsItems(

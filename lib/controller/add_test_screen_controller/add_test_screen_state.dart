@@ -35,7 +35,7 @@ class AddTestScreenState {
   final String isSync;
   final num balanceAmount;
   final bool isUrgent;
-
+  final int syncId;
   final List<SchemeRateList> specialSchemeRatesList;
   final TextEditingController searchController;
   // final List<String> checkedTestes;
@@ -47,6 +47,7 @@ class AddTestScreenState {
   final bool isSpecialschemeOpen;
   AddTestScreenState({
     this.isSpecialLoading = false,
+    this.syncId = 0,
     this.isTestSync = false,
     this.isUrgent = false,
     this.isSyncLoading = false,
@@ -90,6 +91,7 @@ class AddTestScreenState {
     bool? isTestSync,
     bool? isUrgent,
     bool? isSyncLoading,
+    int? syncId,
     List<String>? discountList,
     TextEditingController? discountReason,
     List<AccountsList>? specialSchemeList,
@@ -126,6 +128,7 @@ class AddTestScreenState {
     bool? isSpecialschemeOpen,
   }) {
     return AddTestScreenState(
+      syncId: syncId ?? this.syncId,
       isSpecialLoading: isSpecialLoading ?? this.isSpecialLoading,
       isTestSync: isTestSync ?? this.isTestSync,
       isUrgent: isUrgent ?? this.isUrgent,
