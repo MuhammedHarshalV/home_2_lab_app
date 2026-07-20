@@ -10,7 +10,7 @@ import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
-import 'package:icon_infoware/view/screens/menu_screen.dart';
+import 'package:icon_infoware/view/screens/menu_screen/screen/menu_screen.dart';
 import 'package:icon_infoware/view/screens/spot_billing_screen/screen/spot_billing_screen.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 

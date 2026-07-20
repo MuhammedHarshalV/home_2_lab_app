@@ -267,6 +267,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                           onPressed: () async {
                             await ScreenshotUtils.shareBill(
                               controller: screenshotController,
+                              description: AppConstants.whatappContent.isEmpty
+                                  ? null
+                                  : AppConstants.whatappContent,
                             );
                           },
                           style: ElevatedButton.styleFrom(

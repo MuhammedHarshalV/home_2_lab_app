@@ -15,4 +15,5 @@ class AppConstants {
   static String userName = '';
   static String yearId = '';
   static String syncId = '';
+  static String whatappContent = '';
 }

@@ -7,7 +7,7 @@ import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
 import 'package:icon_infoware/view/screens/edit_spot_billing_screen.dart/edit_spot_billing_screen.dart';
 import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/view/screens/login_screen.dart';
-import 'package:icon_infoware/view/screens/menu_screen.dart';
+import 'package:icon_infoware/view/screens/menu_screen/screen/menu_screen.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
 import 'package:icon_infoware/view/screens/pin_setting_screen.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/screen/print_bill_details_screen.dart';

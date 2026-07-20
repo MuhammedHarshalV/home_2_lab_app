@@ -10,6 +10,7 @@ class ScreenshotUtils {
 
   static Future<void> shareBill({
     required ScreenshotController controller,
+    String? description,
     String fileName = "bill.png",
   }) async {
     try {
@@ -24,11 +25,9 @@ class ScreenshotUtils {
 
       await file.writeAsBytes(image);
 
-      await Share.shareXFiles([XFile(file.path)]);
+      await Share.shareXFiles([XFile(file.path)], text: description);
     } catch (e) {
       print(e);
     }
   }
 }
-
-
