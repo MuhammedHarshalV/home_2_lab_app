@@ -297,7 +297,7 @@ class LoginScreen extends ConsumerWidget {
                                 );
                               }
                             },
-                            child: pinState.isSubmitted == true
+                            child: pinState.isYearLoading == true
                                 ? SizedBox(
                                     height: 20,
                                     width: 20,

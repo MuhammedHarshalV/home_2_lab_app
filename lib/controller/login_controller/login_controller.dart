@@ -53,7 +53,7 @@ class LoginController extends StateNotifier<LoginState> {
 
   Future<bool> yearIdFetching({required BuildContext context}) async {
     try {
-      state = state.copyWith(isSubmitted: true);
+      state = state.copyWith(isYearLoading: true);
       String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -87,7 +87,7 @@ class LoginController extends StateNotifier<LoginState> {
       log(e.toString());
       return false;
     } finally {
-      state = state.copyWith(isSubmitted: false);
+      state = state.copyWith(isYearLoading: false);
     }
   }
 
@@ -143,6 +143,7 @@ class LoginController extends StateNotifier<LoginState> {
     } finally {
       // always runs even if crash — loading always stops
       state = state.copyWith(isCheckBaseUrl: false);
+      state = state.copyWith(isSubmitted: false);
     }
   }
 

@@ -1,5 +1,6 @@
 class PatientHiveModel {
   int? indexClick;
+  int? checkId;
   num? patId;
   String? namePrefix;
   String? patName;
@@ -72,6 +73,7 @@ class PatientHiveModel {
     this.currentDatetime,
     this.remarks,
     this.passport,
+    this.checkId,
     this.outDr,
     this.flag,
     this.upiReferenceId,
@@ -112,7 +114,7 @@ class PatientHiveModel {
       indexClick: map['indexClick'] ?? 0,
       note: map['note'] ?? '',
       abhaId: map['abhaId'] ?? '',
-
+      checkId: map['checkId'],
       patId: map['patId'] ?? 0,
       namePrefix: map['namePrefix'] ?? '',
       patName: map['patName'] ?? '',
@@ -178,6 +180,7 @@ class PatientHiveModel {
       'patName': patName,
       'patAddress': patAddress,
       'invNo': invNo,
+      'checkId': checkId,
       'patGender': patGender,
       'patAge': patAge,
       'patAgehead': patAgehead,
@@ -242,6 +245,7 @@ class PatientHiveModel {
       invNo: invNo,
       patGender: patGender,
       patAge: patAge,
+      checkId: checkId,
       patAgehead: patAgehead,
       patPhno: patPhno,
       patMobno: patMobno,

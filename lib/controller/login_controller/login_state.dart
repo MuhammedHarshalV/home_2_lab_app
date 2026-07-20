@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class LoginState {
   final bool passwordSee;
   final bool isSubmitted;
+  final bool isYearLoading;
   final String pinNumber;
   final String baseUrl;
   final String imageBase64;
@@ -21,6 +22,7 @@ class LoginState {
   final GlobalKey<FormState> baseUrlFormKey;
 
   LoginState({
+    this.isYearLoading = false,
     this.passwordSee = false,
     this.isSubmitted = false,
     this.isCheckBaseUrl = false,
@@ -44,7 +46,7 @@ class LoginState {
     bool? isSubmitted,
     String? baseUrl,
     String? imageBase64,
-
+    bool? isYearLoading,
     bool? isCheckBaseUrl,
 
     TextEditingController? usernameController,
@@ -62,7 +64,7 @@ class LoginState {
       passwordSee: passwordSee ?? this.passwordSee,
       isSubmitted: isSubmitted ?? this.isSubmitted,
       branchIDController: branchIDController ?? this.branchIDController,
-
+      isYearLoading: isYearLoading ?? this.isYearLoading,
       baseUrl: baseUrl ?? this.baseUrl,
       imageBase64: imageBase64 ?? this.imageBase64,
 

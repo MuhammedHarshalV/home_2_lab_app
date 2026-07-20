@@ -43,7 +43,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     final box = await Hive.openBox('patient_booking');
 
     for (final patient in patients) {
-      final exists = box.values.any((item) => item['invNo'] == patient.bookNo);
+      final exists = box.values.any(
+        (item) => item['checkId'] == patient.bookNo,
+      );
       if (exists) {
         log("exist this one in hive this :$patient");
       }
@@ -56,6 +58,8 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
           'patName': patient.bookName ?? '',
           'patAddress': patient.bookAddr ?? '',
           'invNo': patient.bookNo ?? 0,
+          'checkId': patient.bookNo ?? 0,
+
           'patGender': patient.bookGender ?? '',
           'patAge': patient.bookAge ?? 0,
           'patAgehead': patient.bookAgeHead ?? '',
@@ -126,6 +130,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       'patName': patient.patName ?? '',
       'patAddress': patient.patAddress ?? '',
       'invNo': patient.invNo ?? 0,
+      'checkId': patient.checkId ?? 0,
       'patGender': patient.patGender ?? '',
       'patAge': patient.patAge ?? 0,
       'patAgehead': patient.patAgehead ?? '',
@@ -379,6 +384,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       return PatientHiveModel(
         indexClick: item['indexClick'],
         invNo: item['invNo'],
+        checkId: item['checkId'],
         patId: item['patId'],
         namePrefix: item['namePrefix'],
         patName: item['patName'],
