@@ -16,4 +16,5 @@ class AppConstants {
   static String yearId = '';
   static String syncId = '';
   static String whatappContent = '';
+  static String emailContent = '';
 }

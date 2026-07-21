@@ -6,6 +6,7 @@ import 'package:icon_infoware/controller/add_test_screen_controller/add_test_scr
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/controller/print_controller/print_controller.dart';
+import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -63,49 +64,92 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                             LabInfoCard(isCloser: false),
                             _buildDivider(),
 
-                            _buildInfoRow(
-                              'NAME',
-                              ': ${spotbillingState.patientNameController.text}',
-                              null,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: _buildInfoRow(
+                                'NAME',
+                                ': ${spotbillingState.patientNameController.text}',
+                                null,
+                              ),
                             ),
-                            _buildInfoRow(
-                              'AGE/SEX',
-                              ': ${spotbillingState.ageController.text} Years/${spotbillingState.genderController.text}',
-                              null,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: _buildInfoRow(
+                                'AGE/SEX',
+                                ': ${spotbillingState.ageController.text} Years/${spotbillingState.genderController.text}',
+                                null,
+                              ),
                             ),
-                            _buildInfoRow(
-                              'PHONE',
-                              ': ${spotbillingState.patientPhoneController.text}',
-                              null,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: _buildInfoRow(
+                                'PHONE',
+                                ': ${spotbillingState.patientPhoneController.text}',
+                                null,
+                              ),
                             ),
-                            _buildInfoRow(
-                              'EMAIL',
-                              ': ${spotbillingState.patientEmailController.text}',
-                              null,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
+                              child: _buildInfoRow(
+                                'EMAIL',
+                                ': ${spotbillingState.patientEmailController.text}',
+                                null,
+                              ),
                             ),
                             TestTableWidget(),
 
                             _buildDivider(),
                             Column(
                               children: [
-                                BillingRowWidget(
-                                  label: 'Gross Amount :',
-                                  amount: addTestState.totalPrice.toString(),
-                                  isLightBlue: false,
-                                ),
-                                BillingRowWidget(
-                                  label: 'Service Charge :',
-                                  amount:
+                                if (num.tryParse(
+                                          addTestState
+                                              .servicesnargeController
+                                              .text,
+                                        ) !=
+                                        0 ||
+                                    num.tryParse(
+                                          addTestState
+                                              .discountAmountController
+                                              .text,
+                                        ) !=
+                                        0)
+                                  BillingRowWidget(
+                                    label: 'Gross Amount :',
+                                    amount: addTestState.totalPrice.toString(),
+                                    isLightBlue: false,
+                                  ),
+                                if (num.tryParse(
                                       addTestState.servicesnargeController.text,
-                                  isLightBlue: false,
-                                ),
-                                BillingRowWidget(
-                                  label: 'Discount Amount :',
-                                  amount: addTestState
-                                      .discountAmountController
-                                      .text,
-                                  isLightBlue: false,
-                                ),
+                                    ) !=
+                                    0)
+                                  BillingRowWidget(
+                                    label: 'Service Charge :',
+                                    amount: addTestState
+                                        .servicesnargeController
+                                        .text,
+                                    isLightBlue: false,
+                                  ),
+                                if (num.tryParse(
+                                      addTestState
+                                          .discountAmountController
+                                          .text,
+                                    ) !=
+                                    0)
+                                  BillingRowWidget(
+                                    label: 'Discount Amount :',
+                                    amount: addTestState
+                                        .discountAmountController
+                                        .text,
+                                    isLightBlue: false,
+                                  ),
                                 BillingRowWidget(
                                   label: 'Net Amount :',
                                   amount: addTestState.netAmount.toString(),
@@ -170,6 +214,9 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                           onPressed: () async {
                             await ScreenshotUtils.shareBill(
                               controller: screenshotController,
+                              description: AppConstants.whatappContent.isEmpty
+                                  ? null
+                                  : AppConstants.whatappContent,
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -184,6 +231,32 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                           child: const FaIcon(
                             FontAwesomeIcons.whatsapp,
                             color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await ScreenshotUtils.shareBill(
+                              controller: screenshotController,
+                              description: AppConstants.emailContent.isEmpty
+                                  ? null
+                                  : AppConstants.emailContent,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorState.primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Icon(
+                            Icons.email_outlined,
+                            color: AppColors.appWhite,
                           ),
                         ),
                       ),

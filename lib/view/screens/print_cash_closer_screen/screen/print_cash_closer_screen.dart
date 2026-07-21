@@ -291,6 +291,32 @@ class PrintCashCloserScreen extends ConsumerWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
+                            await ScreenshotUtils.shareBill(
+                              controller: screenshotController,
+                              description: AppConstants.emailContent.isEmpty
+                                  ? null
+                                  : AppConstants.emailContent,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorState.primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: const Icon(
+                            Icons.email_outlined,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
                             // await ScreenshotUtils.shareBill(
                             //   controller: screenshotController,
                             // );

@@ -359,9 +359,11 @@ class SplitPaymentDialog extends ConsumerWidget {
                       ),
                     ),
                     onPressed: () async {
-                      final testMasterState1 = ref.watch(addTestScreenProvider);
-                      if (testMasterState1.secondaryType ==
-                          testMasterState1.primaryType) {
+                      final testMasterState1 = ref.read(addTestScreenProvider);
+                      if (testMasterState1.secondaryType.isNotEmpty &&
+                          testMasterState1.primaryType.isNotEmpty &&
+                          testMasterState1.secondaryType ==
+                              testMasterState1.primaryType) {
                         AppMessage.show(
                           context,
                           'Payment method cannot be same.',

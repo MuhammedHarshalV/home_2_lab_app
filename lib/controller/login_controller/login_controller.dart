@@ -255,6 +255,7 @@ class LoginController extends StateNotifier<LoginState> {
     final String? branchID = prefs.getString('BranchID');
     final String? userName = prefs.getString('userName');
     final String? whatsapp = prefs.getString("whatsapp_content");
+    final String? email = prefs.getString("email_content");
 
     log('Readed pin :$pin');
 
@@ -273,6 +274,9 @@ class LoginController extends StateNotifier<LoginState> {
     }
     if (whatsapp != null && whatsapp.isNotEmpty) {
       AppConstants.whatappContent = whatsapp;
+    }
+    if (email != null && email.isNotEmpty) {
+      AppConstants.emailContent = email;
     }
     await readBaseUrl();
     await readImage();

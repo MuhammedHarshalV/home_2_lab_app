@@ -21,6 +21,7 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
+import 'package:icon_infoware/view/screens/menu_screen/widget/email_content_popup.dart';
 import 'package:icon_infoware/view/screens/menu_screen/widget/whatsapp_content_popup.dart';
 
 import 'package:icon_infoware/view/widgets/common_touch_point_dropdown.dart';
@@ -551,13 +552,25 @@ class MenuScreen extends ConsumerWidget {
                           "Set Whatsapp Content",
                         ),
                       ),
-                      buildSettingsItem(
-                        Icon(
-                          Icons.mark_email_read_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => EmailContentPopup(),
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.mark_email_read_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Email Content",
                         ),
-                        "Email Content",
                       ),
 
                       buildSettingsItem(
