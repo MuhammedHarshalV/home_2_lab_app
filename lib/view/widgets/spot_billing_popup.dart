@@ -5,7 +5,7 @@ import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller
 import 'package:icon_infoware/controller/color_controller/color_controller.dart'
     show colorProvider;
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
-import 'package:icon_infoware/core/routes/app_route_names.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
 
 class SpotBillingPopUp extends ConsumerWidget {

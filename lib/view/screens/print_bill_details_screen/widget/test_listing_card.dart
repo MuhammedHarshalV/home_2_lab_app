@@ -67,12 +67,16 @@ class TestTableWidget extends ConsumerWidget {
       color: Colors.transparent,
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
             width: 50,
-            child: Text(
-              slNo,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            child: Align(
+              alignment: Alignment.topLeft,
+              child: Text(
+                slNo,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              ),
             ),
           ),
           Expanded(
@@ -81,9 +85,12 @@ class TestTableWidget extends ConsumerWidget {
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
           ),
-          Text(
-            rate,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Text(
+              rate,
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            ),
           ),
         ],
       ),

@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
@@ -140,18 +143,28 @@ class ActiveSessionCard extends ConsumerWidget {
                     child: ElevatedButton.icon(
                       onPressed: () async {
                         try {
-                          final Position position = await getCurrentLocation();
-
                           timerController.toggleTimer();
                           final bool isConnect =
                               await InternetChecker.hasConnection();
                           if (isConnect == true) {
-                            timerController.userLocationApi(
-                              position: position,
-                              isStart: timerState.label == 'Stop'
-                                  ? false
-                                  : true,
-                            );
+                            try {
+                              final Position position =
+                                  await getCurrentLocation().timeout(
+                                    const Duration(seconds: 10),
+                                  );
+                              timerController.userLocationApi(
+                                position: position,
+                                isStart: timerState.label == 'Stop'
+                                    ? false
+                                    : true,
+                              );
+                            } on TimeoutException {
+                              log(
+                                "Location request timed out. Skipping location API.",
+                              );
+                            } catch (e) {
+                              log(e.toString());
+                            }
                             if (timerState.label == 'Stop') {
                               final List<PatientHiveModel> patients = [];
                               for (final patient

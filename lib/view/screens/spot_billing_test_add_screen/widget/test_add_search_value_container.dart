@@ -166,7 +166,7 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                                         'No Name',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 13,
+                                      fontSize: 15,
                                     ),
                                   ),
                                 ),
@@ -343,6 +343,7 @@ class TestAddSearchValueContainer extends ConsumerWidget {
                                             true
                                         ? Icons.check_box_outlined
                                         : Icons.check_box_outline_blank,
+                                    size: 30,
                                   ),
                                 ),
                               ],

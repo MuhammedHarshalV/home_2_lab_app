@@ -9,7 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
-import 'package:icon_infoware/controller/color_controller/color_state.dart';
+
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/controller/bank_fetching_controller/bank_fetching_controller.dart';
@@ -21,7 +21,9 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/banking_fetching/banking_fetching_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
+import 'package:icon_infoware/view/screens/menu_screen/widget/bill_title_popup.dart';
 import 'package:icon_infoware/view/screens/menu_screen/widget/email_content_popup.dart';
+import 'package:icon_infoware/view/screens/menu_screen/widget/logout_popup.dart';
 import 'package:icon_infoware/view/screens/menu_screen/widget/whatsapp_content_popup.dart';
 
 import 'package:icon_infoware/view/widgets/common_touch_point_dropdown.dart';
@@ -172,25 +174,25 @@ class MenuScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                actions: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: InkWell(
-                      splashColor: Colors.transparent,
-                      highlightColor: Colors.transparent,
-                      hoverColor: Colors.transparent,
-                      focusColor: Colors.transparent,
-                      onTap: () {},
-                      child: CircleAvatar(
-                        backgroundColor: AppColors.appWhite.withOpacity(0.2),
-                        child: Icon(
-                          Icons.exit_to_app,
-                          color: AppColors.appWhite,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                // actions: [
+                //   Padding(
+                //     padding: const EdgeInsets.only(right: 16.0),
+                //     child: InkWell(
+                //       splashColor: Colors.transparent,
+                //       highlightColor: Colors.transparent,
+                //       hoverColor: Colors.transparent,
+                //       focusColor: Colors.transparent,
+                //       onTap: () {},
+                //       child: CircleAvatar(
+                //         backgroundColor: AppColors.appWhite.withOpacity(0.2),
+                //         child: Icon(
+                //           Icons.exit_to_app,
+                //           color: AppColors.appWhite,
+                //         ),
+                //       ),
+                //     ),
+                //   ),
+                // ],
               ),
 
               /// Content
@@ -516,23 +518,23 @@ class MenuScreen extends ConsumerWidget {
                         ),
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.message_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
-                        ),
-                        "Seasonal Message",
-                      ),
+                      // buildSettingsItem(
+                      //   Icon(
+                      //     Icons.message_outlined,
+                      //     size: 20,
+                      //     color: colorState.primaryColor,
+                      //   ),
+                      //   "Seasonal Message",
+                      // ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.payments_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
-                        ),
-                        "Service Charge",
-                      ),
+                      // buildSettingsItem(
+                      //   Icon(
+                      //     Icons.payments_outlined,
+                      //     size: 20,
+                      //     color: colorState.primaryColor,
+                      //   ),
+                      //   "Service Charge",
+                      // ),
                       InkWell(
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
@@ -573,13 +575,25 @@ class MenuScreen extends ConsumerWidget {
                         ),
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.receipt_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => BillTitlePopup(),
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.receipt_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Bill Title",
                         ),
-                        "Bill Title",
                       ),
 
                       InkWell(
@@ -626,15 +640,14 @@ class MenuScreen extends ConsumerWidget {
                         ),
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.account_balance_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
-                        ),
-                        "Switch Bank",
-                      ),
-
+                      // buildSettingsItem(
+                      //   Icon(
+                      //     Icons.account_balance_outlined,
+                      //     size: 20,
+                      //     color: colorState.primaryColor,
+                      //   ),
+                      //   "Switch Bank",
+                      // ),
                       const SizedBox(height: 24),
                       const Text(
                         "ABOUT",
@@ -762,7 +775,7 @@ class MenuScreen extends ConsumerWidget {
                           "Primary Color",
                         ),
                       ),
-                      SizedBox(height: 5),
+
                       InkWell(
                         splashColor: Colors.transparent,
                         highlightColor: Colors.transparent,
@@ -844,13 +857,25 @@ class MenuScreen extends ConsumerWidget {
                         ),
                       ),
                       SizedBox(height: 16),
-                      buildSettingsItem(
-                        Icon(
-                          Icons.logout_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          showDialog(
+                            context: context,
+                            builder: (context) => LogoutPopup(),
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.logout_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Logout",
                         ),
-                        "Logout",
                       ),
                       const SizedBox(height: 70),
                     ],
@@ -864,31 +889,6 @@ class MenuScreen extends ConsumerWidget {
     );
   }
 }
-
-// class StatItem extends StatelessWidget {
-//   final String label, value;
-//   const StatItem({super.key, required this.label, required this.value});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Column(
-//       children: [
-//         Text(
-//           value,
-//           style: const TextStyle(
-//             color: Colors.white,
-//             fontSize: 18,
-//             fontWeight: FontWeight.bold,
-//           ),
-//         ),
-//         Text(
-//           label,
-//           style: const TextStyle(color: Colors.white70, fontSize: 12),
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 //
 Widget buildSettingsItem(Widget icon, String title) {

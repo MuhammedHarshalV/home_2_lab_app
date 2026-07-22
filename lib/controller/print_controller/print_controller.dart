@@ -50,75 +50,81 @@ class PrintController extends StateNotifier<PrintState> {
   }
 
   Future<void> printWidget(ScreenshotController controller) async {
-    final printer = state.selectedPrinter;
+    try {
+      final printer = state.selectedPrinter;
 
-    if (printer == null) {
-      log("No printer selected");
-      return;
-    }
+      if (printer == null) {
+        log("No printer selected");
+        return;
+      }
 
-    bool connected = await PrintBluetoothThermal.connectionStatus;
-    state = state.copyWith(isLoading: true);
+      bool connected = await PrintBluetoothThermal.connectionStatus;
+      state = state.copyWith(isLoading: true);
 
-    if (!connected) {
-      connected = await PrintBluetoothThermal.connect(
-        macPrinterAddress: printer.macAdress,
-      );
+      if (!connected) {
+        connected = await PrintBluetoothThermal.connect(
+          macPrinterAddress: printer.macAdress,
+        );
+        state = state.copyWith(isLoading: false);
+        log(state.paperType.toString());
+      }
+
+      if (!connected) {
+        log("Connection failed");
+        state = state.copyWith(isLoading: false);
+        log(state.paperType.toString());
+
+        return;
+      }
+
+      final image = await controller.capture(pixelRatio: 3);
+
+      if (image == null) return;
+
+      img.Image? original = img.decodeImage(image);
+
+      if (original == null) return;
+      original = img.grayscale(original);
+      original = img.contrast(original, contrast: 200);
+
+      if (state.paperType == PaperType.mm58) {
+        original = img.copyResize(
+          original,
+          width: 384,
+          interpolation: img.Interpolation.nearest,
+        );
+      } else if (state.paperType == PaperType.mm72) {
+        original = img.copyResize(
+          original,
+          width: 512,
+          interpolation: img.Interpolation.nearest,
+        );
+      } else {
+        original = img.copyResize(
+          original,
+          width: 576,
+          interpolation: img.Interpolation.nearest,
+        );
+      }
+
+      final profile = await CapabilityProfile.load();
+
+      final generator = Generator(paperSize, profile);
+
+      List<int> bytes = [];
+
+      bytes += generator.imageRaster(original, align: PosAlign.center);
+
+      bytes += generator.feed(1);
+
+      bytes += generator.cut();
+
+      await PrintBluetoothThermal.writeBytes(bytes);
+    } catch (e) {
+      log(e.toString());
+    } finally {
       state = state.copyWith(isLoading: false);
-      log(state.paperType.toString());
     }
-
-    if (!connected) {
-      log("Connection failed");
-      state = state.copyWith(isLoading: false);
-      log(state.paperType.toString());
-
-      return;
-    }
-
-    final image = await controller.capture(pixelRatio: 6);
-
-    if (image == null) return;
-
-    img.Image? original = img.decodeImage(image);
-
-    if (original == null) return;
-    original = img.grayscale(original);
-    original = img.contrast(original, contrast: 200);
-
-    if (state.paperType == PaperType.mm58) {
-      original = img.copyResize(
-        original,
-        width: 384,
-        interpolation: img.Interpolation.nearest,
-      );
-    } else if (state.paperType == PaperType.mm72) {
-      original = img.copyResize(
-        original,
-        width: 512,
-        interpolation: img.Interpolation.nearest,
-      );
-    } else {
-      original = img.copyResize(
-        original,
-        width: 576,
-        interpolation: img.Interpolation.nearest,
-      );
-    }
-
-    final profile = await CapabilityProfile.load();
-
-    final generator = Generator(paperSize, profile);
-
-    List<int> bytes = [];
-
-    bytes += generator.imageRaster(original, align: PosAlign.center);
-
-    bytes += generator.feed(1);
-
-    bytes += generator.cut();
-
-    await PrintBluetoothThermal.writeBytes(bytes);
   }
 }
 

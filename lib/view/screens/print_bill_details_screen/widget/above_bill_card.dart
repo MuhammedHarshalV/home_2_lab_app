@@ -20,17 +20,31 @@ class AboveBillCard extends ConsumerWidget {
               width: MediaQuery.of(context).size.width / 1.5,
 
               fit: BoxFit.fill,
+              color: Colors.black,
+              colorBlendMode: BlendMode.srcIn,
             ),
           ),
+
           const SizedBox(height: 10),
-          Text(
-            'LAB TO HOME',
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: AppColors.primaryBlue,
-              fontFamily: 'Serif',
-              letterSpacing: 0,
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(color: AppColors.darkBlue),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 5),
+                child: Text(
+                  AppConstants.billTitle.isEmpty
+                      ? 'LAB TO HOME'
+                      : AppConstants.billTitle,
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: AppColors.appWhite,
+                    fontFamily: 'Serif',
+                    letterSpacing: 0,
+                  ),
+                ),
+              ),
             ),
           ),
           const SizedBox(height: 10),

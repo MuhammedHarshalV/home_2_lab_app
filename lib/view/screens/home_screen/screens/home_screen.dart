@@ -246,19 +246,7 @@ class HomeScreen extends ConsumerWidget {
                             separatorBuilder: (context, index) =>
                                 SizedBox(height: 10),
                           ),
-                    // PatientContactCard(
-                    //   address: "kakkanad,Ernakulam Phone 6767565647",
-                    // ),
-                    // PatientContactCard(
-                    //   address: "vyttila,Ernakulam Phone 6767565647",
-                    // ),
-                    // PatientContactCard(address: "kakkanad,Ernakulam"),
-                    // PatientContactCard(
-                    //   address: "kakkanad,Ernakulam Phone 6767565647",
-                    // ),
-                    // PatientContactCard(
-                    //   address: "kakkanad,Ernakulam Phone 6767565647",
-                    // ),
+
                     SizedBox(height: 80),
                   ],
                 ),
