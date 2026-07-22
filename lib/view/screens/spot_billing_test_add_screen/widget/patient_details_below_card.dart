@@ -283,8 +283,8 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                       timeToSave: time,
                       dateToSave: date,
                       invNo: syncing
-                          ? ref.read(addTestScreenProvider).syncId
-                          : ref.read(addTestScreenProvider).syncId + 1,
+                          ? '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${ref.read(addTestScreenProvider).syncId}'
+                          : '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${ref.read(addTestScreenProvider).syncId + 1}',
                     );
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setInt(

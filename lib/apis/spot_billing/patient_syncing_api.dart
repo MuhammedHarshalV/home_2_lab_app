@@ -24,7 +24,7 @@ class PatientSyncingApi {
         body["patName"] = patient.patName ?? '';
         body["patAddress"] = patient.patAddress ?? '';
         body["Inv_No"] = syncId == null
-            ? '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${patient.invNo}'
+            ? patient.invNo
             : '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-$syncId';
 
         body["patEmail"] = patient.patEmail ?? '';

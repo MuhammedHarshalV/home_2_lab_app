@@ -1,11 +1,12 @@
 class PatientHiveModel {
+  String? isClosed;
   int? indexClick;
   int? checkId;
   num? patId;
   String? namePrefix;
   String? patName;
   String? patAddress;
-  num? invNo;
+  String? invNo;
   String? patGender;
   num? patAge;
   String? patAgehead;
@@ -54,6 +55,7 @@ class PatientHiveModel {
   List<Map<String, dynamic>>? testlists;
 
   PatientHiveModel({
+    this.isClosed,
     this.abhaId,
     this.note,
     this.indexClick,
@@ -111,6 +113,7 @@ class PatientHiveModel {
 
   factory PatientHiveModel.fromMap(Map<dynamic, dynamic> map) {
     return PatientHiveModel(
+      isClosed: map['isClosed'] ?? '',
       indexClick: map['indexClick'] ?? 0,
       note: map['note'] ?? '',
       abhaId: map['abhaId'] ?? '',
@@ -174,6 +177,7 @@ class PatientHiveModel {
 
   Map<dynamic, dynamic> toMap() {
     return {
+      'isClosed': isClosed,
       'indexClick': indexClick,
       'patId': patId,
       'namePrefix': namePrefix,
@@ -237,6 +241,7 @@ class PatientHiveModel {
     String? dateToSave,
   }) {
     return PatientHiveModel(
+      isClosed: isClosed,
       indexClick: indexClick,
       patId: patId,
       namePrefix: namePrefix,

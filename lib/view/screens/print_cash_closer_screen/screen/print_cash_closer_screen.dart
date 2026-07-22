@@ -17,6 +17,7 @@ import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/abov
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/bill_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/lab_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/share_bill.dart';
+import 'package:icon_infoware/view/screens/print_cash_closer_screen/widget/cash_closing_popup.dart';
 import 'package:intl/intl.dart';
 
 import 'package:screenshot/screenshot.dart';
@@ -86,7 +87,8 @@ class PrintCashCloserScreen extends ConsumerWidget {
                                   (homeState.allBookingDetails
                                           .where(
                                             (patient) =>
-                                                patient.isCompleted == 'Yes',
+                                                patient.isCompleted == 'Yes' &&
+                                                patient.isClosed != 'Yes',
                                           )
                                           .toList())
                                       .length,
@@ -95,13 +97,14 @@ class PrintCashCloserScreen extends ConsumerWidget {
                                         homeState.allBookingDetails
                                             .where(
                                               (patient) =>
-                                                  patient.isCompleted == 'Yes',
+                                                  patient.isCompleted ==
+                                                      'Yes' &&
+                                                  patient.isClosed != 'Yes',
                                             )
                                             .toList();
 
                                     return BillingRowWidget(
-                                      label:
-                                          '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${newList[index].invNo}',
+                                      label: newList[index].invNo ?? '',
 
                                       amount: newList[index].netAmt.toString(),
                                       isLightBlue: false,
@@ -119,7 +122,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             label: 'Total Amount',
                             amount: homeState.allBookingDetails
                                 .where(
-                                  (patient) => patient.isCompleted == 'Yes',
+                                  (patient) =>
+                                      patient.isCompleted == 'Yes' &&
+                                      patient.isClosed != 'Yes',
                                 )
                                 .fold<num>(
                                   0,
@@ -132,7 +137,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             label: 'Cash Amount',
                             amount: homeState.allBookingDetails
                                 .where(
-                                  (patient) => patient.isCompleted == 'Yes',
+                                  (patient) =>
+                                      patient.isCompleted == 'Yes' &&
+                                      patient.isClosed != 'Yes',
                                 )
                                 .fold<num>(0, (sum, item) {
                                   num total = sum;
@@ -157,7 +164,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             label: 'Card Amount',
                             amount: homeState.allBookingDetails
                                 .where(
-                                  (patient) => patient.isCompleted == 'Yes',
+                                  (patient) =>
+                                      patient.isCompleted == 'Yes' &&
+                                      patient.isClosed != 'Yes',
                                 )
                                 .fold<num>(0, (sum, item) {
                                   num total = sum;
@@ -182,7 +191,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             label: 'UPI Amount',
                             amount: homeState.allBookingDetails
                                 .where(
-                                  (patient) => patient.isCompleted == 'Yes',
+                                  (patient) =>
+                                      patient.isCompleted == 'Yes' &&
+                                      patient.isClosed != 'Yes',
                                 )
                                 .fold<num>(0, (sum, item) {
                                   num total = sum;
@@ -207,7 +218,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             label: 'Pending Amount',
                             amount: homeState.allBookingDetails
                                 .where(
-                                  (patient) => patient.isCompleted == 'Yes',
+                                  (patient) =>
+                                      patient.isCompleted == 'Yes' &&
+                                      patient.isClosed != 'Yes',
                                 )
                                 .fold<num>(
                                   0,
@@ -242,8 +255,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                       Expanded(
                         child: ElevatedButton(
                           onPressed: () async {
-                            await ScreenshotUtils.shareBill(
-                              controller: screenshotController,
+                            showDialog(
+                              context: context,
+                              builder: (context) => CashClosingPopup(),
                             );
                           },
                           style: ElevatedButton.styleFrom(
@@ -255,62 +269,7 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             ),
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
-                          child: Icon(
-                            Icons.share_outlined,
-                            color: AppColors.appWhite,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await ScreenshotUtils.shareBill(
-                              controller: screenshotController,
-                              description: AppConstants.whatappContent.isEmpty
-                                  ? null
-                                  : AppConstants.whatappContent,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorState.primaryColor,
-                            foregroundColor: Colors.white,
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: const FaIcon(
-                            FontAwesomeIcons.whatsapp,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await ScreenshotUtils.shareBill(
-                              controller: screenshotController,
-                              description: AppConstants.emailContent.isEmpty
-                                  ? null
-                                  : AppConstants.emailContent,
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: colorState.primaryColor,
-                            foregroundColor: Colors.white,
-                            elevation: 2,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.symmetric(vertical: 14),
-                          ),
-                          child: const Icon(
-                            Icons.email_outlined,
-                            color: Colors.white,
-                          ),
+                          child: Text('Cash close'),
                         ),
                       ),
                       const SizedBox(width: 12),

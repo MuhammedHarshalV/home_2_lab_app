@@ -13,4 +13,6 @@ class ApiConstants {
   static String normalSpecialRates = '/SpecialRates';
   static String userLocation = '/UserLocationDet';
   static String yearIdFetching = '/InitialLoadGet';
+  static String cashClosingApi = '/CashSettlement/CashClosing';
+
 }

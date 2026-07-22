@@ -509,7 +509,7 @@ class SpotBillingScreen extends ConsumerWidget {
 
                           currentDatetime: currentDate,
                           bookTime: null,
-                          invNo: 0,
+                          invNo: '',
                           patPhno: spotBillingState.patientPhoneController.text,
 
                           patEmail:

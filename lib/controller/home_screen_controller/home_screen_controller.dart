@@ -52,12 +52,13 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       if (!exists) {
         log("save to hive one :$patient");
         final key = await box.add({
+          "isClosed": 'No',
           "indexClick": 0,
           'patId': patient.bookPatId ?? 0,
           'namePrefix': '',
           'patName': patient.bookName ?? '',
           'patAddress': patient.bookAddr ?? '',
-          'invNo': patient.bookNo ?? 0,
+          'invNo': patient.bookNo.toString(),
           'checkId': patient.bookNo ?? 0,
 
           'patGender': patient.bookGender ?? '',
@@ -124,12 +125,13 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     final box = await Hive.openBox('patient_booking');
 
     final key = await box.add({
+      'isClosed': 'No',
       'indexClick': 0,
       'patId': patient.patId ?? '',
       'namePrefix': patient.namePrefix ?? '',
       'patName': patient.patName ?? '',
       'patAddress': patient.patAddress ?? '',
-      'invNo': patient.invNo ?? 0,
+      'invNo': patient.invNo,
       'checkId': patient.checkId ?? 0,
       'patGender': patient.patGender ?? '',
       'patAge': patient.patAge ?? 0,
@@ -189,6 +191,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
   //edit stored data
   Future<void> updatePatient({
+    String? isClosed,
     String? abhaId,
     String? note,
     required int index,
@@ -197,7 +200,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     String? namePrefix,
     String? patName,
     String? patAddress,
-    num? invNo,
+    String? invNo,
     String? patGender,
     num? patAge,
     String? patAgehead,
@@ -248,6 +251,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
       (item) => item['indexClick'] == index,
     );
     final oldData = Map<String, dynamic>.from(box.getAt(hiveIndex));
+    oldData['isClosed'] = isClosed ?? oldData['isClosed'];
     oldData['indexClick'] = indexClick ?? oldData['indexClick'];
     oldData['abhaId'] = abhaId ?? oldData['abhaId'];
     oldData['note'] = note ?? oldData['note'];
@@ -309,6 +313,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     log('New testlists: $testlists');
     log(oldData['isSync']);
     final params = {
+      'isClosed': isClosed,
       'indexClick': indexClick,
       'abhaId': abhaId,
       'note': note,
@@ -382,6 +387,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
     final patients = box.values.map<PatientHiveModel>((item) {
       return PatientHiveModel(
+        isClosed: item['isClosed'],
         indexClick: item['indexClick'],
         invNo: item['invNo'],
         checkId: item['checkId'],
@@ -462,11 +468,14 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
         upcomingBookingList.add(patient);
       } else if (patient.isCompleted == 'Yes' &&
           (patient.balance ?? 0) == 0 &&
-          patient.isSync == 'Yes') {
+          patient.isSync == 'Yes' &&
+          patient.isClosed != 'Yes') {
         completedList.add(patient);
-      } else if (patient.isCompleted == 'Yes' && (patient.balance ?? 0) != 0) {
+      } else if (patient.isCompleted == 'Yes' &&
+          (patient.balance ?? 0) != 0 &&
+          patient.isClosed != 'Yes') {
         pendingList.add(patient);
-      } else {
+      } else if (patient.isClosed != 'Yes') {
         patientBookingList.add(patient);
       }
     }
