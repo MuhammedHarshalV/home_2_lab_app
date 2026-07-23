@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
+import 'package:icon_infoware/view/screens/all_invoices_screen/screen/all_invoice_screen.dart';
 
 import 'package:icon_infoware/view/screens/base_URL.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
@@ -94,6 +96,15 @@ final GoRouter router = GoRouter(
       name: AppRouteNames.printBillScreen.name,
       builder: (BuildContext context, GoRouterState state) {
         return const PrintBillDetailsScreen();
+      },
+    ),
+    GoRoute(
+      path: AppRouteNames.allInvoiceScreen.route,
+      name: AppRouteNames.allInvoiceScreen.name,
+      builder: (context, state) {
+        final details = state.extra as List<PatientHiveModel>;
+
+        return AllInvoiceScreen(details: details);
       },
     ),
     GoRoute(

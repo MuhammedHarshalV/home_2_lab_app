@@ -433,13 +433,29 @@ class MenuScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.receipt_long_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          context.pushNamed(
+                            AppRouteNames.allInvoiceScreen.name,
+                            extra: homeState.allBookingDetails
+                                .where(
+                                  (patient) => patient.isCompleted == 'Yes',
+                                )
+                                .toList(),
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.receipt_long_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "All Invoices",
                         ),
-                        "All Invoices",
                       ),
 
                       InkWell(

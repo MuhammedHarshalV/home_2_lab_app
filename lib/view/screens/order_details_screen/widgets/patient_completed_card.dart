@@ -16,6 +16,7 @@ import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syn
 
 class PatientCompletedCard extends ConsumerWidget {
   final PatientHiveModel patient;
+  final bool? isInvoice;
 
   final int index;
   final bool isDate;
@@ -24,6 +25,7 @@ class PatientCompletedCard extends ConsumerWidget {
     required this.patient,
     required this.index,
     this.isDate = false,
+    this.isInvoice,
   });
 
   @override
@@ -225,17 +227,20 @@ class PatientCompletedCard extends ConsumerWidget {
                       ),
                     ),
                   ),
+
                   Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: patient.smplMode! == 'Home'
-                          ? Colors.green
-                          : patient.smplMode! == 'Random'
-                          ? Colors.blue
-                          : Colors.red,
+                      color: isInvoice != true
+                          ? patient.smplMode! == 'Home'
+                                ? Colors.green
+                                : patient.smplMode! == 'Random'
+                                ? Colors.blue
+                                : Colors.red
+                          : null,
                       borderRadius: BorderRadius.circular(4),
                     ),
                     child: Text(
@@ -247,6 +252,27 @@ class PatientCompletedCard extends ConsumerWidget {
                       ),
                     ),
                   ),
+                  if (patient.isClosed == 'Yes' || isInvoice == true)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: patient.isClosed == 'Yes'
+                            ? Colors.green
+                            : Colors.orange,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Text(
+                        patient.isClosed == 'Yes' ? 'Uploaded' : 'Remaining',
+                        style: TextStyle(
+                          color: AppColors.appWhite,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
 
                   //  const SizedBox(width: 60), // Space for the floating button
                 ],
@@ -268,6 +294,29 @@ class PatientCompletedCard extends ConsumerWidget {
                         children: [
                           Text(
                             'Balance :${patient.balance}',
+                            style: TextStyle(
+                              color: AppColors.appWhite,
+                              fontSize: 12,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (patient.balance == 0)
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 5,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Completed',
                             style: TextStyle(
                               color: AppColors.appWhite,
                               fontSize: 12,
