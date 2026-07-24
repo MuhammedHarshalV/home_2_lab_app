@@ -15,10 +15,10 @@ import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-import 'package:icon_infoware/view/screens/order_details_screen/screens/assigned_order_screen.dart';
-import 'package:icon_infoware/view/screens/order_details_screen/screens/completed_patient_screen.dart';
-import 'package:icon_infoware/view/screens/order_details_screen/screens/new_order_screen.dart';
-import 'package:icon_infoware/view/screens/order_details_screen/screens/patient_pending_screen.dart';
+import 'package:icon_infoware/view/screens/order_details_screen/widgets/assigned_order_screen.dart';
+import 'package:icon_infoware/view/screens/order_details_screen/widgets/completed_patient_screen.dart';
+import 'package:icon_infoware/view/screens/order_details_screen/widgets/new_order_screen.dart';
+import 'package:icon_infoware/view/screens/order_details_screen/widgets/patient_pending_screen.dart';
 
 class OderDetailsScreen extends ConsumerWidget {
   const OderDetailsScreen({super.key});

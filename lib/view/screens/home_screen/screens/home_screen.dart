@@ -12,7 +12,7 @@ import 'package:icon_infoware/core/constants/app_constants.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/view/screens/home_screen/widget/patient_details_list_shimmer.dart';
-import 'package:icon_infoware/view/screens/oder_details_screen.dart';
+import 'package:icon_infoware/view/screens/order_details_screen/screens/oder_details_screen.dart';
 import 'package:icon_infoware/view/screens/home_screen/widget/patient_details_card.dart';
 import 'package:icon_infoware/view/screens/home_screen/widget/active_section_card.dart';
 import 'package:icon_infoware/view/widgets/new_orders_card.dart';

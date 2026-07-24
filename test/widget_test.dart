@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:icon_infoware/main.dart';
-import 'package:icon_infoware/view/screens/splash_screen.dart';
+import 'package:icon_infoware/view/screens/auth_screen/splash_screen.dart';
 
 void main() {
   setUp(() {
