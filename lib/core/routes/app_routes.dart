@@ -9,7 +9,7 @@ import 'package:icon_infoware/view/screens/all_invoices_screen/screen/all_invoic
 
 import 'package:icon_infoware/view/screens/base_url.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
-import 'package:icon_infoware/view/screens/edit_spot_billing_screen.dart/edit_spot_billing_screen.dart';
+import 'package:icon_infoware/view/screens/edit_spot_billing_screen/edit_spot_billing_screen.dart';
 import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/view/screens/login_screen.dart';
 import 'package:icon_infoware/view/screens/menu_screen/screen/menu_screen.dart';
