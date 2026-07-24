@@ -200,7 +200,7 @@ class PatientDetailsCard extends ConsumerWidget {
 
             // --- Divider ---
             Divider(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               thickness: 1.5,
               height: 1,
             ),

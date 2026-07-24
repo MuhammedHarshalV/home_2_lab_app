@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart'
     show colorProvider;
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
@@ -15,7 +14,7 @@ class SpotBillingPopUp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final patientBillingController = ref.read(patientBillingProvider.notifier);
     final colorState = ref.watch(colorProvider);
-    final controller = ref.watch(tabControllerProvider);
+ 
     return AlertDialog(
       backgroundColor: AppColors.appWhite,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),

@@ -7,7 +7,7 @@ import 'package:icon_infoware/view/screens/about_screen/screen/privacy_policy_sc
 import 'package:icon_infoware/view/screens/about_screen/screen/terms_and_conditions_screen.dart';
 import 'package:icon_infoware/view/screens/all_invoices_screen/screen/all_invoice_screen.dart';
 
-import 'package:icon_infoware/view/screens/base_URL.dart';
+import 'package:icon_infoware/view/screens/base_url.dart';
 import 'package:icon_infoware/view/screens/bottom_nav_screen.dart';
 import 'package:icon_infoware/view/screens/edit_spot_billing_screen.dart/edit_spot_billing_screen.dart';
 import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';

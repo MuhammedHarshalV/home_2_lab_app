@@ -16,9 +16,7 @@ import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/abov
 
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/bill_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/lab_info_card.dart';
-import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/share_bill.dart';
 import 'package:icon_infoware/view/screens/print_cash_closer_screen/widget/cash_closing_popup.dart';
-import 'package:intl/intl.dart';
 
 import 'package:screenshot/screenshot.dart';
 

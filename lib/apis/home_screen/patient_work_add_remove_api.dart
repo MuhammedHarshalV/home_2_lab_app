@@ -16,7 +16,7 @@ class PatientWorkAddRemoveApi {
       final response = await PostApiServices.callApi(
         context: context,
         body: {
-          "Perform": "purpose",
+          "Perform": purpose,
           "BookNo": bookNo,
           "UsrId": int.tryParse(AppConstants.userId),
         },

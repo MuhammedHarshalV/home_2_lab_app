@@ -19,6 +19,7 @@ class ServiceChangeDialog extends ConsumerWidget {
     final colorState = ref.watch(colorProvider);
 
     return PopScope(
+      // ignore: deprecated_member_use
       onPopInvoked: (didPop) async {
         if (didPop) {
           // Same code as your Cancel button

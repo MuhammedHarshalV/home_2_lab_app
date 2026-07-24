@@ -23,7 +23,7 @@ class SearchPatientApi {
       }
 
       return SearchPatientResponseModel.fromJson(response);
-      ;
+      
     } catch (e) {
       log("++++++++++++ catch log ${e.toString()}");
       return [];

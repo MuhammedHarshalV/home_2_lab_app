@@ -19,7 +19,6 @@ import 'package:icon_infoware/view/screens/order_details_screen/screens/assigned
 import 'package:icon_infoware/view/screens/order_details_screen/screens/completed_patient_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/new_order_screen.dart';
 import 'package:icon_infoware/view/screens/order_details_screen/screens/patient_pending_screen.dart';
-import 'package:icon_infoware/view/screens/order_details_screen/widgets/patient_completed_card.dart';
 
 class OderDetailsScreen extends ConsumerWidget {
   const OderDetailsScreen({super.key});
@@ -62,7 +61,7 @@ class OderDetailsScreen extends ConsumerWidget {
                   highlightColor: Colors.transparent,
                   onTap: () => Navigator.pop(context),
                   child: CircleAvatar(
-                    backgroundColor: colorState.primaryColor.withOpacity(0.2),
+                    backgroundColor: colorState.primaryColor.withValues(alpha: 0.2),
                     child: Icon(
                       Icons.arrow_back,
                       color: colorState.primaryColor,

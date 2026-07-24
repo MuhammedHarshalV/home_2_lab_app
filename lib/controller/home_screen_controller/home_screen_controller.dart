@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:icon_infoware/apis/home_screen/patient_booking_details_api.dart';
+import 'package:icon_infoware/apis/home_screen/patient_work_add_remove_api.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
@@ -512,6 +513,24 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     log('Deleted patient at index: $hiveIndex');
 
     await getPatientsFromHive(); // Refresh state
+  }
+
+  //work and remove api
+  Future<void> workAndRemoveApi({
+    BuildContext? context,
+    required String purpose,
+    required int bookNo,
+  }) async {
+    final dynamic response =
+        await PatientWorkAddRemoveApi.patientWorkAddRemoveApi(
+          context: context,
+          purpose: purpose,
+          bookNo: bookNo,
+        );
+    log('controller response : $response');
+    if (context != null) {
+      AppMessage.show(context, response);
+    }
   }
 
   //clear hive

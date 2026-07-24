@@ -36,6 +36,7 @@ class BottomNavScreen extends ConsumerWidget {
       child: SafeArea(
         child: PopScope(
           canPop: false,
+          // ignore: deprecated_member_use
           onPopInvoked: (didPop) async {
             if (bottomNavState.currentIndex == 0) {
               //  Exit app
@@ -119,7 +120,7 @@ class BottomNavScreen extends ConsumerWidget {
               border: Border.all(color: AppColors.appWhite, width: .5),
               colorBehindNavBar: Theme.of(
                 context,
-              ).scaffoldBackgroundColor.withOpacity(0.5),
+              ).scaffoldBackgroundColor.withValues(alpha: 0.5),
             ),
           ),
         ),

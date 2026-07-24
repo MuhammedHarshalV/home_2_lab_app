@@ -287,7 +287,7 @@ class PatientCompletedCard extends ConsumerWidget {
                         vertical: 5,
                       ),
                       decoration: BoxDecoration(
-                        color: Colors.orange.withOpacity(.7),
+                        color: Colors.orange.withValues(alpha: .7),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Column(
@@ -356,8 +356,11 @@ class PatientCompletedCard extends ConsumerWidget {
                   ),
                 ],
               ),
-              if (patient.flag.toString() == '1') SizedBox(height: 10),
-              if (patient.flag.toString() == '1')
+              if (patient.flag.toString() == '1' ||
+                  patient.flag.toString() == '2')
+                SizedBox(height: 10),
+              if (patient.flag.toString() == '1' ||
+                  patient.flag.toString() == '2')
                 SwipeAcceptButton(index: index),
               //  Spacer(),
             ],
@@ -375,6 +378,7 @@ class SwipeAcceptButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final homeController = ref.read(homeScreenProvider.notifier);
+    final homeState = ref.watch(homeScreenProvider);
     return SlideAction(
       height: 40,
       borderRadius: 8,
@@ -399,7 +403,14 @@ class SwipeAcceptButton extends ConsumerWidget {
         ),
       ),
       onSubmit: () async {
-        await homeController.updatePatient(index: index, flag: '0');
+        await homeController.workAndRemoveApi(
+          context: context,
+          purpose: homeState.allBookingDetails[index].flag == '2'
+              ? "REMOVE"
+              : "ADD",
+          bookNo: homeState.allBookingDetails[index].checkId ?? 0,
+        );
+        await homeController.updatePatient(index: index, flag: '1');
       },
     );
   }

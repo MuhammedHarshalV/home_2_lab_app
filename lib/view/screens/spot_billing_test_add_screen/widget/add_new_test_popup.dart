@@ -34,7 +34,7 @@ class AddNewTestPopUp extends ConsumerWidget {
           borderRadius: BorderRadius.circular(24),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.1),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 32,
               offset: const Offset(0, 10),
             ),
@@ -115,8 +115,8 @@ class AddNewTestPopUp extends ConsumerWidget {
                       context.pop();
                     },
                     style: TextButton.styleFrom(
-                      backgroundColor: colorState.secondaryColor.withOpacity(
-                        0.5,
+                      backgroundColor: colorState.secondaryColor.withValues(
+                        alpha: 0.5,
                       ),
                       foregroundColor: colorState.primaryColor,
                       shape: RoundedRectangleBorder(

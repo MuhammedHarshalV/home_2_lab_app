@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
-import 'package:icon_infoware/core/themes/colors.dart';
 
 // class OtpPinField extends StatefulWidget {
 //   final TextEditingController pinController;

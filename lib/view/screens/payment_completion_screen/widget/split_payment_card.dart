@@ -232,7 +232,7 @@ class SplitPaymentDialog extends ConsumerWidget {
                           if (result != null) {
                             addTestController.updatestate(primaryType: result);
                           }
-                          ;
+                          
                         },
                         child: DropdownPayment(
                           title: addTestState.primaryType.isEmpty
@@ -297,7 +297,7 @@ class SplitPaymentDialog extends ConsumerWidget {
                               secondaryType: result,
                             );
                           }
-                          ;
+                          
                         },
                         child: DropdownPayment(
                           title: addTestState.secondaryType.isEmpty
@@ -446,7 +446,6 @@ class _AmountField extends ConsumerWidget {
     this.isBalance = false,
     this.balance = '0',
     this.ontap,
-    super.key,
   });
 
   @override
@@ -559,7 +558,7 @@ class _PaymentMethodCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: color.withOpacity(.7)),
+        border: Border.all(color: color.withValues(alpha: .7)),
       ),
       child: Column(
         crossAxisAlignment: isLeft
@@ -568,7 +567,7 @@ class _PaymentMethodCard extends StatelessWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 11, color: color.withOpacity(.7)),
+            style: TextStyle(fontSize: 11, color: color.withValues(alpha: .7)),
           ),
           const SizedBox(height: 2),
           Text(

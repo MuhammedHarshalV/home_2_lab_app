@@ -30,15 +30,15 @@ class ActiveSessionCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: colorState.secondaryColor.withOpacity(.2),
+        color: colorState.secondaryColor.withValues(alpha: .2),
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: colorState.primaryColor.withOpacity(.2),
+          color: colorState.primaryColor.withValues(alpha: .2),
           width: 2,
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 20,
             offset: const Offset(0, 10),
           ),
@@ -57,7 +57,7 @@ class ActiveSessionCard extends ConsumerWidget {
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: colorState.primaryColor.withOpacity(.2),
+                    color: colorState.primaryColor.withValues(alpha: .2),
                   ),
                 ),
                 child: Icon(

@@ -54,7 +54,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
               testMasterState.searchController.clear();
             },
             child: CircleAvatar(
-              backgroundColor: colorState.primaryColor.withOpacity(0.2),
+              backgroundColor: colorState.primaryColor.withValues(alpha: 0.2),
               child: Icon(Icons.arrow_back, color: colorState.primaryColor),
             ),
           ),

@@ -41,7 +41,7 @@ class MenuScreen extends ConsumerWidget {
     final addTeststate = ref.watch(addTestScreenProvider);
     final homeState = ref.watch(homeScreenProvider);
     final colorState = ref.watch(colorProvider);
-    final printState = ref.watch(printProvider);
+   
 
     final bankingController = ref.read(bankFetchingProvider.notifier);
     final patientController = ref.read(patientBillingProvider.notifier);

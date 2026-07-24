@@ -19,7 +19,7 @@ class AboveContainerCard extends StatelessWidget {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: color.withOpacity(.8)),
+          Icon(icon, color: color.withValues(alpha: .8)),
           const SizedBox(height: 4),
           Text(label, style: TextStyle(fontSize: 10, color: color)),
           const SizedBox(height: 2),

@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -25,9 +26,10 @@ class ScreenshotUtils {
 
       await file.writeAsBytes(image);
 
+      // ignore: deprecated_member_use
       await Share.shareXFiles([XFile(file.path)], text: description);
     } catch (e) {
-      print(e);
+      log(e.toString());
     }
   }
 }

@@ -19,6 +19,7 @@ class RefferenceIdDialog extends ConsumerWidget {
     final homeController = ref.read(homeScreenProvider.notifier);
 
     return PopScope(
+      // ignore: deprecated_member_use
       onPopInvoked: (didPop) async {
         if (didPop) {
           final homeState = ref.read(homeScreenProvider);

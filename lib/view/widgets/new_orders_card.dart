@@ -41,7 +41,7 @@ class NewOrdersStatCard extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: color.withOpacity(.2),
+                  color: color.withValues(alpha: .2),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: Icon(icon, color: color, size: 20),
@@ -55,7 +55,7 @@ class NewOrdersStatCard extends ConsumerWidget {
                     vertical: 4,
                   ),
                   decoration: BoxDecoration(
-                    color: color.withOpacity(.2),
+                    color: color.withValues(alpha: .2),
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Text(

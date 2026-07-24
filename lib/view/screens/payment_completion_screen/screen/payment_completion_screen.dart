@@ -1,4 +1,3 @@
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -8,15 +7,12 @@ import 'package:icon_infoware/controller/color_controller/color_controller.dart'
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
-import 'package:icon_infoware/core/services/qr_code_image/qr_code_image_service.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/above_container_card.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/billing_details_card.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/qr_code_payment.dart';
 import 'package:icon_infoware/view/screens/payment_completion_screen/widget/split_payment_card.dart';
 import 'package:intl/intl.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 
 class PaymentCompletionScreen extends ConsumerWidget {
   final int index;
@@ -43,7 +39,7 @@ class PaymentCompletionScreen extends ConsumerWidget {
               context.pop();
             },
             child: CircleAvatar(
-              backgroundColor: colorState.primaryColor.withOpacity(0.2),
+              backgroundColor: colorState.primaryColor.withValues(alpha: 0.2),
               child: Icon(Icons.arrow_back, color: colorState.primaryColor),
             ),
           ),

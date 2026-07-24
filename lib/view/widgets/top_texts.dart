@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:icon_infoware/core/themes/colors.dart';
 
 class TopText extends StatelessWidget {
   final String heading;
