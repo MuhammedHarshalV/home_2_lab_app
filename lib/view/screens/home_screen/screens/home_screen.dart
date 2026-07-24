@@ -69,7 +69,7 @@ class HomeScreen extends ConsumerWidget {
               backgroundColor: colorState.secondaryColor, // circle background
               strokeWidth: 2,
               onRefresh: () async {
-                await homeController.getPatientBookingDetails(null);
+                await homeController.getPatientBookingDetails(null, context);
               },
               child: SingleChildScrollView(
                 physics: AlwaysScrollableScrollPhysics(),
@@ -222,9 +222,25 @@ class HomeScreen extends ConsumerWidget {
                           ),
                         ),
                         Spacer(),
-                        Text(
-                          'View All',
-                          style: TextStyle(color: AppColors.appGrey),
+                        InkWell(
+                          splashColor: Colors.transparent,
+                          highlightColor: Colors.transparent,
+                          hoverColor: Colors.transparent,
+                          focusColor: Colors.transparent,
+                          onTap: () {
+                            orderDetailScreenController.changeTab(1);
+                            PersistentNavBarNavigator.pushNewScreen(
+                              context,
+                              screen: const OderDetailsScreen(),
+                              withNavBar: false, //  THIS HIDES BOTTOM NAV
+                              pageTransitionAnimation:
+                                  PageTransitionAnimation.cupertino,
+                            );
+                          },
+                          child: Text(
+                            'View All >',
+                            style: TextStyle(color: AppColors.appGrey),
+                          ),
                         ),
                       ],
                     ),

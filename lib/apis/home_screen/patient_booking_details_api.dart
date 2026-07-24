@@ -17,8 +17,8 @@ class PatientBookingDetails {
       String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
       final response = await PostApiServices.callApi(
         context: context,
-        // body: {"today": currentDate, "devcode": deviceID},
-        body: {"today": "2026-06-16", "devcode": deviceID},
+         body: {"today": currentDate, "devcode": deviceID},
+        //body: {"today": "2026-06-16", "devcode": deviceID},
         url: ApiConstants.patientBookingDetails,
       );
 

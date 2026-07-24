@@ -1,18 +1,23 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:icon_infoware/apis/home_screen/patient_booking_details_api.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_state.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
 import 'package:icon_infoware/models/home_screen/booking_patient_response_model.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 class HomeScreenController extends StateNotifier<HomeScreenState> {
   HomeScreenController() : super(HomeScreenState()) {
-    getPatientBookingDetails(null);
+    getPatientBookingDetails(null, null);
   }
-  Future<void> getPatientBookingDetails(bool? isApiCall) async {
+  Future<void> getPatientBookingDetails(
+    bool? isApiCall,
+    BuildContext? context,
+  ) async {
     bool isConnected = await InternetChecker.hasConnection();
     try {
       state = state.copyWith(isLoading: true);
@@ -25,6 +30,12 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
             response.bookPatientDetails ?? [],
           ); //strore to hive
           await getPatientsFromHive(); //read from hive and update state
+          if (context != null) {
+            AppMessage.show(
+              context,
+              "Patient booking details fetched successfully.",
+            );
+          }
         } else {
           await getPatientsFromHive(); //read from hive and update state
         }
@@ -186,7 +197,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     final item = Map<String, dynamic>.from(box.get(key));
     item['indexClick'] = key;
     await box.put(key, item);
-    await getPatientBookingDetails(true);
+    await getPatientBookingDetails(true, null);
   }
 
   //edit stored data
@@ -376,7 +387,7 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     final updated = box.getAt(hiveIndex);
     log('After save: ${updated['testlists']}');
 
-    await getPatientBookingDetails(true);
+    await getPatientBookingDetails(true, null);
     // final updateda = box.getAt(index);
     // log('After save: ${updateda['testlists']}');
   }

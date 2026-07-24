@@ -22,6 +22,19 @@ enum AppRouteNames {
     name: 'editSpotBillingScreen',
   ),
   allInvoiceScreen(route: '/allInvoiceScreen', name: 'allInvoiceScreen'),
+  helpAndSupportScreen(
+    route: '/helpAndSupportScreen',
+    name: 'helpAndSupportScreen',
+  ),
+  termsAndConditionsScreen(
+    route: '/termsAndConditionsScreen',
+    name: 'termsAndConditionsScreen',
+  ),
+  privacyPolicyScreen(
+    route: '/privacyPolicyScreen',
+    name: 'privacyPolicyScreen',
+  ),
+
   spotBillingTestAddScreen(
     route: '/spotBillingTestAddScreen',
     name: 'spotBillingTestAddScreen',

@@ -14,5 +14,6 @@ class ApiConstants {
   static String userLocation = '/UserLocationDet';
   static String yearIdFetching = '/InitialLoadGet';
   static String cashClosingApi = '/CashSettlement/CashClosing';
-
+  static String helpSupportApi = '/AppInfo/GetAppInfo';
+  static String workAddAndRemove = '/worksADDorREMOVE';
 }

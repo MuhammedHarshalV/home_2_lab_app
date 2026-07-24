@@ -303,7 +303,8 @@ class PatientCompletedCard extends ConsumerWidget {
                         ],
                       ),
                     ),
-                  if (patient.balance == 0)
+                  if ((patient.balance ?? 0) == 0 &&
+                      patient.isCompleted == 'Yes')
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 10,

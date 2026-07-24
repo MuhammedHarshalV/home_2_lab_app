@@ -25,7 +25,10 @@ class PrintController extends StateNotifier<PrintState> {
   }
 
   void updateState({bool? isLoading, List<BluetoothInfo>? item}) {
-    state = state.copyWith(isLoading: isLoading, printDevices: item);
+    state = state.copyWith(
+      isLoading: isLoading,
+      printDevices: item ?? state.printDevices,
+    );
   }
 
   void selectPrinter(BluetoothInfo printer) {

@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
+import 'package:icon_infoware/view/screens/about_screen/screen/help_and_support_screen.dart';
+import 'package:icon_infoware/view/screens/about_screen/screen/privacy_policy_screen.dart';
+import 'package:icon_infoware/view/screens/about_screen/screen/terms_and_conditions_screen.dart';
 import 'package:icon_infoware/view/screens/all_invoices_screen/screen/all_invoice_screen.dart';
 
 import 'package:icon_infoware/view/screens/base_URL.dart';
@@ -96,6 +99,27 @@ final GoRouter router = GoRouter(
       name: AppRouteNames.printBillScreen.name,
       builder: (BuildContext context, GoRouterState state) {
         return const PrintBillDetailsScreen();
+      },
+    ),
+    GoRoute(
+      path: AppRouteNames.helpAndSupportScreen.route,
+      name: AppRouteNames.helpAndSupportScreen.name,
+      builder: (BuildContext context, GoRouterState state) {
+        return const HelpAndSupportScreen();
+      },
+    ),
+    GoRoute(
+      path: AppRouteNames.termsAndConditionsScreen.route,
+      name: AppRouteNames.termsAndConditionsScreen.name,
+      builder: (BuildContext context, GoRouterState state) {
+        return const TermsAndConditionsScreen();
+      },
+    ),
+    GoRoute(
+      path: AppRouteNames.privacyPolicyScreen.route,
+      name: AppRouteNames.privacyPolicyScreen.name,
+      builder: (BuildContext context, GoRouterState state) {
+        return const PrivacyPolicyScreen();
       },
     ),
     GoRoute(

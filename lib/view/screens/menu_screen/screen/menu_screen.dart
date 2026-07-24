@@ -9,6 +9,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/controller/help_support_controller/help_support_controller.dart';
 
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
@@ -27,6 +28,7 @@ import 'package:icon_infoware/view/screens/menu_screen/widget/logout_popup.dart'
 import 'package:icon_infoware/view/screens/menu_screen/widget/whatsapp_content_popup.dart';
 
 import 'package:icon_infoware/view/widgets/common_touch_point_dropdown.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 class MenuScreen extends ConsumerWidget {
@@ -381,13 +383,29 @@ class MenuScreen extends ConsumerWidget {
                         highlightColor: Colors.transparent,
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
-                        onTap: () {},
+                        onTap: () {
+                          homeController.getPatientBookingDetails(
+                            null,
+                            context,
+                          );
+                        },
                         child: buildSettingsItem(
-                          Icon(
-                            Icons.calendar_month_outlined,
-                            size: 20,
-                            color: colorState.primaryColor,
-                          ),
+                          homeState.isLoading == true
+                              ? SizedBox(
+                                  height: 20,
+                                  width: 20,
+                                  child: Center(
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 1,
+                                      color: colorState.primaryColor,
+                                    ),
+                                  ),
+                                )
+                              : Icon(
+                                  Icons.calendar_month_outlined,
+                                  size: 20,
+                                  color: colorState.primaryColor,
+                                ),
                           "Booking Sync",
                         ),
                       ),
@@ -464,27 +482,50 @@ class MenuScreen extends ConsumerWidget {
                         hoverColor: Colors.transparent,
                         focusColor: Colors.transparent,
                         onTapDown: (details) async {
-                          final List<BluetoothInfo> listResult =
-                              await PrintBluetoothThermal.pairedBluetooths;
-                          ref
-                              .read(printProvider.notifier)
-                              .updateState(item: listResult);
-                          log(listResult.toString());
-                          if (printState.printDevices.isNotEmpty) {
+                          try {
+                            await [
+                              Permission.bluetooth,
+                              Permission.bluetoothScan,
+                              Permission.bluetoothConnect,
+                              Permission.location,
+                            ].request();
+
+                            final List<BluetoothInfo> devices =
+                                await PrintBluetoothThermal.pairedBluetooths;
+
+                            log("Paired Devices: ${devices.length}");
+                            log(devices.toString());
+
+                            ref
+                                .read(printProvider.notifier)
+                                .updateState(item: devices);
+
+                            if (devices.isEmpty) {
+                              AppMessage.show(
+                                context,
+                                "No paired Bluetooth printers found.",
+                              );
+                              return;
+                            }
+
                             await commonTouchPointDropdown<BluetoothInfo>(
                               context: context,
-
                               tapPosition: details.globalPosition,
-                              items: printState.printDevices,
+                              items: devices,
                               itemText: (item) => item.name.isNotEmpty
                                   ? item.name
                                   : "Unknown Device",
-                              onSelected: (item) async {
+                              onSelected: (item) {
                                 ref
                                     .read(printProvider.notifier)
                                     .selectPrinter(item);
-                                // context.pop();
                               },
+                            );
+                          } catch (e) {
+                            log("Bluetooth Error: $e");
+                            AppMessage.show(
+                              context,
+                              "Unable to fetch paired Bluetooth devices.",
                             );
                           }
                         },
@@ -675,31 +716,67 @@ class MenuScreen extends ConsumerWidget {
                       ),
                       const SizedBox(height: 16),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.support_agent_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          ref.read(helpAndSupportProvider);
+                          context.pushNamed(
+                            AppRouteNames.helpAndSupportScreen.name,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.support_agent_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Help and Support",
                         ),
-                        "Help and Support",
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.description_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          ref.read(helpAndSupportProvider);
+                          context.pushNamed(
+                            AppRouteNames.termsAndConditionsScreen.name,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.description_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Terms and Conditions",
                         ),
-                        "Terms and Conditions",
                       ),
 
-                      buildSettingsItem(
-                        Icon(
-                          Icons.privacy_tip_outlined,
-                          size: 20,
-                          color: colorState.primaryColor,
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          ref.read(helpAndSupportProvider);
+                          context.pushNamed(
+                            AppRouteNames.privacyPolicyScreen.name,
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.privacy_tip_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Privacy Policy",
                         ),
-                        "Privacy Policy",
                       ),
                       SizedBox(height: 20),
                       const Text(
@@ -784,7 +861,7 @@ class MenuScreen extends ConsumerWidget {
                         },
                         child: buildSettingsItem(
                           Icon(
-                            Icons.calendar_month_outlined,
+                            Icons.color_lens_outlined,
                             size: 20,
                             color: colorState.primaryColor,
                           ),
@@ -865,7 +942,7 @@ class MenuScreen extends ConsumerWidget {
                         },
                         child: buildSettingsItem(
                           Icon(
-                            Icons.calendar_month_outlined,
+                            Icons.color_lens_outlined,
                             size: 20,
                             color: colorState.primaryColor,
                           ),
