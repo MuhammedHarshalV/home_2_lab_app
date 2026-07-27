@@ -19,6 +19,7 @@ class PatientWorkAddRemoveApi {
           "Perform": purpose,
           "BookNo": bookNo,
           "UsrId": int.tryParse(AppConstants.userId),
+          "DevCode": AppConstants.deviceID,
         },
 
         url: ApiConstants.workAddAndRemove,

@@ -45,8 +45,8 @@ class PatientSyncingApi {
         body["Remarks"] = patient.remarks ?? '';
         body["Ipop"] = patient.ipop ?? '';
         body["Dob"] = patient.dob ?? '';
-        body["DriverId"] = patient.driverId ?? '';
-        body["TechId"] = int.tryParse(patient.techId ?? '0');
+        body["DriverId"] = AppConstants.userId;
+        body["TechId"] = AppConstants.userId;
         body["GrossAmt"] = patient.grossAmt ?? 0;
         body["DiscAmt"] = patient.discAmt ?? 0;
         body["ServChrge"] = patient.servChrge ?? 0;

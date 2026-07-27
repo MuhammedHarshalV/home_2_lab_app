@@ -16,6 +16,7 @@ import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/abov
 
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/bill_info_card.dart';
 import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/lab_info_card.dart';
+import 'package:icon_infoware/view/screens/print_bill_details_screen/widget/share_bill.dart';
 import 'package:icon_infoware/view/screens/print_cash_closer_screen/widget/cash_closing_popup.dart';
 
 import 'package:screenshot/screenshot.dart';
@@ -268,6 +269,26 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             padding: const EdgeInsets.symmetric(vertical: 14),
                           ),
                           child: Text('Cash close'),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            await ScreenshotUtils.shareBill(
+                              controller: screenshotController,
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: colorState.primaryColor,
+                            foregroundColor: Colors.white,
+                            elevation: 2,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                          ),
+                          child: Icon(Icons.share, color: AppColors.appWhite),
                         ),
                       ),
                       const SizedBox(width: 12),

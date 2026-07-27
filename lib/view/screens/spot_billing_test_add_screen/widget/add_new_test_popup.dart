@@ -172,6 +172,7 @@ class AddNewTestPopUp extends ConsumerWidget {
                               testMasterState1.servicesnargeController.text,
                             ) ??
                             0,
+                        flag: '0',
                       );
 
                       if (context.mounted) {

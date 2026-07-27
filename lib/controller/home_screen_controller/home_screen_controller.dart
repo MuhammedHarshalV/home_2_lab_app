@@ -516,20 +516,27 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
   }
 
   //work and remove api
-  Future<void> workAndRemoveApi({
+  Future<String> workAndRemoveApi({
     BuildContext? context,
     required String purpose,
     required int bookNo,
   }) async {
-    final dynamic response =
-        await PatientWorkAddRemoveApi.patientWorkAddRemoveApi(
-          context: context,
-          purpose: purpose,
-          bookNo: bookNo,
-        );
-    log('controller response : $response');
-    if (context != null) {
-      AppMessage.show(context, response);
+    try {
+      final dynamic response =
+          await PatientWorkAddRemoveApi.patientWorkAddRemoveApi(
+            context: context,
+            purpose: purpose,
+            bookNo: bookNo,
+          );
+      log('controller response : $response');
+      if (context != null) {
+        AppMessage.show(context, response);
+      }
+
+      return response;
+    } catch (e) {
+      log(e.toString());
+      return "error";
     }
   }
 

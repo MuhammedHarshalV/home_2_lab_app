@@ -1,6 +1,7 @@
 //
 
 import 'dart:developer';
+import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:slide_to_act/slide_to_act.dart';
 import 'package:flutter/material.dart';
@@ -361,7 +362,7 @@ class PatientCompletedCard extends ConsumerWidget {
                 SizedBox(height: 10),
               if (patient.flag.toString() == '1' ||
                   patient.flag.toString() == '2')
-                SwipeAcceptButton(index: index),
+                SwipeAcceptButton(index: index, patient: patient),
               //  Spacer(),
             ],
           ),
@@ -372,8 +373,13 @@ class PatientCompletedCard extends ConsumerWidget {
 }
 
 class SwipeAcceptButton extends ConsumerWidget {
+  final PatientHiveModel patient;
   final int index;
-  const SwipeAcceptButton({super.key, required this.index});
+  const SwipeAcceptButton({
+    super.key,
+    required this.index,
+    required this.patient,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -383,10 +389,10 @@ class SwipeAcceptButton extends ConsumerWidget {
       height: 40,
       borderRadius: 8,
       sliderButtonIconPadding: 0,
-      outerColor: Colors.green,
+      outerColor: patient.flag == '2' ? Colors.red : Colors.green,
       innerColor: Colors.transparent,
       sliderButtonIconSize: 12,
-      text: "Swipe to Accept",
+      text: patient.flag == '2' ? "Swipe to Remove" : "Swipe to Accept",
       textStyle: const TextStyle(
         color: Colors.white,
         fontSize: 13,
@@ -399,18 +405,37 @@ class SwipeAcceptButton extends ConsumerWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Icon(Icons.arrow_forward_ios, size: 15, color: Colors.green),
+          child: Icon(
+            Icons.arrow_forward_ios,
+            size: 15,
+            color: patient.flag == '2' ? Colors.red : Colors.green,
+          ),
         ),
       ),
       onSubmit: () async {
-        await homeController.workAndRemoveApi(
-          context: context,
-          purpose: homeState.allBookingDetails[index].flag == '2'
-              ? "REMOVE"
-              : "ADD",
-          bookNo: homeState.allBookingDetails[index].checkId ?? 0,
+        final box = await Hive.openBox('patient_booking');
+        final hiveIndex = box.values.toList().indexWhere(
+          (item) => item['indexClick'] == index,
         );
-        await homeController.updatePatient(index: index, flag: '1');
+        log(homeState.allBookingDetails[hiveIndex].toMap().toString());
+        String isTrue = await homeController.workAndRemoveApi(
+          context: context,
+          purpose: patient.flag == '2' ? "REMOVE" : "ADD",
+          bookNo: patient.checkId ?? 0,
+        );
+        if (isTrue == 'error') {
+          return;
+        } else if (isTrue == 'Work Removed successfully' ||
+            isTrue == 'Work Already Taken by Another User') {
+          await homeController.deletePatient(index);
+          homeController.getPatientBookingDetails(null, null);
+          return;
+        } else if (isTrue == 'Work Added Successfully') {
+          await homeController.updatePatient(index: index, flag: '2');
+          return;
+        }
+
+        //  await homeController.updatePatient(index: index, flag: '1');
       },
     );
   }

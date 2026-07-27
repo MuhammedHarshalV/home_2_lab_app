@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
@@ -46,143 +47,156 @@ class OderDetailsScreen extends ConsumerWidget {
               controller.changeTab(tabController.index);
             }
           });
-          return Scaffold(
-            backgroundColor: const Color(0xFFF8FAFC),
-            appBar: AppBar(
-              toolbarHeight: 100,
-              automaticallyImplyLeading: false,
-              backgroundColor: AppColors.appWhite,
-              elevation: 0,
+          return AnnotatedRegion<SystemUiOverlayStyle>(
+            value: SystemUiOverlayStyle(
+              statusBarColor: AppColors.appWhite,
+              statusBarIconBrightness: Brightness.light, // icons = white
+              statusBarBrightness: Brightness.dark, // for iOS
+            ),
+            child: SafeArea(
+              child: Scaffold(
+                backgroundColor: const Color(0xFFF8FAFC),
+                appBar: AppBar(
+                  toolbarHeight: 100,
+                  automaticallyImplyLeading: false,
+                  backgroundColor: AppColors.appWhite,
+                  elevation: 0,
 
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  onTap: () => Navigator.pop(context),
-                  child: CircleAvatar(
-                    backgroundColor: colorState.primaryColor.withValues(alpha: 0.2),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: colorState.primaryColor,
+                  leading: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: InkWell(
+                      splashColor: Colors.transparent,
+                      highlightColor: Colors.transparent,
+                      onTap: () => Navigator.pop(context),
+                      child: CircleAvatar(
+                        backgroundColor: colorState.primaryColor.withValues(
+                          alpha: 0.2,
+                        ),
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: colorState.primaryColor,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              ),
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: Image.file(
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      fit: BoxFit.fill,
-                      File(AppConstants.base64Image),
+                  title: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 16.0),
+                        child: Image.file(
+                          width: MediaQuery.of(context).size.width / 1.5,
+                          fit: BoxFit.fill,
+                          File(AppConstants.base64Image),
+                        ),
+                      ),
+                    ],
+                  ),
+
+                  // actions: [
+                  //   // TimerCard(timerState: timerState, timerController: timerController),
+                  //   // const SizedBox(width: 5),
+
+                  // ],
+                  bottom: TabBar(
+                    indicatorSize: TabBarIndicatorSize.label,
+                    controller: DefaultTabController.of(context),
+                    indicatorColor: colorState.primaryColor,
+                    indicatorWeight: 6,
+                    labelColor: colorState.primaryColor,
+                    unselectedLabelColor: AppColors.appBlack,
+                    labelStyle: const TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.bold,
                     ),
+                    labelPadding: EdgeInsets.symmetric(horizontal: 8),
+                    tabs: const [
+                      Tab(
+                        icon: Icon(Icons.local_shipping_outlined, size: 22),
+                        text: "New orders",
+                      ),
+                      Tab(
+                        icon: Icon(Icons.person_search_outlined, size: 22),
+                        text: "Assigned to me",
+                      ),
+                      Tab(
+                        icon: Icon(Icons.inventory_2_outlined, size: 22),
+                        text: "Completed",
+                      ),
+                      Tab(
+                        icon: Icon(Icons.receipt_long_outlined, size: 22),
+                        text: "Pending",
+                      ),
+                    ],
                   ),
-                ],
-              ),
-
-              // actions: [
-              //   // TimerCard(timerState: timerState, timerController: timerController),
-              //   // const SizedBox(width: 5),
-
-              // ],
-              bottom: TabBar(
-                indicatorSize: TabBarIndicatorSize.label,
-                controller: DefaultTabController.of(context),
-                indicatorColor: colorState.primaryColor,
-                indicatorWeight: 6,
-                labelColor: colorState.primaryColor,
-                unselectedLabelColor: AppColors.appBlack,
-                labelStyle: const TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
                 ),
-                labelPadding: EdgeInsets.symmetric(horizontal: 8),
-                tabs: const [
-                  Tab(
-                    icon: Icon(Icons.local_shipping_outlined, size: 22),
-                    text: "New orders",
+
+                body: Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: TabBarView(
+                    children: [
+                      NewOrderScreen(details: homeState.upcomingBookingList),
+                      AssignedOrdersScreen(
+                        details: homeState.patientBookingList,
+                      ),
+                      CompletedPatientScreen(
+                        details: homeState.patientBookingListCompleted,
+                      ),
+                      PatientPendingScreen(
+                        details: homeState.patientBookingListPending,
+                      ),
+                    ],
                   ),
-                  Tab(
-                    icon: Icon(Icons.person_search_outlined, size: 22),
-                    text: "Assigned to me",
+                ),
+
+                floatingActionButton: FloatingActionButton(
+                  onPressed: () {
+                    if (timerState.isRunning == false) {
+                      AppMessage.show(
+                        context,
+                        "Please press the Start button first.",
+                      );
+
+                      // Stay on the current tab
+                      tabControllerState.jumpToTab(bottomNavState.currentIndex);
+                      return;
+                    }
+                    spotBillingState.patientDetailsController.clear();
+                    spotBillingState.patientNameController.clear();
+                    spotBillingState.patientPhoneController.clear();
+                    spotBillingState.patientEmailController.clear();
+                    spotBillingState.patientDateOfBirthController.clear();
+                    spotBillingState.ageController.clear();
+                    spotBillingState.abhaIdController.clear();
+                    spotBillingState.noteController.clear();
+                    spotBillingState.genderController.clear();
+                    spotBillingState.addressController.clear();
+                    spotBillingState.referredByController.clear();
+                    spotBillingState.assignedByController.clear();
+                    spotBillingState.doneByController.text =
+                        AppConstants.userName.isNotEmpty
+                        ? AppConstants.userName[0].toUpperCase() +
+                              AppConstants.userName.substring(1)
+                        : '';
+                    spotBillingState.patientEmailController.clear();
+                    spotBillingState.passPortNumberController.clear();
+                    spotBillingState.patientDetailsController.clear();
+                    spotBillingState.patientSearchController.clear();
+
+                    spotBillingController.updateState(
+                      ageByYear: 'Year',
+                      isUrgent: false,
+                    );
+                    context.pushNamed(AppRouteNames.spotBillingScreen.name);
+                  },
+                  backgroundColor: colorState.primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  Tab(
-                    icon: Icon(Icons.inventory_2_outlined, size: 22),
-                    text: "Completed",
-                  ),
-                  Tab(
-                    icon: Icon(Icons.receipt_long_outlined, size: 22),
-                    text: "Pending",
-                  ),
-                ],
+                  child: const Icon(Icons.add, color: Colors.white, size: 35),
+                ),
               ),
-            ),
-
-            body: Padding(
-              padding: const EdgeInsets.all(10),
-              child: TabBarView(
-                children: [
-                  NewOrderScreen(details: homeState.upcomingBookingList),
-                  AssignedOrdersScreen(details: homeState.patientBookingList),
-                  CompletedPatientScreen(
-                    details: homeState.patientBookingListCompleted,
-                  ),
-                  PatientPendingScreen(
-                    details: homeState.patientBookingListPending,
-                  ),
-                ],
-              ),
-            ),
-
-            floatingActionButton: FloatingActionButton(
-              onPressed: () {
-                if (timerState.isRunning == false) {
-                  AppMessage.show(
-                    context,
-                    "Please press the Start button first.",
-                  );
-
-                  // Stay on the current tab
-                  tabControllerState.jumpToTab(bottomNavState.currentIndex);
-                  return;
-                }
-                spotBillingState.patientDetailsController.clear();
-                spotBillingState.patientNameController.clear();
-                spotBillingState.patientPhoneController.clear();
-                spotBillingState.patientEmailController.clear();
-                spotBillingState.patientDateOfBirthController.clear();
-                spotBillingState.ageController.clear();
-                spotBillingState.abhaIdController.clear();
-                spotBillingState.noteController.clear();
-                spotBillingState.genderController.clear();
-                spotBillingState.addressController.clear();
-                spotBillingState.referredByController.clear();
-                spotBillingState.assignedByController.clear();
-                spotBillingState.doneByController.text =
-                    AppConstants.userName.isNotEmpty
-                    ? AppConstants.userName[0].toUpperCase() +
-                          AppConstants.userName.substring(1)
-                    : '';
-                spotBillingState.patientEmailController.clear();
-                spotBillingState.passPortNumberController.clear();
-                spotBillingState.patientDetailsController.clear();
-                spotBillingState.patientSearchController.clear();
-
-                spotBillingController.updateState(
-                  ageByYear: 'Year',
-                  isUrgent: false,
-                );
-                context.pushNamed(AppRouteNames.spotBillingScreen.name);
-              },
-              backgroundColor: colorState.primaryColor,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: const Icon(Icons.add, color: Colors.white, size: 35),
             ),
           );
         },

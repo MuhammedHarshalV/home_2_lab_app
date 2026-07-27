@@ -27,101 +27,94 @@ class BottomNavScreen extends ConsumerWidget {
     final colorState = ref.watch(colorProvider);
     final timerState = ref.watch(customTimerProvider);
 
-    return AnnotatedRegion<SystemUiOverlayStyle>(
-      value: SystemUiOverlayStyle(
-        statusBarColor: colorState.primaryColor,
-        statusBarIconBrightness: Brightness.dark, // Android icons
-        statusBarBrightness: Brightness.light,
-      ),
-      child: SafeArea(
-        child: PopScope(
-          canPop: false,
-          // ignore: deprecated_member_use
-          onPopInvoked: (didPop) async {
-            if (bottomNavState.currentIndex == 0) {
-              //  Exit app
-              SystemNavigator.pop();
-            } else {
-              //  Go to Home tab
-              controller.jumpToTab(0);
-              bottomNavNotifier.setIndex(0);
-            }
-          },
-          child: PersistentTabView(
-            margin: EdgeInsets.only(bottom: 15, right: 50, left: 50),
+    return SafeArea(
+      child: PopScope(
+        canPop: false,
+        // ignore: deprecated_member_use
+        onPopInvoked: (didPop) async {
+          if (bottomNavState.currentIndex == 0) {
+            //  Exit app
+            SystemNavigator.pop();
+          } else {
+            //  Go to Home tab
+            controller.jumpToTab(0);
+            bottomNavNotifier.setIndex(0);
+          }
+        },
+        child: PersistentTabView(
+          margin: EdgeInsets.only(bottom: 15, right: 50, left: 50),
+          context,
+          controller: controller,
+          screens: _buildScreens(),
+          items: _navBarsItems(
             context,
-            controller: controller,
-            screens: _buildScreens(),
-            items: _navBarsItems(
-              context,
-              colorState,
-              bottomNavState.currentIndex,
-            ),
-            navBarStyle: NavBarStyle.style1,
+            colorState,
+            bottomNavState.currentIndex,
+          ),
+          navBarStyle: NavBarStyle.style1,
 
-            confineToSafeArea: true,
-            backgroundColor: AppColors.appWhite,
-            // handleAndroidBackButtonPress: true,
-            handleAndroidBackButtonPress: false,
-            resizeToAvoidBottomInset: true,
-            stateManagement: true,
-            onItemSelected: (index) {
-              if (index == 1) {
-                if (timerState.isRunning == false) {
-                  AppMessage.show(
-                    context,
-                    "Please press the Start button first.",
-                  );
-
-                  // Stay on the current tab
-                  controller.jumpToTab(bottomNavState.currentIndex);
-                  return;
-                }
-                bottomNavNotifier.setIndex(index);
-                spotBillingState.patientDetailsController.clear();
-                spotBillingState.patientNameController.clear();
-                spotBillingState.patientPhoneController.clear();
-                spotBillingState.patientEmailController.clear();
-                spotBillingState.patientDateOfBirthController.clear();
-                spotBillingState.ageController.clear();
-                spotBillingState.abhaIdController.clear();
-                spotBillingState.noteController.clear();
-                spotBillingState.genderController.clear();
-                spotBillingState.addressController.clear();
-                spotBillingState.referredByController.clear();
-                spotBillingState.assignedByController.clear();
-                spotBillingState.doneByController.text =
-                    AppConstants.userName.isNotEmpty
-                    ? AppConstants.userName[0].toUpperCase() +
-                          AppConstants.userName.substring(1)
-                    : '';
-                spotBillingState.patientEmailController.clear();
-                spotBillingState.passPortNumberController.clear();
-                spotBillingState.patientDetailsController.clear();
-                spotBillingState.patientSearchController.clear();
-
-                spotBillingController.updateState(
-                  ageByYear: 'Year',
-                  isUrgent: false,
-                );
-                bottomNavNotifier.setIndex(0);
-
-                controller.jumpToTab(0);
-                PersistentNavBarNavigator.pushNewScreen(
+          confineToSafeArea: true,
+          backgroundColor: AppColors.appWhite,
+          // handleAndroidBackButtonPress: true,
+          handleAndroidBackButtonPress: false,
+          resizeToAvoidBottomInset: true,
+          stateManagement: true,
+          onItemSelected: (index) {
+            if (index == 1) {
+              if (timerState.isRunning == false) {
+                AppMessage.show(
                   context,
-                  screen: SpotBillingScreen(),
-                  withNavBar: true, //  hide bottom nav
-                  pageTransitionAnimation: PageTransitionAnimation.cupertino,
+                  "Please press the Start button first.",
                 );
-              } else {}
-            },
-            decoration: NavBarDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.appWhite, width: .5),
-              colorBehindNavBar: Theme.of(
+
+                // Stay on the current tab
+                controller.jumpToTab(bottomNavState.currentIndex);
+                return;
+              }
+              bottomNavNotifier.setIndex(index);
+              spotBillingState.patientDetailsController.clear();
+              spotBillingState.patientNameController.clear();
+              spotBillingState.patientPhoneController.clear();
+              spotBillingState.patientEmailController.clear();
+              spotBillingState.patientDateOfBirthController.clear();
+              spotBillingState.ageController.clear();
+              spotBillingState.abhaIdController.clear();
+              spotBillingState.noteController.clear();
+              spotBillingState.genderController.clear();
+              spotBillingState.addressController.clear();
+              spotBillingState.referredByController.clear();
+              spotBillingState.assignedByController.clear();
+              spotBillingState.doneByController.text =
+                  AppConstants.userName.isNotEmpty
+                  ? AppConstants.userName[0].toUpperCase() +
+                        AppConstants.userName.substring(1)
+                  : '';
+              spotBillingState.patientEmailController.clear();
+              spotBillingState.passPortNumberController.clear();
+              spotBillingState.patientDetailsController.clear();
+              spotBillingState.patientSearchController.clear();
+
+              spotBillingController.updateState(
+                ageByYear: 'Year',
+                isUrgent: false,
+              );
+              bottomNavNotifier.setIndex(0);
+
+              controller.jumpToTab(0);
+              PersistentNavBarNavigator.pushNewScreen(
                 context,
-              ).scaffoldBackgroundColor.withValues(alpha: 0.5),
-            ),
+                screen: SpotBillingScreen(),
+                withNavBar: true, //  hide bottom nav
+                pageTransitionAnimation: PageTransitionAnimation.cupertino,
+              );
+            } else {}
+          },
+          decoration: NavBarDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.appWhite, width: .5),
+            colorBehindNavBar: Theme.of(
+              context,
+            ).scaffoldBackgroundColor.withValues(alpha: 0.5),
           ),
         ),
       ),

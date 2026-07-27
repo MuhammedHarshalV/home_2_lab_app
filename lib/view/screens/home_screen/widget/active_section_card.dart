@@ -204,7 +204,7 @@ class ActiveSessionCard extends ConsumerWidget {
                       ),
                       label: Text(timerState.isRunning ? "Stop" : "Start"),
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.green,
+                        backgroundColor: colorState.primaryColor,
                         foregroundColor: Colors.white,
                         elevation: 0,
                         padding: const EdgeInsets.symmetric(vertical: 3),

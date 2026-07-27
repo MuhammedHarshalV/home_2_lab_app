@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:go_router/go_router.dart';
@@ -66,454 +67,499 @@ class EditSpotBillingScreen extends ConsumerWidget {
 
         context.pop();
       },
-      child: Scaffold(
-        backgroundColor: Colors.white,
-        appBar: AppBar(
-          backgroundColor: AppColors.appWhite,
-          // elevation: 0, // remove shadow
-          // scrolledUnderElevation: 0, //IMPORTANT
-          // surfaceTintColor: Colors.transparent,
-          toolbarHeight: 100,
-          leading: Padding(
-            padding: const EdgeInsets.only(left: 10),
-            child: InkWell(
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
-              focusColor: Colors.transparent,
-              onTap: () {
-                // showCancelWarningDialog(context);
-                // showDialog(
-                //   context: context,
-                //   builder: (context) => SpotBillingPopUp(),
-                // );
-                spotBillingState.patientDetailsController.text =
-                    homeState.allBookingDetails[index].namePrefix ?? '';
-                spotBillingState.patientNameController.text =
-                    homeState.allBookingDetails[index].patName ?? '';
-                spotBillingState.patientPhoneController.text =
-                    homeState.allBookingDetails[index].patPhno ?? '';
-                spotBillingState.patientEmailController.text =
-                    homeState.allBookingDetails[index].patEmail ?? '';
-                spotBillingState.patientDateOfBirthController.text =
-                    homeState.allBookingDetails[index].dob ?? '';
-                spotBillingState.ageController.text = homeState
-                    .allBookingDetails[index]
-                    .patAge
-                    .toString();
+      child: AnnotatedRegion<SystemUiOverlayStyle>(
+        value: SystemUiOverlayStyle(
+          statusBarColor: AppColors.appWhite,
+          statusBarIconBrightness: Brightness.light, // icons = white
+          statusBarBrightness: Brightness.dark, // for iOS
+        ),
+        child: SafeArea(
+          child: Scaffold(
+            backgroundColor: Colors.white,
+            appBar: AppBar(
+              backgroundColor: AppColors.appWhite,
+              // elevation: 0, // remove shadow
+              // scrolledUnderElevation: 0, //IMPORTANT
+              // surfaceTintColor: Colors.transparent,
+              toolbarHeight: 100,
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: InkWell(
+                  splashColor: Colors.transparent,
+                  highlightColor: Colors.transparent,
+                  hoverColor: Colors.transparent,
+                  focusColor: Colors.transparent,
+                  onTap: () {
+                    // showCancelWarningDialog(context);
+                    // showDialog(
+                    //   context: context,
+                    //   builder: (context) => SpotBillingPopUp(),
+                    // );
+                    spotBillingState.patientDetailsController.text =
+                        homeState.allBookingDetails[index].namePrefix ?? '';
+                    spotBillingState.patientNameController.text =
+                        homeState.allBookingDetails[index].patName ?? '';
+                    spotBillingState.patientPhoneController.text =
+                        homeState.allBookingDetails[index].patPhno ?? '';
+                    spotBillingState.patientEmailController.text =
+                        homeState.allBookingDetails[index].patEmail ?? '';
+                    spotBillingState.patientDateOfBirthController.text =
+                        homeState.allBookingDetails[index].dob ?? '';
+                    spotBillingState.ageController.text = homeState
+                        .allBookingDetails[index]
+                        .patAge
+                        .toString();
 
-                spotBillingState.genderController.text =
-                    homeState.allBookingDetails[index].patGender ?? '';
-                spotBillingState.addressController.text =
-                    homeState.allBookingDetails[index].patAddress ?? '';
-                spotBillingState.passPortNumberController.text =
-                    homeState.allBookingDetails[index].passport ?? '';
-                spotBillingState.outDoctorController.text =
-                    homeState.allBookingDetails[index].outDr ?? '';
-                spotBillingState.abhaIdController.text =
-                    homeState.allBookingDetails[index].abhaId ?? '';
-                spotBillingState.noteController.text =
-                    homeState.allBookingDetails[index].note ?? '';
-                spotBillingController.updateState(
-                  isUrgent: homeState.allBookingDetails[index].urgent == 1
-                      ? true
-                      : false,
-                );
-                context.pop();
-                // Navigator.pop(context);
-              },
-              child: CircleAvatar(
-                backgroundColor: colorState.primaryColor.withValues(alpha: 0.2),
-                child: Icon(Icons.arrow_back, color: colorState.primaryColor),
-              ),
-            ),
-          ),
-          title: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(right: 16.0),
-                child: Image.file(
-                  width: MediaQuery.of(context).size.width / 1.5,
-                  fit: BoxFit.fill,
-                  File(AppConstants.base64Image),
+                    spotBillingState.genderController.text =
+                        homeState.allBookingDetails[index].patGender ?? '';
+                    spotBillingState.addressController.text =
+                        homeState.allBookingDetails[index].patAddress ?? '';
+                    spotBillingState.passPortNumberController.text =
+                        homeState.allBookingDetails[index].passport ?? '';
+                    spotBillingState.outDoctorController.text =
+                        homeState.allBookingDetails[index].outDr ?? '';
+                    spotBillingState.abhaIdController.text =
+                        homeState.allBookingDetails[index].abhaId ?? '';
+                    spotBillingState.noteController.text =
+                        homeState.allBookingDetails[index].note ?? '';
+                    spotBillingController.updateState(
+                      isUrgent: homeState.allBookingDetails[index].urgent == 1
+                          ? true
+                          : false,
+                    );
+                    context.pop();
+                    // Navigator.pop(context);
+                  },
+                  child: CircleAvatar(
+                    backgroundColor: colorState.primaryColor.withValues(
+                      alpha: 0.2,
+                    ),
+                    child: Icon(
+                      Icons.arrow_back,
+                      color: colorState.primaryColor,
+                    ),
+                  ),
                 ),
               ),
-            ],
-          ),
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Form(
-              key: formKey,
-              autovalidateMode: spotBillingState.isSubmitted
-                  ? AutovalidateMode.onUserInteraction
-                  : AutovalidateMode.disabled,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  TopText(
-                    heading: 'Patient Details',
-                    color: colorState.primaryColor,
-                  ),
-                  SizedBox(height: 8),
-                  // ShowMenu(heading: 'Ms'),
-                  CommonTapPossitionDropdown(
-                    heading:
-                        spotBillingState.patientDetailsController.text.isEmpty
-                        ? 'Prefix'
-                        : spotBillingState.patientDetailsController.text,
-                    items: List.generate(
-                      patientTitles.length,
-                      (index) => patientTitles[index],
+                  Padding(
+                    padding: const EdgeInsets.only(right: 16.0),
+                    child: Image.file(
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      fit: BoxFit.fill,
+                      File(AppConstants.base64Image),
                     ),
-                    onSelected: (value) {
-                      spotBillingState.patientDetailsController.text = value;
-                    },
                   ),
-                  SizedBox(height: 8),
-
-                  TopText(
-                    heading: 'Patient Name *',
-                    color: colorState.primaryColor,
-                  ),
-                  SizedBox(height: 7),
-                  TypeTextFormField(
-                    hintText: 'Patient Name',
-                    textController: spotBillingState.patientNameController,
-                    isPreffix: true,
-                  ),
-
-                  // SizedBox(height: 8.h),
-                  CommonTextField(
-                    label: 'Phone',
-                    hint: 'Phone Number',
-                    isNumberInput: true,
-                    icon: Icons.phone,
-                    controller: spotBillingState.patientPhoneController,
-                  ),
-                  SizedBox(height: 20),
-
-                  //SizedBox(height: 8),
-                  CommonTextField(
-                    label: 'Email',
-                    hint: 'Email',
-                    icon: Icons.email,
-                    controller: spotBillingState.patientEmailController,
-                  ),
-                  SizedBox(height: 20),
-
-                  // SizedBox(height: 8.h),
-                  DateOfBirthContainer(
-                    hintText: 'Date of Birth',
-                    textController:
-                        spotBillingState.patientDateOfBirthController,
-                    ageSetting: () {
-                      if (spotBillingState
-                          .patientDateOfBirthController
-                          .text
-                          .isEmpty) {
-                        return;
-                      }
-
-                      final dob = DateFormat('dd-MM-yyyy').parse(
-                        spotBillingState.patientDateOfBirthController.text,
-                      );
-
-                      final age = spotBillingController.calculateAge(dob);
-
-                      spotBillingState.ageController.text = age.toString();
-                      log(dob.year.toString());
-                    },
-                  ),
-                  SizedBox(height: 8),
-
-                  Row(
+                ],
+              ),
+            ),
+            body: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Form(
+                  key: formKey,
+                  autovalidateMode: spotBillingState.isSubmitted
+                      ? AutovalidateMode.onUserInteraction
+                      : AutovalidateMode.disabled,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: TypeTextFormField(
-                          hintText: 'Age *',
-                          isNumberInput: true,
-                          textController: spotBillingState.ageController,
-                          //isReadOnly: true,
-                        ),
+                      TopText(
+                        heading: 'Patient Details',
+                        color: colorState.primaryColor,
                       ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: CommonTapPossitionDropdown(
-                          heading: 'Years',
-                          items: ['Year', 'Month', 'Week', 'Day'],
-                          onSelected: (p0) {},
+                      SizedBox(height: 8),
+                      // ShowMenu(heading: 'Ms'),
+                      CommonTapPossitionDropdown(
+                        heading:
+                            spotBillingState
+                                .patientDetailsController
+                                .text
+                                .isEmpty
+                            ? 'Prefix'
+                            : spotBillingState.patientDetailsController.text,
+                        items: List.generate(
+                          patientTitles.length,
+                          (index) => patientTitles[index],
                         ),
+                        onSelected: (value) {
+                          spotBillingState.patientDetailsController.text =
+                              value;
+                        },
                       ),
-                    ],
-                  ),
-                  SizedBox(height: 8),
+                      SizedBox(height: 8),
 
-                  CommonTextField(
-                    label: 'Address',
-                    hint: 'Address',
-                    icon: Icons.home,
-                    controller: spotBillingState.addressController,
-                  ),
-                  SizedBox(height: 8),
-                  TopText(heading: 'Done by *', color: colorState.primaryColor),
-                  SizedBox(height: 8),
+                      TopText(
+                        heading: 'Patient Name *',
+                        color: colorState.primaryColor,
+                      ),
+                      SizedBox(height: 7),
+                      TypeTextFormField(
+                        hintText: 'Patient Name',
+                        textController: spotBillingState.patientNameController,
+                        isPreffix: true,
+                      ),
 
-                  Focus(
-                    onFocusChange: (hasFocus) {
-                      if (!hasFocus) {
-                        spotBillingController.updateState(isDoneByApi: false);
-                      }
-                    },
-                    child: TypeTextFormField(
-                      hintText: 'Done by *',
-                      textController: spotBillingState.doneByController,
-                      onChanged: (value) {
-                        spotBillingController.updateState(isDoneByApi: true);
-                        if (spotBillingState.isDoneByApi && value.isEmpty) {
-                          List<String> newSearchList = [];
+                      // SizedBox(height: 8.h),
+                      CommonTextField(
+                        label: 'Phone',
+                        hint: 'Phone Number',
+                        isNumberInput: true,
+                        icon: Icons.phone,
+                        controller: spotBillingState.patientPhoneController,
+                      ),
+                      SizedBox(height: 20),
 
-                          for (var item
-                              in spotBillingState.doneByAccountListApi) {
-                            newSearchList.add(item.name ?? '');
+                      //SizedBox(height: 8),
+                      CommonTextField(
+                        label: 'Email',
+                        hint: 'Email',
+                        icon: Icons.email,
+                        controller: spotBillingState.patientEmailController,
+                      ),
+                      SizedBox(height: 20),
+
+                      // SizedBox(height: 8.h),
+                      DateOfBirthContainer(
+                        hintText: 'Date of Birth',
+                        textController:
+                            spotBillingState.patientDateOfBirthController,
+                        ageSetting: () {
+                          if (spotBillingState
+                              .patientDateOfBirthController
+                              .text
+                              .isEmpty) {
+                            return;
                           }
-                          spotBillingController.updateState(
-                            doneByAccountListSearch: newSearchList,
+
+                          final dob = DateFormat('dd-MM-yyyy').parse(
+                            spotBillingState.patientDateOfBirthController.text,
                           );
-                        } else {
-                          spotBillingController.doneBySearch(
-                            context: null,
-                            searchText: value,
-                            apiCall: false,
-                          );
-                        }
-                        // spotBillingController.doneBySearch(
-                        //   searchText: value,
-                        //   context: context,
-                        // );
-                      },
-                    ),
-                  ),
-                  if ((spotBillingState.doneByAccountListSearch.isNotEmpty ||
-                          spotBillingState.isDoneByApi == true) &&
-                      spotBillingState.doneByController.text !=
-                          (AppConstants.userName.isNotEmpty
-                              ? AppConstants.userName[0].toUpperCase() +
-                                    AppConstants.userName.substring(1)
-                              : ''))
-                    Container(
-                      height: 70,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: const Color.fromARGB(255, 238, 240, 238),
-                        border: Border.all(color: AppColors.appGrey, width: 2),
-                        borderRadius: BorderRadius.circular(10),
+
+                          final age = spotBillingController.calculateAge(dob);
+
+                          spotBillingState.ageController.text = age.toString();
+                          log(dob.year.toString());
+                        },
                       ),
-                      child: spotBillingState.doneByAccountListSearch.isEmpty
-                          ? Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Item not found.',
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                ),
-                              ),
-                            )
-                          : ListView.separated(
-                              padding: const EdgeInsets.all(8),
-                              itemCount: spotBillingState
+                      SizedBox(height: 8),
+
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TypeTextFormField(
+                              hintText: 'Age *',
+                              isNumberInput: true,
+                              textController: spotBillingState.ageController,
+                              //isReadOnly: true,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: CommonTapPossitionDropdown(
+                              heading: 'Years',
+                              items: ['Year', 'Month', 'Week', 'Day'],
+                              onSelected: (p0) {},
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8),
+
+                      CommonTextField(
+                        label: 'Address',
+                        hint: 'Address',
+                        icon: Icons.home,
+                        controller: spotBillingState.addressController,
+                      ),
+                      SizedBox(height: 8),
+                      TopText(
+                        heading: 'Done by *',
+                        color: colorState.primaryColor,
+                      ),
+                      SizedBox(height: 8),
+
+                      Focus(
+                        onFocusChange: (hasFocus) {
+                          if (!hasFocus) {
+                            spotBillingController.updateState(
+                              isDoneByApi: false,
+                            );
+                          }
+                        },
+                        child: TypeTextFormField(
+                          hintText: 'Done by *',
+                          textController: spotBillingState.doneByController,
+                          onChanged: (value) {
+                            spotBillingController.updateState(
+                              isDoneByApi: true,
+                            );
+                            if (spotBillingState.isDoneByApi && value.isEmpty) {
+                              List<String> newSearchList = [];
+
+                              for (var item
+                                  in spotBillingState.doneByAccountListApi) {
+                                newSearchList.add(item.name ?? '');
+                              }
+                              spotBillingController.updateState(
+                                doneByAccountListSearch: newSearchList,
+                              );
+                            } else {
+                              spotBillingController.doneBySearch(
+                                context: null,
+                                searchText: value,
+                                apiCall: false,
+                              );
+                            }
+                            // spotBillingController.doneBySearch(
+                            //   searchText: value,
+                            //   context: context,
+                            // );
+                          },
+                        ),
+                      ),
+                      if ((spotBillingState
                                   .doneByAccountListSearch
-                                  .length,
-                              itemBuilder: (context, index) {
-                                final accountList = spotBillingState
-                                    .doneByAccountListSearch[index];
-
-                                return InkWell(
-                                  splashColor: Colors.transparent,
-                                  highlightColor: Colors.transparent,
-                                  hoverColor: Colors.transparent,
-                                  focusColor: Colors.transparent,
-                                  onTap: () {
-                                    spotBillingState.doneByController.text =
-                                        accountList;
-
-                                    spotBillingController.updateState(
-                                      doneByAccountListSearch: [],
-                                      isDoneByApi: false,
-                                    );
-                                  },
+                                  .isNotEmpty ||
+                              spotBillingState.isDoneByApi == true) &&
+                          spotBillingState.doneByController.text !=
+                              (AppConstants.userName.isNotEmpty
+                                  ? AppConstants.userName[0].toUpperCase() +
+                                        AppConstants.userName.substring(1)
+                                  : ''))
+                        Container(
+                          height: 70,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: const Color.fromARGB(255, 238, 240, 238),
+                            border: Border.all(
+                              color: AppColors.appGrey,
+                              width: 2,
+                            ),
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child:
+                              spotBillingState.doneByAccountListSearch.isEmpty
+                              ? Padding(
+                                  padding: const EdgeInsets.all(8.0),
                                   child: Text(
-                                    accountList,
+                                    'Item not found.',
                                     style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 13,
                                     ),
                                   ),
-                                );
-                              },
-                              separatorBuilder: (context, index) =>
-                                  SizedBox(height: 10),
+                                )
+                              : ListView.separated(
+                                  padding: const EdgeInsets.all(8),
+                                  itemCount: spotBillingState
+                                      .doneByAccountListSearch
+                                      .length,
+                                  itemBuilder: (context, index) {
+                                    final accountList = spotBillingState
+                                        .doneByAccountListSearch[index];
+
+                                    return InkWell(
+                                      splashColor: Colors.transparent,
+                                      highlightColor: Colors.transparent,
+                                      hoverColor: Colors.transparent,
+                                      focusColor: Colors.transparent,
+                                      onTap: () {
+                                        spotBillingState.doneByController.text =
+                                            accountList;
+
+                                        spotBillingController.updateState(
+                                          doneByAccountListSearch: [],
+                                          isDoneByApi: false,
+                                        );
+                                      },
+                                      child: Text(
+                                        accountList,
+                                        style: const TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) =>
+                                      SizedBox(height: 10),
+                                ),
+                        ),
+                      SizedBox(height: 18),
+
+                      CommonTapPossitionDropdown(
+                        heading:
+                            spotBillingState.referredByController.text.isEmpty
+                            ? 'Referred by'
+                            : spotBillingState.referredByController.text,
+                        items: [
+                          'Manager',
+                          'HR',
+                          'Team Lead',
+                          'Senior Developer',
+                        ],
+                        onSelected: (value) {
+                          spotBillingState.referredByController.text = value;
+                        },
+                      ),
+                      SizedBox(height: 18),
+
+                      Row(
+                        children: [
+                          // Container(
+                          //   height: 20,
+                          //   width: 20,
+                          //   decoration: BoxDecoration(color:colorState.primaryColorLight),
+                          //   child: Center(child: Icon(Icons.che),),
+                          // ),
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            onTap: () {
+                              spotBillingController.updateState(
+                                isAdditional: !spotBillingState.isAdditional,
+                              );
+                            },
+                            child: Icon(
+                              spotBillingState.isAdditional
+                                  ? Icons.check_box_outlined
+                                  : Icons.check_box_outline_blank,
                             ),
-                    ),
-                  SizedBox(height: 18),
-
-                  CommonTapPossitionDropdown(
-                    heading: spotBillingState.referredByController.text.isEmpty
-                        ? 'Referred by'
-                        : spotBillingState.referredByController.text,
-                    items: ['Manager', 'HR', 'Team Lead', 'Senior Developer'],
-                    onSelected: (value) {
-                      spotBillingState.referredByController.text = value;
-                    },
-                  ),
-                  SizedBox(height: 18),
-
-                  Row(
-                    children: [
-                      // Container(
-                      //   height: 20,
-                      //   width: 20,
-                      //   decoration: BoxDecoration(color:colorState.primaryColorLight),
-                      //   child: Center(child: Icon(Icons.che),),
-                      // ),
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        onTap: () {
-                          spotBillingController.updateState(
-                            isAdditional: !spotBillingState.isAdditional,
-                          );
-                        },
-                        child: Icon(
-                          spotBillingState.isAdditional
-                              ? Icons.check_box_outlined
-                              : Icons.check_box_outline_blank,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Text('Add additional info.'),
-                    ],
-                  ),
-                  SizedBox(height: 8),
-                  if (spotBillingState.isAdditional == true)
-                    ListView(
-                      physics: NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      children: [
-                        CommonTextField(
-                          hint: 'ABHA ID',
-                          icon: Icons.insert_drive_file_outlined,
-                          controller: spotBillingState.abhaIdController,
-                        ),
-                        CommonTextField(
-                          hint: 'Passport Number',
-                          icon: Icons.password_sharp,
-                          controller: spotBillingState.passPortNumberController,
-                        ),
-                        CommonTextField(
-                          hint: 'Out Doctor',
-                          icon: Icons.person_add_alt_outlined,
-                        ),
-                        CommonTextField(
-                          hint: 'Note',
-                          icon: Icons.note_alt_outlined,
-                          controller: spotBillingState.noteController,
-                        ),
-                      ],
-                    ),
-                  SizedBox(height: 8),
-                  Row(
-                    children: [
-                      InkWell(
-                        splashColor: Colors.transparent,
-                        highlightColor: Colors.transparent,
-                        hoverColor: Colors.transparent,
-                        focusColor: Colors.transparent,
-                        onTap: () {
-                          spotBillingController.updateState(
-                            isUrgent: !spotBillingState.isUrgent,
-                          );
-                        },
-                        child: Icon(
-                          spotBillingState.isUrgent
-                              ? Icons.check_box_outlined
-                              : Icons.check_box_outline_blank,
-                        ),
-                      ),
-                      SizedBox(width: 5),
-                      Text('Urgent Report.'),
-                    ],
-                  ),
-                  SizedBox(height: 18),
-
-                  // PROCEED BUTTON
-                  InkWell(
-                    splashColor: Colors.transparent,
-                    highlightColor: Colors.transparent,
-                    hoverColor: Colors.transparent,
-                    focusColor: Colors.transparent,
-                    onTap: () {
-                      spotBillingController.updateState(isSubmitted: true);
-                      if (formKey.currentState!.validate()) {
-                        homeController.updatePatient(
-                          index: index,
-                          namePrefix:
-                              spotBillingState.patientDetailsController.text,
-                          patName: spotBillingState.patientNameController.text,
-                          patPhno: spotBillingState.patientPhoneController.text,
-                          patEmail:
-                              spotBillingState.patientEmailController.text,
-                          dob: spotBillingState
-                              .patientDateOfBirthController
-                              .text,
-                          patAge: int.parse(
-                            spotBillingState.ageController.text,
                           ),
-                          patAgehead: spotBillingState.ageByYear,
-                          patGender: spotBillingState.genderController.text,
-                          patAddress: spotBillingState.addressController.text,
-                          passport:
-                              spotBillingState.passPortNumberController.text,
-                          outDr: spotBillingState.outDoctorController.text,
-                          abhaId: spotBillingState.abhaIdController.text,
-                          note: spotBillingState.noteController.text,
-                          urgent: spotBillingState.isUrgent == false ? 0 : 1,
-                        );
-                        testMasterController.getSpecialSchemeList();
-                        context.pushReplacementNamed(
-                          AppRouteNames.spotBillingTestAddScreen.name,
-                          extra: index,
-                        );
-
-                        log("Success ");
-                        bottomNavController.setIndex(0);
-                      } else {
-                        log("Show errors ");
-                      }
-                    },
-                    child: Container(
-                      height: 50,
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        color: colorState.primaryColor,
-                        borderRadius: BorderRadius.circular(10),
+                          SizedBox(width: 5),
+                          Text('Add additional info.'),
+                        ],
                       ),
-                      child: Center(
-                        child: Text(
-                          'Update',
-                          style: TextStyle(color: AppColors.appWhite),
+                      SizedBox(height: 8),
+                      if (spotBillingState.isAdditional == true)
+                        ListView(
+                          physics: NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children: [
+                            CommonTextField(
+                              hint: 'ABHA ID',
+                              icon: Icons.insert_drive_file_outlined,
+                              controller: spotBillingState.abhaIdController,
+                            ),
+                            CommonTextField(
+                              hint: 'Passport Number',
+                              icon: Icons.password_sharp,
+                              controller:
+                                  spotBillingState.passPortNumberController,
+                            ),
+                            CommonTextField(
+                              hint: 'Out Doctor',
+                              icon: Icons.person_add_alt_outlined,
+                            ),
+                            CommonTextField(
+                              hint: 'Note',
+                              icon: Icons.note_alt_outlined,
+                              controller: spotBillingState.noteController,
+                            ),
+                          ],
+                        ),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          InkWell(
+                            splashColor: Colors.transparent,
+                            highlightColor: Colors.transparent,
+                            hoverColor: Colors.transparent,
+                            focusColor: Colors.transparent,
+                            onTap: () {
+                              spotBillingController.updateState(
+                                isUrgent: !spotBillingState.isUrgent,
+                              );
+                            },
+                            child: Icon(
+                              spotBillingState.isUrgent
+                                  ? Icons.check_box_outlined
+                                  : Icons.check_box_outline_blank,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text('Urgent Report.'),
+                        ],
+                      ),
+                      SizedBox(height: 18),
+
+                      // PROCEED BUTTON
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          spotBillingController.updateState(isSubmitted: true);
+                          if (formKey.currentState!.validate()) {
+                            homeController.updatePatient(
+                              index: index,
+                              namePrefix: spotBillingState
+                                  .patientDetailsController
+                                  .text,
+                              patName:
+                                  spotBillingState.patientNameController.text,
+                              patPhno:
+                                  spotBillingState.patientPhoneController.text,
+                              patEmail:
+                                  spotBillingState.patientEmailController.text,
+                              dob: spotBillingState
+                                  .patientDateOfBirthController
+                                  .text,
+                              patAge: int.parse(
+                                spotBillingState.ageController.text,
+                              ),
+                              patAgehead: spotBillingState.ageByYear,
+                              patGender: spotBillingState.genderController.text,
+                              patAddress:
+                                  spotBillingState.addressController.text,
+                              passport: spotBillingState
+                                  .passPortNumberController
+                                  .text,
+                              outDr: spotBillingState.outDoctorController.text,
+                              abhaId: spotBillingState.abhaIdController.text,
+                              note: spotBillingState.noteController.text,
+                              urgent: spotBillingState.isUrgent == false
+                                  ? 0
+                                  : 1,
+                            );
+                            testMasterController.getSpecialSchemeList();
+                            context.pushReplacementNamed(
+                              AppRouteNames.spotBillingTestAddScreen.name,
+                              extra: index,
+                            );
+
+                            log("Success ");
+                            bottomNavController.setIndex(0);
+                          } else {
+                            log("Show errors ");
+                          }
+                        },
+                        child: Container(
+                          height: 50,
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: colorState.primaryColor,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Update',
+                              style: TextStyle(color: AppColors.appWhite),
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      SizedBox(height: 70),
+                    ],
                   ),
-                  SizedBox(height: 70),
-                ],
+                ),
               ),
             ),
           ),
