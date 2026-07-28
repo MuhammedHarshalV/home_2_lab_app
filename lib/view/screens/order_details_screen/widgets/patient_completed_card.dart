@@ -123,6 +123,7 @@ class PatientCompletedCard extends ConsumerWidget {
               log(patient.toMap().toString());
               testAddController.getTestMasterLists(patient, false, null);
               testAddController.getSpecialSchemeList();
+              testAddController.initState();
               context.pushNamed(
                 AppRouteNames.spotBillingTestAddScreen.name,
                 extra: index,
@@ -386,7 +387,7 @@ class SwipeAcceptButton extends ConsumerWidget {
     final homeController = ref.read(homeScreenProvider.notifier);
     final homeState = ref.watch(homeScreenProvider);
     return SlideAction(
-      height: 40,
+      height: 50,
       borderRadius: 8,
       sliderButtonIconPadding: 0,
       outerColor: patient.flag == '2' ? Colors.red : Colors.green,
@@ -395,7 +396,7 @@ class SwipeAcceptButton extends ConsumerWidget {
       text: patient.flag == '2' ? "Swipe to Remove" : "Swipe to Accept",
       textStyle: const TextStyle(
         color: Colors.white,
-        fontSize: 13,
+        fontSize: 15,
         fontWeight: FontWeight.bold,
       ),
       sliderButtonIcon: Container(
@@ -404,7 +405,7 @@ class SwipeAcceptButton extends ConsumerWidget {
           borderRadius: BorderRadius.circular(10),
         ),
         child: Padding(
-          padding: const EdgeInsets.all(8.0),
+          padding: const EdgeInsets.all(12.0),
           child: Icon(
             Icons.arrow_forward_ios,
             size: 15,

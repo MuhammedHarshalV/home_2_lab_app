@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
@@ -226,6 +227,10 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     final int patientIndex =
                         index ??
                         (homeState.allBookingDetails.last.indexClick ?? 0);
+                    final box = await Hive.openBox('patient_booking');
+                    final hiveIndex = box.values.toList().indexWhere(
+                      (item) => item['indexClick'] == patientIndex,
+                    );
 
                     if (testAddState.testMasterListSelectedNewPrice.isEmpty) {
                       showDialog(
@@ -253,7 +258,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     if (isConnected && testAddState.balanceAmount >= 0) {
                       syncing = await testAddController.patientBillSyncingApi(
                         context: null,
-                        patient: [homeState.allBookingDetails[patientIndex]],
+                        patient: [homeState.allBookingDetails[hiveIndex]],
                         sync: true,
                       );
 

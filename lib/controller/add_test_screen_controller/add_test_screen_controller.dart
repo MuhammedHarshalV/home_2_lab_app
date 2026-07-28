@@ -37,13 +37,14 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           primaryAmountContoller: TextEditingController(),
           secondaryAmountController: TextEditingController(),
         ),
-      ) {
-    Future.microtask(() async {
-      getspecialSchemeAccounts();
-      // testMasterCalling();
-      specialRatesFetch(apiCall: false, context: null);
-    });
+      );
+  //initial state
+  Future<void> initState() async {
+    await getspecialSchemeAccounts();
+    // testMasterCalling();
+    await specialRatesFetch(apiCall: false, context: null);
   }
+
   //getdata from hive special scheme list
   Future<void> getspecialSchemeAccounts() async {
     final box = await Hive.openBox('special_scheme');

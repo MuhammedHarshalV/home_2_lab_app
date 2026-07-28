@@ -55,6 +55,7 @@ class LoginController extends StateNotifier<LoginState> {
     try {
       state = state.copyWith(isYearLoading: true);
       String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+
       final SharedPreferences prefs = await SharedPreferences.getInstance();
 
       final String date = await prefs.getString('Today_date') ?? '';
@@ -63,7 +64,34 @@ class LoginController extends StateNotifier<LoginState> {
         log(date.toString());
         log(currentDate);
         final box = await Hive.openBox('patient_booking');
+
+        //
+        // Backup the records you want to keep
+        final List<Map<String, dynamic>> remainingPatients = [];
+
+        for (final item in box.values) {
+          final data = Map<String, dynamic>.from(item);
+
+          if ((data['isClosed'] ?? '').toString().toLowerCase() != 'yes') {
+            remainingPatients.add(data);
+          }
+        }
+
+        // Clear the box
         await box.clear();
+
+        // Add back only the remaining records
+        for (final patient in remainingPatients) {
+          final key = await box.add(patient);
+
+          // Update indexClick to the new Hive key
+          final updated = Map<String, dynamic>.from(box.get(key));
+          updated['indexClick'] = key;
+          await box.put(key, updated);
+        }
+
+        log("Remaining patients: ${box.length}");
+
         await prefs.remove('syncId');
         await prefs.remove('Today_date');
       }

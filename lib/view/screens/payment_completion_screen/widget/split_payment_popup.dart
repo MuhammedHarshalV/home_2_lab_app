@@ -25,15 +25,14 @@ class SplitPaymentDialog extends ConsumerWidget {
           final homeState = ref.read(homeScreenProvider);
           addTestState.primaryAmountContoller.clear();
           addTestState.secondaryAmountController.clear();
+          final patient = homeState.allBookingDetails.firstWhere(
+            (e) => e.indexClick == index,
+          );
 
-          addTestState.primaryAmountContoller.text = homeState
-              .allBookingDetails[index]
-              .primaryPaid
+          addTestState.primaryAmountContoller.text = patient.primaryPaid
               .toString();
 
-          addTestState.secondaryAmountController.text = homeState
-              .allBookingDetails[index]
-              .secondaryPaid
+          addTestState.secondaryAmountController.text = patient.secondaryPaid
               .toString();
 
           // addTestController.updatestate(

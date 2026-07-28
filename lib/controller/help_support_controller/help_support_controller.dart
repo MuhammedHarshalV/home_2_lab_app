@@ -13,9 +13,11 @@ class HelpSupportController extends StateNotifier<HelpSupportState> {
   }
   Future<void> helpSupportApi(BuildContext? context) async {
     try {
+      if (!mounted) return;
       state = state.copyWith(isLoading: true);
       final HelpSupportResponseModel? response =
           await HelpSupportApi.helpSupportApi(context: context);
+      if (!mounted) return;
       if (response != null && response.success == true) {
         state = state.copyWith(
           helpAndSupport: response.helpAndSupport,
@@ -26,6 +28,8 @@ class HelpSupportController extends StateNotifier<HelpSupportState> {
     } catch (e) {
       log(e.toString());
     } finally {
+      // ignore: control_flow_in_finally
+      if (!mounted) return;
       state = state.copyWith(isLoading: false);
     }
   }

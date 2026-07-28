@@ -100,6 +100,7 @@ class PatientContactCard extends ConsumerWidget {
         log(patient.toMap().toString());
         testAddController.getTestMasterLists(patient, false, null);
         testAddController.getSpecialSchemeList();
+        testAddController.initState();
         context.pushNamed(
           AppRouteNames.spotBillingTestAddScreen.name,
           extra: index,

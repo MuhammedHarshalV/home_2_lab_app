@@ -25,9 +25,10 @@ class ServiceChangeDialog extends ConsumerWidget {
           // Same code as your Cancel button
           final homeState = ref.read(homeScreenProvider);
           addTeststate.servicesnargeController.clear();
-          addTeststate.servicesnargeController.text = homeState
-              .allBookingDetails[index]
-              .servChrge
+          final patient = homeState.allBookingDetails.firstWhere(
+            (e) => e.indexClick == index,
+          );
+          addTeststate.servicesnargeController.text = (patient.servChrge ?? 0)
               .toString();
 
           await addTestController.updateNetBalanceAmounts();

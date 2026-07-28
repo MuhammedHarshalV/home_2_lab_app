@@ -24,9 +24,11 @@ class RefferenceIdDialog extends ConsumerWidget {
         if (didPop) {
           final homeState = ref.read(homeScreenProvider);
           addTeststate.upiRefferenceIdController.clear();
-          addTestController.upiUpdates(
-            homeState.allBookingDetails[index].upiReferenceId ?? '',
+          final patient = homeState.allBookingDetails.firstWhere(
+            (e) => e.indexClick == index,
           );
+
+          addTestController.upiUpdates(patient.upiReferenceId ?? '');
         }
       },
 

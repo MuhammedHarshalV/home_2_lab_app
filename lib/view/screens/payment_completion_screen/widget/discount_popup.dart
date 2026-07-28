@@ -25,11 +25,12 @@ class DiscountDialog extends ConsumerWidget {
       // ignore: deprecated_member_use
       onPopInvoked: (didPop) async {
         if (didPop) {
-          final homeState = ref.watch(homeScreenProvider);
+          final homeState = ref.read(homeScreenProvider);
           addTeststate.discountAmountController.clear();
-          addTeststate.discountAmountController.text = homeState
-              .allBookingDetails[index]
-              .discAmt
+          final patient = homeState.allBookingDetails.firstWhere(
+            (e) => e.indexClick == index,
+          );
+          addTeststate.discountAmountController.text = (patient.discAmt ?? 0)
               .toString();
           addTestcontroller.discountCalculation(
             discountAmount: num.tryParse(

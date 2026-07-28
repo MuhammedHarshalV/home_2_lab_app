@@ -466,8 +466,10 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
 
       if (testLists.isEmpty) {
         log('Patient $i -> testlists: []');
+        // log('Patient ${patients[i].indexClick} -> testlists: []');
       } else {
         log('Patient $i -> testlists: $testLists');
+        // log('Patient ${patients[i].indexClick}  -> testlists: $testLists');
       }
     }
     final List<PatientHiveModel> patientBookingList = [];

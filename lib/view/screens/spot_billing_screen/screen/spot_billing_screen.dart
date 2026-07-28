@@ -529,6 +529,7 @@ class SpotBillingScreen extends ConsumerWidget {
                             // testMasterController.testMasterCalling();
                             // testMasterController.specialRatesFetch();
                             testMasterController.getSpecialSchemeList();
+                            testMasterController.initState();
                             context.pushReplacementNamed(
                               AppRouteNames.spotBillingTestAddScreen.name,
                             );

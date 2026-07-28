@@ -448,11 +448,13 @@ class PatientDetailsCard extends ConsumerWidget {
                                     if (value.schemeId == 0) {
                                       addTestController.updatestate(
                                         rateIDSelected: rateIdSelected,
+                                        schemeIDSelected: 0,
                                       );
                                       log("rateid :${value.key.toString()}");
                                     }
                                     addTestController.updatestate(
                                       schemeIDSelected: selectedSchemeId,
+                                      rateIDSelected: 0,
                                     );
                                     // addTestController
                                     //     .updateSpecialSchemePrice();
