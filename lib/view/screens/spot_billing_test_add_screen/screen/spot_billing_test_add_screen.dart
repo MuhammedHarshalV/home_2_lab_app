@@ -61,7 +61,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                   context.pushReplacementNamed(
                     AppRouteNames.bottomNavScreen.name,
                   );
-                  testMasterState.searchController.clear();
+                  ref.invalidate(addTestScreenProvider);
                 },
                 child: CircleAvatar(
                   backgroundColor: colorState.primaryColor.withValues(

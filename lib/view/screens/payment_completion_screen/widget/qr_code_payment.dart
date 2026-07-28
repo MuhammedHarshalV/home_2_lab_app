@@ -39,9 +39,17 @@ class PaymentOptionCard extends ConsumerWidget {
           const SizedBox(height: 12),
           InkWell(
             onTap: () {
-              num amount = addTestState.primaryType == 'UPI'
+              final primaryType = (addTestState.primaryType.isEmpty)
+                  ? 'Cash'
+                  : addTestState.primaryType;
+
+              final secondaryType = (addTestState.secondaryType.isEmpty)
+                  ? 'UPI'
+                  : addTestState.secondaryType;
+
+              num amount = primaryType == 'UPI'
                   ? addTestState.primaryPaid
-                  : addTestState.secondaryType == 'UPI'
+                  : secondaryType == 'UPI'
                   ? addTestState.secondaryPaid
                   : 0;
               log('amount is $amount');
@@ -62,7 +70,7 @@ class PaymentOptionCard extends ConsumerWidget {
               } else {
                 final qrData = UpiQrService.generateUri(
                   upiId: AppConstants.upiPaymentId,
-                  payeeName: 'ABC Diagnostics',
+                  payeeName: AppConstants.name,
                   amount: amount,
                   note: 'Lab Test Payment',
                 );

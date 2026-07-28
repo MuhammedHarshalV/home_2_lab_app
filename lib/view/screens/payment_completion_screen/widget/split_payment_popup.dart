@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -262,10 +264,19 @@ class SplitPaymentDialog extends ConsumerWidget {
                     ),
                     onPressed: () async {
                       final testMasterState1 = ref.read(addTestScreenProvider);
-                      if (testMasterState1.secondaryType.isNotEmpty &&
-                          testMasterState1.primaryType.isNotEmpty &&
-                          testMasterState1.secondaryType ==
-                              testMasterState1.primaryType) {
+                      log(testMasterState1.secondaryType);
+                      log(testMasterState1.primaryType);
+
+                      final primaryType = testMasterState1.primaryType.isEmpty
+                          ? 'Cash'
+                          : testMasterState1.primaryType;
+
+                      final secondaryType =
+                          testMasterState1.secondaryType.isEmpty
+                          ? 'UPI'
+                          : testMasterState1.secondaryType;
+
+                      if (primaryType == secondaryType) {
                         AppMessage.show(
                           context,
                           'Payment method cannot be same.',

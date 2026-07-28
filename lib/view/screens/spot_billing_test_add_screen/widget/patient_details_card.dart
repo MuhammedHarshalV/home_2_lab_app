@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
@@ -161,7 +162,7 @@ class PatientDetailsCard extends ConsumerWidget {
             ),
 
             GestureDetector(
-              onTap: () {
+              onTap: () async {
                 if (timerState.isRunning == false &&
                     addTestState.isSync != 'Yes') {
                   AppMessage.show(
@@ -440,63 +441,133 @@ class PatientDetailsCard extends ConsumerWidget {
                                               ),
                                             )
                                             .toList(),
+
                                   onSelected: (value) async {
-                                    log(value!.name.toString());
-                                    final selectedSchemeId =
-                                        value.schemeId ?? 0;
-                                    final rateIdSelected = value.key ?? 0;
-                                    if (value.schemeId == 0) {
-                                      addTestController.updatestate(
-                                        rateIDSelected: rateIdSelected,
-                                        schemeIDSelected: 0,
+                                    if (timerState.isRunning == false &&
+                                        addTestState.isSync != 'Yes') {
+                                      AppMessage.show(
+                                        context,
+                                        "You must press the Start button first.",
                                       );
-                                      log("rateid :${value.key.toString()}");
-                                    }
-                                    addTestController.updatestate(
-                                      schemeIDSelected: selectedSchemeId,
-                                      rateIDSelected: 0,
-                                    );
-                                    // addTestController
-                                    //     .updateSpecialSchemePrice();
-                                    log(value.schemeId.toString());
-                                    if (index == null) {
-                                      await addTestController
-                                          .updateNetBalanceAmounts();
-                                      final testMasterState1 = ref.watch(
-                                        addTestScreenProvider,
+
+                                      final box = await Hive.openBox(
+                                        'patient_booking',
                                       );
                                       int indexNot =
+                                          index ??
                                           homeState
                                               .allBookingDetails
                                               .last
                                               .indexClick ??
                                           0;
-                                      await homeController.updatePatient(
-                                        index: indexNot,
-                                        rateIdSelected: rateIdSelected,
-                                        specialSchemeName: value.name ?? '',
-                                        specialSchemeID: selectedSchemeId,
-                                        balance: testMasterState1.balanceAmount,
-                                        netAmt: testMasterState1.netAmount,
+                                      final hiveIndex = box.values
+                                          .toList()
+                                          .indexWhere(
+                                            (item) =>
+                                                item['indexClick'] == indexNot,
+                                          );
 
-                                        grossAmt: testMasterState1.totalPrice,
+                                      addTestState
+                                              .specialSchemeController
+                                              .text =
+                                          homeState
+                                              .allBookingDetails[hiveIndex]
+                                              .specialSchemeName ??
+                                          '';
+                                      return;
+                                    }
+                                    if (addTestState.isSync == 'Yes') {
+                                      AppMessage.show(
+                                        context,
+                                        'Bill is already synced.',
                                       );
+                                      final box = await Hive.openBox(
+                                        'patient_booking',
+                                      );
+                                      int indexNot =
+                                          index ??
+                                          homeState
+                                              .allBookingDetails
+                                              .last
+                                              .indexClick ??
+                                          0;
+                                      final hiveIndex = box.values
+                                          .toList()
+                                          .indexWhere(
+                                            (item) =>
+                                                item['indexClick'] == indexNot,
+                                          );
+
+                                      addTestState
+                                              .specialSchemeController
+                                              .text =
+                                          homeState
+                                              .allBookingDetails[hiveIndex]
+                                              .specialSchemeName ??
+                                          '';
+                                      return;
                                     } else {
-                                      await addTestController
-                                          .updateNetBalanceAmounts();
-                                      final testMasterState1 = ref.watch(
-                                        addTestScreenProvider,
-                                      );
-                                      homeController.updatePatient(
-                                        index: index!,
-                                        rateIdSelected: rateIdSelected,
-                                        specialSchemeName: value.name ?? '',
-                                        specialSchemeID: selectedSchemeId,
-                                        balance: testMasterState1.balanceAmount,
-                                        netAmt: testMasterState1.netAmount,
+                                      log(value!.name.toString());
+                                      final selectedSchemeId =
+                                          value.schemeId ?? 0;
+                                      final rateIdSelected = value.key ?? 0;
+                                      if (value.schemeId == 0) {
+                                        addTestController.updatestate(
+                                          rateIDSelected: rateIdSelected,
+                                          schemeIDSelected: 0,
+                                        );
+                                        log("rateid :${value.key.toString()}");
+                                      } else if (value.key == 0) {
+                                        addTestController.updatestate(
+                                          schemeIDSelected: selectedSchemeId,
+                                          rateIDSelected: 0,
+                                        );
+                                        // addTestController
+                                        //     .updateSpecialSchemePrice();
+                                        log(value.schemeId.toString());
+                                      }
+                                      if (index == null) {
+                                        await addTestController
+                                            .updateNetBalanceAmounts();
+                                        final testMasterState1 = ref.watch(
+                                          addTestScreenProvider,
+                                        );
+                                        int indexNot =
+                                            homeState
+                                                .allBookingDetails
+                                                .last
+                                                .indexClick ??
+                                            0;
 
-                                        grossAmt: testMasterState1.totalPrice,
-                                      );
+                                        await homeController.updatePatient(
+                                          index: indexNot,
+                                          rateIdSelected: rateIdSelected,
+                                          specialSchemeName: value.name ?? '',
+                                          specialSchemeID: selectedSchemeId,
+                                          balance:
+                                              testMasterState1.balanceAmount,
+                                          netAmt: testMasterState1.netAmount,
+
+                                          grossAmt: testMasterState1.totalPrice,
+                                        );
+                                      } else {
+                                        await addTestController
+                                            .updateNetBalanceAmounts();
+                                        final testMasterState1 = ref.watch(
+                                          addTestScreenProvider,
+                                        );
+                                        homeController.updatePatient(
+                                          index: index!,
+                                          rateIdSelected: rateIdSelected,
+                                          specialSchemeName: value.name ?? '',
+                                          specialSchemeID: selectedSchemeId,
+                                          balance:
+                                              testMasterState1.balanceAmount,
+                                          netAmt: testMasterState1.netAmount,
+
+                                          grossAmt: testMasterState1.totalPrice,
+                                        );
+                                      }
                                     }
                                   },
                                 ),

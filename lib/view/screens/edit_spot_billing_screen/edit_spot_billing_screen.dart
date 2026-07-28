@@ -89,43 +89,47 @@ class EditSpotBillingScreen extends ConsumerWidget {
                   highlightColor: Colors.transparent,
                   hoverColor: Colors.transparent,
                   focusColor: Colors.transparent,
-                  onTap: () {
+                  onTap: () async {
                     // showCancelWarningDialog(context);
                     // showDialog(
                     //   context: context,
                     //   builder: (context) => SpotBillingPopUp(),
                     // );
+                    final patient = homeState.allBookingDetails.firstWhere(
+                      (e) => e.indexClick == index,
+                    );
+                    // final box = await Hive.openBox('patient_booking');
+
+                    // final hiveIndex = box.values.toList().indexWhere(
+                    //   (item) => item['indexClick'] == index,
+                    // );
+
                     spotBillingState.patientDetailsController.text =
-                        homeState.allBookingDetails[index].namePrefix ?? '';
+                        patient.namePrefix ?? '';
                     spotBillingState.patientNameController.text =
-                        homeState.allBookingDetails[index].patName ?? '';
+                        patient.patName ?? '';
                     spotBillingState.patientPhoneController.text =
-                        homeState.allBookingDetails[index].patPhno ?? '';
+                        patient.patPhno ?? '';
                     spotBillingState.patientEmailController.text =
-                        homeState.allBookingDetails[index].patEmail ?? '';
+                        patient.patEmail ?? '';
                     spotBillingState.patientDateOfBirthController.text =
-                        homeState.allBookingDetails[index].dob ?? '';
-                    spotBillingState.ageController.text = homeState
-                        .allBookingDetails[index]
-                        .patAge
+                        patient.dob ?? '';
+                    spotBillingState.ageController.text = patient.patAge
                         .toString();
 
                     spotBillingState.genderController.text =
-                        homeState.allBookingDetails[index].patGender ?? '';
+                        patient.patGender ?? '';
                     spotBillingState.addressController.text =
-                        homeState.allBookingDetails[index].patAddress ?? '';
+                        patient.patAddress ?? '';
                     spotBillingState.passPortNumberController.text =
-                        homeState.allBookingDetails[index].passport ?? '';
+                        patient.passport ?? '';
                     spotBillingState.outDoctorController.text =
-                        homeState.allBookingDetails[index].outDr ?? '';
+                        patient.outDr ?? '';
                     spotBillingState.abhaIdController.text =
-                        homeState.allBookingDetails[index].abhaId ?? '';
-                    spotBillingState.noteController.text =
-                        homeState.allBookingDetails[index].note ?? '';
+                        patient.abhaId ?? '';
+                    spotBillingState.noteController.text = patient.note ?? '';
                     spotBillingController.updateState(
-                      isUrgent: homeState.allBookingDetails[index].urgent == 1
-                          ? true
-                          : false,
+                      isUrgent: patient.urgent == 1 ? true : false,
                     );
                     context.pop();
                     // Navigator.pop(context);

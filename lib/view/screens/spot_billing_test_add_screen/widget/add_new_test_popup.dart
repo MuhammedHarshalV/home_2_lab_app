@@ -22,184 +22,187 @@ class AddNewTestPopUp extends ConsumerWidget {
 
     final homeController = ref.read(homeScreenProvider.notifier);
 
-    return Dialog(
-      backgroundColor:
-          Colors.transparent, // Transparent to allow custom shadow/shape
-      elevation: 0,
-      insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-      child: Container(
-        padding: const EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          color: AppColors.appWhite,
-          borderRadius: BorderRadius.circular(24),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 32,
-              offset: const Offset(0, 10),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min, // Hugs the content tightly
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // --- Header Section ---
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text(
-                  "Add New Test",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.w800,
-                    color: Color(0xFF1A1F36), // Dark premium text
-                    letterSpacing: 0.3,
-                  ),
-                ),
-                InkWell(
-                  onTap: () async {
-                    final updatedPatient = ref
-                        .read(homeScreenProvider)
-                        .allBookingDetails[index];
-
-                    await testMasterController.getTestsFromHive(updatedPatient);
-
-                    context.pop();
-                  },
-                  borderRadius: BorderRadius.circular(50),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: Colors.grey.shade100,
-                      shape: BoxShape.circle,
-                    ),
-                    child: Icon(
-                      Icons.close_rounded,
-                      size: 20,
-                      color: Colors.grey.shade700,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5),
-
-            SizedBox(height: 5),
-
-            // --- Content / Search Section ---
-            Flexible(
-              child: SingleChildScrollView(
-                child: TestAddSearchValueContainer(
-                  textController: testMasterState.searchController,
-                ),
+    return PopScope(
+      canPop: true,
+      onPopInvokedWithResult: (didPop, result) async {
+        if (!didPop) return;
+        final updatedPatient = ref
+            .read(homeScreenProvider)
+            .allBookingDetails
+            .firstWhere((e) => e.indexClick == index);
+        testMasterState.searchController.clear();
+        await testMasterController.getTestsFromHive(updatedPatient);
+      },
+      child: Dialog(
+        backgroundColor:
+            Colors.transparent, // Transparent to allow custom shadow/shape
+        elevation: 0,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: AppColors.appWhite,
+            borderRadius: BorderRadius.circular(24),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.1),
+                blurRadius: 32,
+                offset: const Offset(0, 10),
               ),
-            ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min, // Hugs the content tightly
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // --- Header Section ---
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Add New Test",
+                    style: TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF1A1F36), // Dark premium text
+                      letterSpacing: 0.3,
+                    ),
+                  ),
+                  InkWell(
+                    onTap: () async {
+                     
 
-            const SizedBox(height: 10),
-
-            // --- Action Buttons ---
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: () async {
-                      testMasterState.searchController.clear();
-                      final updatedPatient = ref
-                          .read(homeScreenProvider)
-                          .allBookingDetails[index];
-
-                      await testMasterController.getTestsFromHive(
-                        updatedPatient,
-                      );
                       context.pop();
                     },
-                    style: TextButton.styleFrom(
-                      backgroundColor: colorState.secondaryColor.withValues(
-                        alpha: 0.5,
+                    borderRadius: BorderRadius.circular(50),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade100,
+                        shape: BoxShape.circle,
                       ),
-                      foregroundColor: colorState.primaryColor,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(14),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      elevation: 0,
-                    ),
-                    child: const Text(
-                      "Cancel",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                      child: Icon(
+                        Icons.close_rounded,
+                        size: 20,
+                        color: Colors.grey.shade700,
                       ),
                     ),
                   ),
+                ],
+              ),
+              SizedBox(height: 5),
+
+              SizedBox(height: 5),
+
+              // --- Content / Search Section ---
+              Flexible(
+                child: SingleChildScrollView(
+                  child: TestAddSearchValueContainer(
+                    textController: testMasterState.searchController,
+                  ),
                 ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () async {
-                      final uniqueIds = <dynamic>{};
+              ),
 
-                      final testList = testMasterState.testMasterListSelected
-                          .where((e) => uniqueIds.add(e.testKey))
-                          .map((e) => {'TestId': e.testKey})
-                          .toList();
-                      log(
-                        'selected lists : ${testList.toString()} \n length : ${testList.length}',
-                      );
+              const SizedBox(height: 10),
 
-                      testMasterController.updatestate(
-                        testMasterListSelectedNewPrice:
-                            testMasterState.testMasterListSelected,
-                      );
-
-                      await testMasterController.updateNetBalanceAmounts();
-                      final testMasterState1 = ref.watch(addTestScreenProvider);
-                      await homeController.updatePatient(
-                        index: index,
-                        testlists: testList,
-                        discAmt:
-                            num.tryParse(
-                              testMasterState1.discountAmountController.text,
-                            ) ??
-                            0,
-                        balance: testMasterState1.balanceAmount,
-                        netAmt: testMasterState1.netAmount,
-                        paidAmt: testMasterState1.amountPaid,
-                        grossAmt: testMasterState1.totalPrice,
-                        servChrge:
-                            num.tryParse(
-                              testMasterState1.servicesnargeController.text,
-                            ) ??
-                            0,
-                        flag: '0',
-                      );
-
-                      if (context.mounted) {
+              // --- Action Buttons ---
+              Row(
+                children: [
+                  Expanded(
+                    child: TextButton(
+                      onPressed: () async {
+                       
                         context.pop();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorState.primaryColor,
-                      foregroundColor: AppColors.appWhite,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
+                      },
+                      style: TextButton.styleFrom(
+                        backgroundColor: colorState.secondaryColor.withValues(
+                          alpha: 0.5,
+                        ),
+                        foregroundColor: colorState.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 0,
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      elevation: 0,
-                    ),
-                    child: const Text(
-                      "Add Test",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w700,
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final uniqueIds = <dynamic>{};
+
+                        final testList = testMasterState.testMasterListSelected
+                            .where((e) => uniqueIds.add(e.testKey))
+                            .map((e) => {'TestId': e.testKey})
+                            .toList();
+                        log(
+                          'selected lists : ${testList.toString()} \n length : ${testList.length}',
+                        );
+
+                        testMasterController.updatestate(
+                          testMasterListSelectedNewPrice:
+                              testMasterState.testMasterListSelected,
+                        );
+
+                        await testMasterController.updateNetBalanceAmounts();
+                        final testMasterState1 = ref.watch(
+                          addTestScreenProvider,
+                        );
+                        await homeController.updatePatient(
+                          index: index,
+                          testlists: testList,
+                          discAmt:
+                              num.tryParse(
+                                testMasterState1.discountAmountController.text,
+                              ) ??
+                              0,
+                          balance: testMasterState1.balanceAmount,
+                          netAmt: testMasterState1.netAmount,
+                          paidAmt: testMasterState1.amountPaid,
+                          grossAmt: testMasterState1.totalPrice,
+                          servChrge:
+                              num.tryParse(
+                                testMasterState1.servicesnargeController.text,
+                              ) ??
+                              0,
+                          flag: '0',
+                        );
+
+                        if (context.mounted) {
+                          context.pop();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: colorState.primaryColor,
+                        foregroundColor: AppColors.appWhite,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        "Add Test",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

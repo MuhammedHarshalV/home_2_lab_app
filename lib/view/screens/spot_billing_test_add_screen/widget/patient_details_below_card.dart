@@ -183,8 +183,10 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 onTap: () {
                   if (context.canPop()) {
                     context.pop();
+                    ref.invalidate(addTestScreenProvider);
                   } else {
                     context.goNamed(AppRouteNames.bottomNavScreen.name);
+                    ref.invalidate(addTestScreenProvider);
                   }
                 },
                 child: Container(
@@ -309,8 +311,10 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                       context.pushReplacementNamed(
                         AppRouteNames.bottomNavScreen.name,
                       );
+                      ref.invalidate(addTestScreenProvider);
                     } else {
                       context.pop();
+                      ref.invalidate(addTestScreenProvider);
                     }
                   } else {
                     context.pushNamed(AppRouteNames.printBillScreen.name);

@@ -835,6 +835,22 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
       isUrgent: false,
     );
   }
+
+  @override
+  void dispose() {
+    log('============== add test controller disposed ================');
+    state.searchController.dispose();
+    state.specialSchemeController.dispose();
+    state.discountAmountController.dispose();
+    state.discountPercentageController.dispose();
+    state.servicesnargeController.dispose();
+    state.upiRefferenceIdController.dispose();
+    state.primaryAmountContoller.dispose();
+    state.secondaryAmountController.dispose();
+    state.discountReason.dispose();
+    state.specialSchemeFocusNode.dispose();
+    super.dispose();
+  }
 }
 
 final addTestScreenProvider =
