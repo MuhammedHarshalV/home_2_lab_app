@@ -220,7 +220,7 @@ class LoginController extends StateNotifier<LoginState> {
   Future<void> storeImage({required String image}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('Image', image);
-    log('image storing $image');
+    // log('image storing $image');
     if (image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
       state = state.copyWith(imageBase64: imagePath);
@@ -232,7 +232,7 @@ class LoginController extends StateNotifier<LoginState> {
   Future<void> storeBwImage({required String image}) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.setString('BwImage', image);
-    log('image storing $image');
+    // log('image storing $image');
     if (image.isNotEmpty) {
       // String imagePath = await base64ToImagePath(image, 'bw_logo');
       // state = state.copyWith(imageBase64: imagePath);
@@ -257,7 +257,7 @@ class LoginController extends StateNotifier<LoginState> {
     final String? image = prefs.getString('Image');
     final String? bwimage = prefs.getString('BwImage');
 
-    log('Readed Image :$image');
+    // log('Readed Image :$image');
     if (image != null && image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
       AppConstants.base64Image = imagePath;
