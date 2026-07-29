@@ -53,7 +53,7 @@ list(APPEND FLUTTER_LIBRARY_HEADERS
   "fl_standard_method_codec.h"
   "fl_string_codec.h"
   "fl_value.h"
-  "fl_view.h"
+  "fl_presentation.h"
   "flutter_linux.h"
 )
 list_prepend(FLUTTER_LIBRARY_HEADERS "${EPHEMERAL_DIR}/flutter_linux/")

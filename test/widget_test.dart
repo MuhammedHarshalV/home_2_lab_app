@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:icon_infoware/main.dart';
-import 'package:icon_infoware/view/screens/auth_screen/splash_screen.dart';
+import 'package:icon_infoware/presentation/screens/auth_screen/splash_screen.dart';
 
 void main() {
   setUp(() {
@@ -11,8 +11,10 @@ void main() {
     SharedPreferences.setMockInitialValues({});
   });
 
-  testWidgets('App renders splash screen initially', (WidgetTester tester) async {
-    // Set a realistic viewport size to prevent Lottie layout overflow in tests
+  testWidgets('App renders splash screen initially', (
+    WidgetTester tester,
+  ) async {
+    // Set a realistic presentationport size to prevent Lottie layout overflow in tests
     tester.view.physicalSize = const Size(1080, 1920);
     tester.view.devicePixelRatio = 1.0;
     addTearDown(() {
@@ -21,11 +23,7 @@ void main() {
     });
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MyApp(),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: MyApp()));
 
     // Verify that the SplashScreen is rendered.
     expect(find.byType(SplashScreen), findsOneWidget);
@@ -35,4 +33,3 @@ void main() {
     await tester.pumpAndSettle();
   });
 }
-

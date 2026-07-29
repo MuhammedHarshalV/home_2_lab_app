@@ -2,25 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
-import 'package:icon_infoware/view/screens/about_screen/screen/help_and_support_screen.dart';
-import 'package:icon_infoware/view/screens/about_screen/screen/privacy_policy_screen.dart';
-import 'package:icon_infoware/view/screens/about_screen/screen/terms_and_conditions_screen.dart';
-import 'package:icon_infoware/view/screens/all_invoices_screen/screen/all_invoice_screen.dart';
+import 'package:icon_infoware/presentation/screens/about_screen/screen/help_and_support_screen.dart';
+import 'package:icon_infoware/presentation/screens/about_screen/screen/privacy_policy_screen.dart';
+import 'package:icon_infoware/presentation/screens/about_screen/screen/terms_and_conditions_screen.dart';
+import 'package:icon_infoware/presentation/screens/all_invoices_screen/screen/all_invoice_screen.dart';
 
-import 'package:icon_infoware/view/screens/auth_screen/base_url.dart';
-import 'package:icon_infoware/view/screens/bottom_nav_screen/bottom_nav_screen.dart';
-import 'package:icon_infoware/view/screens/edit_spot_billing_screen/edit_spot_billing_screen.dart';
-import 'package:icon_infoware/view/screens/home_screen/screens/home_screen.dart';
-import 'package:icon_infoware/view/screens/auth_screen/login_screen.dart';
-import 'package:icon_infoware/view/screens/menu_screen/screen/menu_screen.dart';
-import 'package:icon_infoware/view/screens/payment_completion_screen/screen/payment_completion_screen.dart';
-import 'package:icon_infoware/view/screens/auth_screen/pin_setting_screen.dart';
-import 'package:icon_infoware/view/screens/print_bill_details_screen/screen/print_bill_details_screen.dart';
-import 'package:icon_infoware/view/screens/print_cash_closer_screen/screen/print_cash_closer_screen.dart';
-import 'package:icon_infoware/view/screens/auth_screen/sign_in_screen.dart';
-import 'package:icon_infoware/view/screens/auth_screen/splash_screen.dart';
-import 'package:icon_infoware/view/screens/spot_billing_screen/screen/spot_billing_screen.dart';
-import 'package:icon_infoware/view/screens/spot_billing_test_add_screen/screen/spot_billing_test_add_screen.dart';
+import 'package:icon_infoware/presentation/screens/auth_screen/base_url.dart';
+import 'package:icon_infoware/presentation/screens/bottom_nav_screen/bottom_nav_screen.dart';
+import 'package:icon_infoware/presentation/screens/edit_spot_billing_screen/edit_spot_billing_screen.dart';
+import 'package:icon_infoware/presentation/screens/home_screen/screens/home_screen.dart';
+import 'package:icon_infoware/presentation/screens/auth_screen/login_screen.dart';
+import 'package:icon_infoware/presentation/screens/menu_screen/screen/menu_screen.dart';
+import 'package:icon_infoware/presentation/screens/payment_completion_screen/screen/payment_completion_screen.dart';
+import 'package:icon_infoware/presentation/screens/auth_screen/pin_setting_screen.dart';
+import 'package:icon_infoware/presentation/screens/print_bill_details_screen/screen/print_bill_details_screen.dart';
+import 'package:icon_infoware/presentation/screens/print_cash_closer_screen/screen/print_cash_closer_screen.dart';
+import 'package:icon_infoware/presentation/screens/auth_screen/sign_in_screen.dart';
+import 'package:icon_infoware/presentation/screens/auth_screen/splash_screen.dart';
+import 'package:icon_infoware/presentation/screens/spot_billing_screen/screen/spot_billing_screen.dart';
+import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/screen/spot_billing_test_add_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: AppRouteNames.splashScreen.route,

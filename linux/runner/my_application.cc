@@ -15,8 +15,8 @@ struct _MyApplication {
 G_DEFINE_TYPE(MyApplication, my_application, GTK_TYPE_APPLICATION)
 
 // Called when first Flutter frame received.
-static void first_frame_cb(MyApplication* self, FlView* view) {
-  gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(view)));
+static void first_frame_cb(MyApplication* self, Flpresentation* presentation) {
+  gtk_widget_show(gtk_widget_get_toplevel(GTK_WIDGET(presentation)));
 }
 
 // Implements GApplication::activate.
@@ -58,24 +58,24 @@ static void my_application_activate(GApplication* application) {
   fl_dart_project_set_dart_entrypoint_arguments(
       project, self->dart_entrypoint_arguments);
 
-  FlView* view = fl_view_new(project);
+  Flpresentation* presentation = fl_presentation_new(project);
   GdkRGBA background_color;
   // Background defaults to black, override it here if necessary, e.g. #00000000
   // for transparent.
   gdk_rgba_parse(&background_color, "#000000");
-  fl_view_set_background_color(view, &background_color);
-  gtk_widget_show(GTK_WIDGET(view));
-  gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(view));
+  fl_presentation_set_background_color(presentation, &background_color);
+  gtk_widget_show(GTK_WIDGET(presentation));
+  gtk_container_add(GTK_CONTAINER(window), GTK_WIDGET(presentation));
 
   // Show the window when Flutter renders.
-  // Requires the view to be realized so we can start rendering.
-  g_signal_connect_swapped(view, "first-frame", G_CALLBACK(first_frame_cb),
+  // Requires the presentation to be realized so we can start rendering.
+  g_signal_connect_swapped(presentation, "first-frame", G_CALLBACK(first_frame_cb),
                            self);
-  gtk_widget_realize(GTK_WIDGET(view));
+  gtk_widget_realize(GTK_WIDGET(presentation));
 
-  fl_register_plugins(FL_PLUGIN_REGISTRY(view));
+  fl_register_plugins(FL_PLUGIN_REGISTRY(presentation));
 
-  gtk_widget_grab_focus(GTK_WIDGET(view));
+  gtk_widget_grab_focus(GTK_WIDGET(presentation));
 }
 
 // Implements GApplication::local_command_line.

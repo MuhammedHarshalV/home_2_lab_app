@@ -10,6 +10,7 @@ import 'package:hive/hive.dart';
 import 'package:icon_infoware/apis/login_screen/base_url_checking.dart';
 import 'package:icon_infoware/apis/login_screen/sign_in_checking.dart';
 import 'package:icon_infoware/apis/login_screen/year_id_fetching.dart';
+import 'package:icon_infoware/apis/spot_billing/cash_closing_api.dart';
 import 'package:icon_infoware/controller/login_controller/address_save.dart';
 
 import 'package:icon_infoware/controller/login_controller/login_state.dart';
@@ -18,6 +19,7 @@ import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/models/base_url_response/base_url_response_model.dart';
+import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 import 'package:icon_infoware/models/sign_in/login_response_model.dart';
 import 'package:intl/intl.dart';
 
@@ -55,6 +57,7 @@ class LoginController extends StateNotifier<LoginState> {
     try {
       state = state.copyWith(isYearLoading: true);
       String currentDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      // String currentDate = '2026-07-31';
 
       final SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -66,29 +69,22 @@ class LoginController extends StateNotifier<LoginState> {
         final box = await Hive.openBox('patient_booking');
 
         //
-        // Backup the records you want to keep
-        final List<Map<String, dynamic>> remainingPatients = [];
 
-        for (final item in box.values) {
-          final data = Map<String, dynamic>.from(item);
-
-          if ((data['isClosed'] ?? '').toString().toLowerCase() != 'yes') {
-            remainingPatients.add(data);
-          }
-        }
+        final List<PatientHiveModel> remainingPatients = box.values
+            .map((e) => PatientHiveModel.fromMap(Map<String, dynamic>.from(e)))
+            .where(
+              (e) =>
+                  (e.isClosed ?? '').toLowerCase() != 'yes' &&
+                  (e.isSync ?? '').toLowerCase() == 'yes',
+            )
+            .toList();
+        await CashClosingApi.cashClosingApi(
+          patients: remainingPatients,
+          context: context,
+        );
 
         // Clear the box
         await box.clear();
-
-        // Add back only the remaining records
-        for (final patient in remainingPatients) {
-          final key = await box.add(patient);
-
-          // Update indexClick to the new Hive key
-          final updated = Map<String, dynamic>.from(box.get(key));
-          updated['indexClick'] = key;
-          await box.put(key, updated);
-        }
 
         log("Remaining patients: ${box.length}");
 
@@ -141,7 +137,9 @@ class LoginController extends StateNotifier<LoginState> {
       } else if (response.cusLogo != null &&
           response.cusLogo.toString().isNotEmpty) {
         await storeBaseUrl(baseUrl: baseUrl);
-        await storeImage(image: response.cusLogo!);
+        await storeImage(image: response.cusLogo ?? '');
+        await storeBwImage(image: response.cusBWlogo ?? '');
+
         context.goNamed(AppRouteNames.signInScreen.name);
         await AddressStorage.saveAddress(
           name: response.brName ?? '',
@@ -228,7 +226,21 @@ class LoginController extends StateNotifier<LoginState> {
       state = state.copyWith(imageBase64: imagePath);
       AppConstants.base64Image = image;
     }
-  } //baseurl storing to phone
+  }
+
+  //black and white image
+  Future<void> storeBwImage({required String image}) async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('BwImage', image);
+    log('image storing $image');
+    if (image.isNotEmpty) {
+      // String imagePath = await base64ToImagePath(image, 'bw_logo');
+      // state = state.copyWith(imageBase64: imagePath);
+      AppConstants.base64BwImage = image;
+    }
+  }
+
+  //baseurl storing to phone
 
   Future<void> storeBaseUrl({required String baseUrl}) async {
     state = state.copyWith(isCheckBaseUrl: true);
@@ -243,12 +255,20 @@ class LoginController extends StateNotifier<LoginState> {
   Future<void> readImage() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final String? image = prefs.getString('Image');
+    final String? bwimage = prefs.getString('BwImage');
+
     log('Readed Image :$image');
     if (image != null && image.isNotEmpty) {
       String imagePath = await base64ToImagePath(image, 'company_logo');
       AppConstants.base64Image = imagePath;
 
       state = state.copyWith(imageBase64: imagePath);
+    }
+    if (bwimage != null && bwimage.isNotEmpty) {
+      String imagePath = await base64ToImagePath(bwimage, 'bw_logo');
+      AppConstants.base64BwImage = imagePath;
+
+      //state = state.copyWith(imageBase64: imagePath);
     }
   }
 

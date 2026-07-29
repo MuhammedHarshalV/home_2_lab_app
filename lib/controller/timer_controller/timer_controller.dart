@@ -11,7 +11,6 @@ class TimerController extends StateNotifier<CustomTimerState> {
 
   Timer? _timer;
 
-  
   void toggleTimer() {
     if (state.isRunning) {
       // STOP
@@ -38,7 +37,7 @@ class TimerController extends StateNotifier<CustomTimerState> {
     required Position position,
     required bool isStart,
   }) async {
-    final bool response = await LocationSendApi.locationSendApi(
+    await LocationSendApi.locationSendApi(
       body: {
         "UsrId": AppConstants.userId,
         "CurrDateTime": DateFormat('yyyy-MM-dd').format(DateTime.now()),

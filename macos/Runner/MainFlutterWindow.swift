@@ -3,12 +3,12 @@ import FlutterMacOS
 
 class MainFlutterWindow: NSWindow {
   override func awakeFromNib() {
-    let flutterViewController = FlutterViewController()
+    let flutterpresentationController = FlutterpresentationController()
     let windowFrame = self.frame
-    self.contentViewController = flutterViewController
+    self.contentpresentationController = flutterpresentationController
     self.setFrame(windowFrame, display: true)
 
-    RegisterGeneratedPlugins(registry: flutterViewController)
+    RegisterGeneratedPlugins(registry: flutterpresentationController)
 
     super.awakeFromNib()
   }

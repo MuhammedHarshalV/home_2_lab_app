@@ -1,5 +1,7 @@
 class AppConstants {
   static String base64Image = '';
+  static String base64BwImage = '';
+
   static String pin = '';
   static String branchID = '';
   static String deviceID = '';
