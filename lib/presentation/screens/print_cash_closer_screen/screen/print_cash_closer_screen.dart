@@ -49,13 +49,13 @@ class PrintCashCloserScreen extends ConsumerWidget {
                 child: SingleChildScrollView(
                   child: Screenshot(
                     controller: screenshotController,
-                    child: SizedBox(
+                    child: Container(
                       width: printState.paperType == PaperType.mm58
                           ? 384
                           : printState.paperType == PaperType.mm72
                           ? 512
                           : 576,
-
+                      decoration: BoxDecoration(color: AppColors.appWhite),
                       // margin: const EdgeInsets.symmetric(vertical: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

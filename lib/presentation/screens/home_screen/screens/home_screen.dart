@@ -240,7 +240,7 @@ class HomeScreen extends ConsumerWidget {
                             );
                           },
                           child: Text(
-                            'presentation All >',
+                            'View All >',
                             style: TextStyle(color: AppColors.appGrey),
                           ),
                         ),

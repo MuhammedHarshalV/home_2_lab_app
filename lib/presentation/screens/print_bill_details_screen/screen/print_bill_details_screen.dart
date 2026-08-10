@@ -52,9 +52,9 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                   child: Center(
                     child: Screenshot(
                       controller: screenshotController,
-                      child: SizedBox(
+                      child: Container(
                         width: MediaQuery.of(context).size.width,
-
+                        decoration: BoxDecoration(color: Colors.white),
                         // margin: const EdgeInsets.symmetric(vertical: 15),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,

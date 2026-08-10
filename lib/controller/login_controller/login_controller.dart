@@ -163,6 +163,11 @@ class LoginController extends StateNotifier<LoginState> {
           context,
           "Identified as New Device,Please contact Software Support Team\nwww.iconinfoware.com it will take few minutes for configuration Please wait...",
         );
+      } else if (response.success == true) {
+        AppMessage.show(
+          context,
+          "Identified as New Device,Please contact Software Support Team\nwww.iconinfoware.com it will take few minutes for configuration Please wait...",
+        );
       }
     } catch (e) {
       log("Error: $e");

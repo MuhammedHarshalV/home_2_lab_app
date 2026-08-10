@@ -474,8 +474,12 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   Future<void> updateNetBalanceAmounts() async {
     int schemeId = state.schemeIDSelected;
     num rateId = state.rateIDSelected;
+    log('Scheme id $schemeId');
+    log('rate id $rateId');
+
     if (schemeId > 0) {
       List<TestMasterSelected> testMasterNewList = state.testMasterListSelected;
+
       List<SchemeRateList> newSchemeList = [];
       for (final test in testMasterNewList) {
         final master = state.testMasterList.firstWhere(
@@ -483,6 +487,10 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         );
 
         test.testRate = master.testRate;
+      }
+      if (state.specialSchemeRatesList.isEmpty) {
+        List<SchemeRateList> schemeList = await getSpecialSchemeList();
+        state = state.copyWith(specialSchemeRatesList: schemeList);
       }
       for (final e in state.specialSchemeRatesList) {
         if (e.acctSchemeId == schemeId) {
@@ -501,9 +509,15 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           }
         }
       }
-
-      state = state.copyWith(testMasterListSelected: testMasterNewList);
-    } else if (rateId > 0) {
+      final totalAmount = testMasterNewList.fold<num>(
+        0,
+        (sum, test) => sum + (test.testRate ?? 0),
+      );
+      state = state.copyWith(
+        testMasterListSelected: testMasterNewList,
+        totalPrice: totalAmount,
+      );
+    } else if (rateId > 0 && schemeId == 0) {
       List<TestMasterSelected> testMasterNewList = state.testMasterListSelected;
       List<SpclRateList> newRateIdList = [];
       for (final test in testMasterNewList) {
@@ -512,6 +526,10 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
         );
 
         test.testRate = master.testRate;
+      }
+      if (state.normalSpecialRates.isEmpty) {
+        List<SpclRateList> normalSpecialRates = await getNormalSpecialRates();
+        state = state.copyWith(normalSpecialRates: normalSpecialRates);
       }
       log(testMasterNewList.toString());
       for (final e in state.normalSpecialRates) {
@@ -530,8 +548,14 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
           }
         }
       }
-
-      state = state.copyWith(testMasterListSelected: testMasterNewList);
+      final totalAmount = testMasterNewList.fold<num>(
+        0,
+        (sum, test) => sum + (test.testRate ?? 0),
+      );
+      state = state.copyWith(
+        testMasterListSelected: testMasterNewList,
+        totalPrice: totalAmount,
+      );
     } else {
       List<TestMasterSelected> testMasterNewList = state.testMasterListSelected;
 
@@ -542,13 +566,17 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
 
         test.testRate = master.testRate;
       }
-      state = state.copyWith(testMasterListSelected: testMasterNewList);
+      final totalAmount = testMasterNewList.fold<num>(
+        0,
+        (sum, test) => sum + (test.testRate ?? 0),
+      );
+      state = state.copyWith(
+        testMasterListSelected: testMasterNewList,
+        totalPrice: totalAmount,
+      );
     }
-    final totalAmount = state.testMasterListSelected.fold<num>(
-      0,
-      (sum, test) => sum + (test.testRate ?? 0),
-    );
-    final grossAmount = totalAmount;
+
+    final grossAmount = state.totalPrice;
 
     final discountAmount =
         num.tryParse(state.discountAmountController.text) ?? 0;
