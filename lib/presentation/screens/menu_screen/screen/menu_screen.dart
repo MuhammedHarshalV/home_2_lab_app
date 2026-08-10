@@ -950,6 +950,82 @@ class MenuScreen extends ConsumerWidget {
                           "Secondary Color",
                         ),
                       ),
+                      InkWell(
+                        splashColor: Colors.transparent,
+                        highlightColor: Colors.transparent,
+                        hoverColor: Colors.transparent,
+                        focusColor: Colors.transparent,
+                        onTap: () {
+                          Color selectedColor = colorState.appbarColor;
+                          showDialog(
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                backgroundColor: AppColors.appWhite,
+                                title: Center(
+                                  child: Text(
+                                    "Pick Appbar Color",
+                                    style: TextStyle(
+                                      color: AppColors.appBlack,
+                                      fontSize: 15,
+                                    ),
+                                  ),
+                                ),
+                                content: SingleChildScrollView(
+                                  child: ColorPicker(
+                                    pickerColor: selectedColor,
+                                    onColorChanged: (Color color) {
+                                      selectedColor = color;
+                                    },
+                                  ),
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () {
+                                      colorController.defaultColor(
+                                        appbarColor: AppColors.appWhite,
+                                      );
+                                      context.pop();
+                                    },
+                                    child: const Text(
+                                      "Restore Default",
+                                      style: TextStyle(
+                                        color: AppColors.appBlack,
+                                      ),
+                                    ),
+                                  ),
+                                  TextButton(
+                                    style: TextButton.styleFrom(
+                                      backgroundColor: colorState.primaryColor,
+                                    ),
+                                    onPressed: () {
+                                      colorController.updateState(
+                                        appbarColor: selectedColor,
+                                      );
+                                      context.pop();
+                                    },
+                                    child: const Text(
+                                      "Done",
+                                      style: TextStyle(
+                                        color: AppColors.appWhite,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                        child: buildSettingsItem(
+                          Icon(
+                            Icons.color_lens_outlined,
+                            size: 20,
+                            color: colorState.primaryColor,
+                          ),
+                          "Appbar Color",
+                        ),
+                      ),
+
                       SizedBox(height: 16),
                       InkWell(
                         splashColor: Colors.transparent,

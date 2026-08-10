@@ -49,17 +49,18 @@ class OderDetailsScreen extends ConsumerWidget {
           });
           return AnnotatedRegion<SystemUiOverlayStyle>(
             value: SystemUiOverlayStyle(
-              statusBarColor: AppColors.appWhite,
+              statusBarColor: colorState.appbarColor,
               statusBarIconBrightness: Brightness.light, // icons = white
               statusBarBrightness: Brightness.dark, // for iOS
             ),
             child: SafeArea(
+              top: false,
               child: Scaffold(
                 backgroundColor: const Color(0xFFF8FAFC),
                 appBar: AppBar(
                   toolbarHeight: 100,
                   automaticallyImplyLeading: false,
-                  backgroundColor: AppColors.appWhite,
+                  backgroundColor: colorState.appbarColor,
                   elevation: 0,
 
                   leading: Padding(

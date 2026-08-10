@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +11,7 @@ import 'package:icon_infoware/presentation/screens/payment_completion_screen/wid
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/billing_details_card.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/qr_code_payment.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/split_payment_card.dart';
+import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 import 'package:intl/intl.dart';
 
 class PaymentCompletionScreen extends ConsumerWidget {
@@ -25,50 +24,15 @@ class PaymentCompletionScreen extends ConsumerWidget {
     final colorState = ref.watch(colorProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: AppColors.appWhite,
+        statusBarColor: colorState.appbarColor,
         statusBarIconBrightness: Brightness.light, // icons = white
         statusBarBrightness: Brightness.dark, // for iOS
       ),
       child: SafeArea(
+        top: false,
         child: Scaffold(
           backgroundColor: AppColors.appWhite,
-          appBar: AppBar(
-            backgroundColor: AppColors.appWhite,
-
-            toolbarHeight: 100,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                onTap: () {
-                  context.pop();
-                },
-                child: CircleAvatar(
-                  backgroundColor: colorState.primaryColor.withValues(
-                    alpha: 0.2,
-                  ),
-                  child: Icon(Icons.arrow_back, color: colorState.primaryColor),
-                ),
-              ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: Image.file(
-                    width: MediaQuery.of(context).size.width / 1.5,
-                    fit: BoxFit.fill,
-                    File(AppConstants.base64Image),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          appBar: CommonAppbar(),
           body: SingleChildScrollView(
             padding: const EdgeInsets.all(10),
             child: Column(

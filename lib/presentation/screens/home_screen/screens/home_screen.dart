@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,13 +6,12 @@ import 'package:icon_infoware/controller/color_controller/color_controller.dart'
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 
-import 'package:icon_infoware/core/constants/app_constants.dart';
-
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/screens/home_screen/widget/patient_details_list_shimmer.dart';
 import 'package:icon_infoware/presentation/screens/order_details_screen/screens/oder_details_screen.dart';
 import 'package:icon_infoware/presentation/screens/home_screen/widget/patient_details_card.dart';
 import 'package:icon_infoware/presentation/screens/home_screen/widget/active_section_card.dart';
+import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 import 'package:icon_infoware/presentation/widgets/new_orders_card.dart';
 
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
@@ -32,38 +29,16 @@ class HomeScreen extends ConsumerWidget {
     );
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: AppColors.appWhite,
-        statusBarIconBrightness: Brightness.light, // icons = white
+        statusBarColor: colorState.appbarColor,
+        statusBarIconBrightness: Brightness.dark, // icons = white
         statusBarBrightness: Brightness.dark, // for iOS
       ),
       child: SafeArea(
+        top: false,
         child: Scaffold(
           backgroundColor: const Color(0xFFF8FAFC),
-          appBar: AppBar(
-            backgroundColor: AppColors.appWhite,
-            toolbarHeight: 100,
-            automaticallyImplyLeading: false,
+          appBar: CommonAppbar(showBackButton: false, shape: true),
 
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Center(
-                  child: AppConstants.base64Image.isEmpty
-                      ? null
-                      : Image.file(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          fit: BoxFit.fill,
-                          File(AppConstants.base64Image),
-                        ),
-                ),
-              ],
-            ),
-
-            shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(30)),
-            ),
-          ),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: RefreshIndicator(

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,7 +9,7 @@ import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
-import 'package:icon_infoware/core/constants/app_constants.dart';
+
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
@@ -18,6 +17,7 @@ import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/add_new_test_popup.dart';
 import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/patient_details_below_card.dart';
 import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/patient_details_card.dart';
+import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 
 class SpotBillingTestAddScreen extends ConsumerWidget {
   final int? hiveIndex;
@@ -37,56 +37,20 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
     // log('checked list :${testMasterState.checkedTestes.toString()}');
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: AppColors.appWhite,
         statusBarIconBrightness: Brightness.light, // icons = white
         statusBarBrightness: Brightness.dark, // for iOS
       ),
       child: SafeArea(
+        top: false,
         child: Scaffold(
           resizeToAvoidBottomInset: false,
           backgroundColor: AppColors.appWhite,
-          appBar: AppBar(
-            backgroundColor: AppColors.appWhite,
-
-            toolbarHeight: 100,
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                hoverColor: Colors.transparent,
-                focusColor: Colors.transparent,
-                onTap: () {
-                  bottomNavController.setIndex(0);
-                  context.pushReplacementNamed(
-                    AppRouteNames.bottomNavScreen.name,
-                  );
-                  ref.invalidate(addTestScreenProvider);
-                },
-                child: CircleAvatar(
-                  backgroundColor: colorState.primaryColor.withValues(
-                    alpha: 0.2,
-                  ),
-                  child: Icon(Icons.arrow_back, color: colorState.primaryColor),
-                ),
-              ),
-            ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: AppConstants.base64Image.isEmpty
-                      ? null
-                      : Image.file(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          fit: BoxFit.fill,
-                          File(AppConstants.base64Image),
-                        ),
-                ),
-              ],
-            ),
+          appBar: CommonAppbar(
+            onBack: () {
+              bottomNavController.setIndex(0);
+              context.pushReplacementNamed(AppRouteNames.bottomNavScreen.name);
+              ref.invalidate(addTestScreenProvider);
+            },
           ),
           body: Padding(
             padding: const EdgeInsets.all(8.0),

@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -18,6 +17,7 @@ import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 import 'package:icon_infoware/presentation/screens/spot_billing_screen/widget/search_bar.dart';
+import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 import 'package:icon_infoware/presentation/widgets/common_tap_possition_dropdown.dart';
 
 import 'package:icon_infoware/presentation/widgets/common_text_field.dart';
@@ -71,61 +71,21 @@ class SpotBillingScreen extends ConsumerWidget {
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: AppColors.appWhite,
+          //statusBarColor: AppColors.appWhite,
           statusBarIconBrightness: Brightness.light, // icons = white
           statusBarBrightness: Brightness.dark, // for iOS
         ),
         child: SafeArea(
+          top: false,
           child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              backgroundColor: AppColors.appWhite,
-              // elevation: 0, // remove shadow
-              // scrolledUnderElevation: 0, //IMPORTANT
-              // surfaceTintColor: Colors.transparent,
-              toolbarHeight: 100,
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  onTap: () {
-                    // showCancelWarningDialog(context);
-                    showDialog(
-                      context: context,
-                      builder: (context) => SpotBillingPopUp(),
-                    );
-                    // Navigator.pop(context);
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: colorState.primaryColor.withValues(
-                      alpha: 0.2,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: colorState.primaryColor,
-                    ),
-                  ),
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: AppConstants.base64Image.isEmpty
-                        ? null
-                        : Image.file(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            fit: BoxFit.fill,
-                            File(AppConstants.base64Image),
-                          ),
-                  ),
-                ],
-              ),
+            appBar: CommonAppbar(
+              onBack: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => SpotBillingPopUp(),
+                );
+              },
             ),
             body: SingleChildScrollView(
               child: Padding(

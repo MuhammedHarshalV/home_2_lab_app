@@ -1,13 +1,12 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/help_support_controller/help_support_controller.dart';
-import 'package:icon_infoware/core/constants/app_constants.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/screens/about_screen/widget/information_card.dart';
+import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 
 class HelpAndSupportScreen extends ConsumerWidget {
   const HelpAndSupportScreen({super.key});
@@ -18,50 +17,15 @@ class HelpAndSupportScreen extends ConsumerWidget {
     final helpAndSupportState = ref.watch(helpAndSupportProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
-        statusBarColor: AppColors.appWhite,
         statusBarIconBrightness: Brightness.light, // icons = white
         statusBarBrightness: Brightness.dark, // for iOS
       ),
       child: SafeArea(
+        top: false,
+
         child: Scaffold(
           backgroundColor: AppColors.appWhite,
-          appBar: AppBar(
-            toolbarHeight: 100,
-            automaticallyImplyLeading: false,
-            backgroundColor: AppColors.appWhite,
-            elevation: 0,
-
-            leading: Padding(
-              padding: const EdgeInsets.only(left: 10),
-              child: InkWell(
-                splashColor: Colors.transparent,
-                highlightColor: Colors.transparent,
-                onTap: () => Navigator.pop(context),
-                child: CircleAvatar(
-                  backgroundColor: colorState.primaryColor.withValues(
-                    alpha: 0.2,
-                  ),
-                  child: Icon(Icons.arrow_back, color: colorState.primaryColor),
-                ),
-              ),
-            ),
-            title: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(right: 16.0),
-                  child: AppConstants.base64Image.isEmpty
-                      ? null
-                      : Image.file(
-                          width: MediaQuery.of(context).size.width / 1.5,
-                          fit: BoxFit.fill,
-                          File(AppConstants.base64Image),
-                        ),
-                ),
-              ],
-            ),
-          ),
+          appBar: CommonAppbar(),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8),
             child: helpAndSupportState.helpAndSupport == null

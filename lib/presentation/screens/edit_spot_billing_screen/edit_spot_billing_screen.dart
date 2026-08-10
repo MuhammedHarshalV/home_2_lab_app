@@ -1,5 +1,4 @@
 import 'dart:developer';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -14,6 +13,7 @@ import 'package:icon_infoware/controller/patient_billing/patient_billing_control
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 
 import 'package:icon_infoware/presentation/widgets/common_tap_possition_dropdown.dart';
 
@@ -69,99 +69,54 @@ class EditSpotBillingScreen extends ConsumerWidget {
       },
       child: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle(
-          statusBarColor: AppColors.appWhite,
+          statusBarColor: colorState.appbarColor,
           statusBarIconBrightness: Brightness.light, // icons = white
           statusBarBrightness: Brightness.dark, // for iOS
         ),
         child: SafeArea(
+          top: false,
           child: Scaffold(
             backgroundColor: Colors.white,
-            appBar: AppBar(
-              backgroundColor: AppColors.appWhite,
-              // elevation: 0, // remove shadow
-              // scrolledUnderElevation: 0, //IMPORTANT
-              // surfaceTintColor: Colors.transparent,
-              toolbarHeight: 100,
-              leading: Padding(
-                padding: const EdgeInsets.only(left: 10),
-                child: InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  onTap: () async {
-                    // showCancelWarningDialog(context);
-                    // showDialog(
-                    //   context: context,
-                    //   builder: (context) => SpotBillingPopUp(),
-                    // );
-                    final patient = homeState.allBookingDetails.firstWhere(
-                      (e) => e.indexClick == index,
-                    );
-                    // final box = await Hive.openBox('patient_booking');
+            appBar: CommonAppbar(
+              onBack: () {
+                final patient = homeState.allBookingDetails.firstWhere(
+                  (e) => e.indexClick == index,
+                );
+                // final box = await Hive.openBox('patient_booking');
 
-                    // final hiveIndex = box.values.toList().indexWhere(
-                    //   (item) => item['indexClick'] == index,
-                    // );
+                // final hiveIndex = box.values.toList().indexWhere(
+                //   (item) => item['indexClick'] == index,
+                // );
 
-                    spotBillingState.patientDetailsController.text =
-                        patient.namePrefix ?? '';
-                    spotBillingState.patientNameController.text =
-                        patient.patName ?? '';
-                    spotBillingState.patientPhoneController.text =
-                        patient.patPhno ?? '';
-                    spotBillingState.patientEmailController.text =
-                        patient.patEmail ?? '';
-                    spotBillingState.patientDateOfBirthController.text =
-                        patient.dob ?? '';
-                    spotBillingState.ageController.text = patient.patAge
-                        .toString();
+                spotBillingState.patientDetailsController.text =
+                    patient.namePrefix ?? '';
+                spotBillingState.patientNameController.text =
+                    patient.patName ?? '';
+                spotBillingState.patientPhoneController.text =
+                    patient.patPhno ?? '';
+                spotBillingState.patientEmailController.text =
+                    patient.patEmail ?? '';
+                spotBillingState.patientDateOfBirthController.text =
+                    patient.dob ?? '';
+                spotBillingState.ageController.text = patient.patAge.toString();
 
-                    spotBillingState.genderController.text =
-                        patient.patGender ?? '';
-                    spotBillingState.addressController.text =
-                        patient.patAddress ?? '';
-                    spotBillingState.passPortNumberController.text =
-                        patient.passport ?? '';
-                    spotBillingState.outDoctorController.text =
-                        patient.outDr ?? '';
-                    spotBillingState.abhaIdController.text =
-                        patient.abhaId ?? '';
-                    spotBillingState.noteController.text = patient.note ?? '';
-                    spotBillingController.updateState(
-                      isUrgent: patient.urgent == 1 ? true : false,
-                    );
-                    context.pop();
-                    // Navigator.pop(context);
-                  },
-                  child: CircleAvatar(
-                    backgroundColor: colorState.primaryColor.withValues(
-                      alpha: 0.2,
-                    ),
-                    child: Icon(
-                      Icons.arrow_back,
-                      color: colorState.primaryColor,
-                    ),
-                  ),
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(right: 16.0),
-                    child: AppConstants.base64Image.isEmpty
-                        ? null
-                        : Image.file(
-                            width: MediaQuery.of(context).size.width / 1.5,
-                            fit: BoxFit.fill,
-                            File(AppConstants.base64Image),
-                          ),
-                  ),
-                ],
-              ),
+                spotBillingState.genderController.text =
+                    patient.patGender ?? '';
+                spotBillingState.addressController.text =
+                    patient.patAddress ?? '';
+                spotBillingState.passPortNumberController.text =
+                    patient.passport ?? '';
+                spotBillingState.outDoctorController.text = patient.outDr ?? '';
+                spotBillingState.abhaIdController.text = patient.abhaId ?? '';
+                spotBillingState.noteController.text = patient.note ?? '';
+                spotBillingController.updateState(
+                  isUrgent: patient.urgent == 1 ? true : false,
+                );
+                context.pop();
+                // Navigator.pop(context);
+              },
             ),
+
             body: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
