@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
 
@@ -40,7 +41,7 @@ class CommonAppbar extends ConsumerWidget implements PreferredSizeWidget {
               child: InkWell(
                 splashColor: Colors.transparent,
                 highlightColor: Colors.transparent,
-                onTap: () => Navigator.pop(context),
+                onTap: onBack ?? () => context.pop(),
                 child: CircleAvatar(
                   backgroundColor: colorState.primaryColor.withValues(
                     alpha: 0.2,

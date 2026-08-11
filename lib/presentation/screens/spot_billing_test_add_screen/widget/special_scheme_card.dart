@@ -1,9 +1,12 @@
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/models/spot_billing/done_by_search_response_model.dart';
 
@@ -17,6 +20,7 @@ class SpecialSchemeCard extends ConsumerWidget {
     final addTestController = ref.read(addTestScreenProvider.notifier);
     final homeController = ref.read(homeScreenProvider.notifier);
     final homeState = ref.read(homeScreenProvider);
+    final timerState = ref.watch(customTimerProvider);
     final String specialSchemeName = index == null
         ? homeState.allBookingDetails.last.specialSchemeName ?? ''
         : homeState.allBookingDetails[index!].specialSchemeName ?? '';
@@ -43,7 +47,55 @@ class SpecialSchemeCard extends ConsumerWidget {
 
         onChanged: (value) async {
           if (value == null) return;
+      
 
+          // --------------------------------------------------
+          // 1. Find the patient
+          // --------------------------------------------------
+
+          final indexClick =
+              index ?? homeState.allBookingDetails.last.indexClick ?? 0;
+
+          final box = await Hive.openBox('patient_booking');
+
+          final hiveIndex = box.values.toList().indexWhere(
+            (item) => item['indexClick'] == indexClick,
+          );
+
+          if (hiveIndex == -1) {
+            AppMessage.show(context, 'Patient record not found.');
+            return;
+          }
+
+          // --------------------------------------------------
+          // 2. Don't allow selection before Start
+          // --------------------------------------------------
+
+          if (!timerState.isRunning && addTestState.isSync != 'Yes') {
+            AppMessage.show(context, "You must press the Start button first.");
+
+            final oldPatient = homeState.allBookingDetails[indexClick];
+
+            addTestState.specialSchemeController.text =
+                oldPatient.specialSchemeName ?? '';
+
+            return;
+          }
+
+          // --------------------------------------------------
+          // 3. Don't allow modification after sync
+          // --------------------------------------------------
+
+          if (addTestState.isSync == 'Yes') {
+            AppMessage.show(context, 'Bill is already synced.');
+
+            final oldPatient = homeState.allBookingDetails[indexClick];
+
+            addTestState.specialSchemeController.text =
+                oldPatient.specialSchemeName ?? '';
+
+            return;
+          }
           // Selected value
           addTestState.specialSchemeController.text = value.name ?? '';
 

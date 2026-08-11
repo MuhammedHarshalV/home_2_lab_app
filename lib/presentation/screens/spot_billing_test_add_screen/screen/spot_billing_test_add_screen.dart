@@ -46,7 +46,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
           resizeToAvoidBottomInset: false,
           backgroundColor: AppColors.appWhite,
           appBar: CommonAppbar(
-            onBack: () {
+            onBack: () async {
               bottomNavController.setIndex(0);
               context.pushReplacementNamed(AppRouteNames.bottomNavScreen.name);
               ref.invalidate(addTestScreenProvider);

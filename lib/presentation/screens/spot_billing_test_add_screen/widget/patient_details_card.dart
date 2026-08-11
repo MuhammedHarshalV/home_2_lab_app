@@ -296,7 +296,7 @@ class PatientDetailsCard extends ConsumerWidget {
             SizedBox(height: 5),
             addTestState.isCorporateBilling == true
                 ?
-                  //  Expanded(
+                  // Expanded(
                   //     child: Container(
                   //       height: 30,
                   //       margin: const EdgeInsets.only(left: 8),
@@ -312,8 +312,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   //               FocusManager.instance.primaryFocus?.unfocus();
                   //             },
                   //             child: DropdownMenu<AccountsList>(
-                  //               controller:
-                  //                   addTestState.specialSchemeController,
+                  //               controller: addTestState.specialSchemeController,
                   //               width: constraints.maxWidth,
                   //               menuHeight:
                   //                   MediaQuery.of(context).size.height / 3,
@@ -335,26 +334,23 @@ class PatientDetailsCard extends ConsumerWidget {
                   //               ),
                   //               enableFilter: true,
                   //               requestFocusOnTap: true,
-                  //               trailingIcon: const Icon(
-                  //                 Icons.arrow_drop_down,
-                  //               ),
+                  //               trailingIcon: const Icon(Icons.arrow_drop_down),
                   //               selectedTrailingIcon: const Icon(
                   //                 Icons.arrow_drop_up,
                   //               ),
-                  //               inputDecorationTheme:
-                  //                   const InputDecorationTheme(
-                  //                     isDense: true,
-                  //                     border: InputBorder.none,
-                  //                     contentPadding: EdgeInsets.symmetric(
-                  //                       horizontal: 10,
-                  //                       vertical: 0,
-                  //                     ),
-                  //                     constraints: BoxConstraints(
-                  //                       maxHeight: 30,
-                  //                       minHeight: 30,
-                  //                     ),
-                  //                     hintStyle: TextStyle(fontSize: 12),
-                  //                   ),
+                  //               inputDecorationTheme: const InputDecorationTheme(
+                  //                 isDense: true,
+                  //                 border: InputBorder.none,
+                  //                 contentPadding: EdgeInsets.symmetric(
+                  //                   horizontal: 10,
+                  //                   vertical: 0,
+                  //                 ),
+                  //                 constraints: BoxConstraints(
+                  //                   maxHeight: 30,
+                  //                   minHeight: 30,
+                  //                 ),
+                  //                 hintStyle: TextStyle(fontSize: 12),
+                  //               ),
                   //               hintText: 'Special Scheme',
                   //               textStyle: const TextStyle(fontSize: 12),
                   //               dropdownMenuEntries:
@@ -427,14 +423,12 @@ class PatientDetailsCard extends ConsumerWidget {
                   //                                     return Colors
                   //                                         .transparent; // remove ripple/hover effect
                   //                                   }),
-                  //                               textStyle:
-                  //                                   WidgetStatePropertyAll(
-                  //                                     TextStyle(
-                  //                                       fontSize: 11,
-                  //                                       fontWeight:
-                  //                                           FontWeight.bold,
-                  //                                     ), // item text size
-                  //                                   ),
+                  //                               textStyle: WidgetStatePropertyAll(
+                  //                                 TextStyle(
+                  //                                   fontSize: 11,
+                  //                                   fontWeight: FontWeight.bold,
+                  //                                 ), // item text size
+                  //                               ),
                   //                             ),
                   //                           ),
                   //                         )
@@ -462,9 +456,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   //                         (item) =>
                   //                             item['indexClick'] == indexNot,
                   //                       );
-                  //                   addTestState
-                  //                           .specialSchemeController
-                  //                           .text =
+                  //                   addTestState.specialSchemeController.text =
                   //                       homeState
                   //                           .allBookingDetails[hiveIndex]
                   //                           .specialSchemeName ??
@@ -492,9 +484,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   //                         (item) =>
                   //                             item['indexClick'] == indexNot,
                   //                       );
-                  //                   addTestState
-                  //                           .specialSchemeController
-                  //                           .text =
+                  //                   addTestState.specialSchemeController.text =
                   //                       homeState
                   //                           .allBookingDetails[hiveIndex]
                   //                           .specialSchemeName ??
@@ -502,8 +492,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   //                   return;
                   //                 } else {
                   //                   log(value!.name.toString());
-                  //                   final selectedSchemeId =
-                  //                       value.schemeId ?? 0;
+                  //                   final selectedSchemeId = value.schemeId ?? 0;
                   //                   final rateIdSelected = value.key ?? 0;
                   //                   if (selectedSchemeId == 0) {
                   //                     addTestController.updatestate(
@@ -541,8 +530,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   //                       specialSchemeID: selectedSchemeId != 0
                   //                           ? selectedSchemeId
                   //                           : 0,
-                  //                       balance:
-                  //                           testMasterState1.balanceAmount,
+                  //                       balance: testMasterState1.balanceAmount,
                   //                       netAmt: testMasterState1.netAmount,
                   //                       grossAmt: testMasterState1.totalPrice,
                   //                     );
@@ -561,8 +549,7 @@ class PatientDetailsCard extends ConsumerWidget {
                   //                       specialSchemeID: selectedSchemeId != 0
                   //                           ? selectedSchemeId
                   //                           : 0,
-                  //                       balance:
-                  //                           testMasterState1.balanceAmount,
+                  //                       balance: testMasterState1.balanceAmount,
                   //                       netAmt: testMasterState1.netAmount,
                   //                       grossAmt: testMasterState1.totalPrice,
                   //                     );
