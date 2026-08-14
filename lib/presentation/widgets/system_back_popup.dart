@@ -30,7 +30,7 @@ class SystemBackPopup extends ConsumerWidget {
         ],
       ),
       content: const Text(
-        "Are you sure you want to exit the app?",
+        "Are you sure want to exit the app?",
         textAlign: TextAlign.center,
       ),
       actionsPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),

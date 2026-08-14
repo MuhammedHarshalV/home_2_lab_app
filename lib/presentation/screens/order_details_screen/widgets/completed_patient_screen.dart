@@ -12,7 +12,7 @@ class CompletedPatientScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return details.isEmpty
-        ? Center(child: Text('Completed Orders.'))
+        ? Center(child: Text('No Completed Orders found.'))
         : ListView.separated(
             itemBuilder: (context, index) {
               return PatientCompletedCard(

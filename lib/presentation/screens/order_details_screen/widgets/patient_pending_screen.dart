@@ -12,7 +12,7 @@ class PatientPendingScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return details.isEmpty
-        ? Center(child: Text('Pending Orders.'))
+        ? Center(child: Text('No Pending Orders found.'))
         : ListView.separated(
             itemBuilder: (context, index) {
               return PatientCompletedCard(
