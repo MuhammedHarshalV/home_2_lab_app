@@ -1,14 +1,49 @@
+import 'dart:convert';
 import 'dart:developer';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_esc_pos_utils/flutter_esc_pos_utils.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:image/image.dart' as img;
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:screenshot/screenshot.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'print_state.dart';
 
 class PrintController extends StateNotifier<PrintState> {
-  PrintController() : super(const PrintState());
+  PrintController() : super(const PrintState()) {
+    initialCall();
+  }
+
+  Future<void> initialCall() async {
+    final prefs = await SharedPreferences.getInstance();
+
+    final value = prefs.getString('saved_bluetooth_printer');
+
+    if (value == null || value.isEmpty) {
+      return;
+    }
+
+    final Map<String, dynamic> data = jsonDecode(value);
+    BluetoothInfo get = BluetoothInfo(
+      name: data['name'] ?? '',
+      macAdress: data['macAdress'] ?? '',
+    );
+    state = state.copyWith(selectedPrinter: get);
+    log('initial get name${get.name} mac address ${get.macAdress}');
+    final paper = prefs.getString('papper_type');
+    if (paper == null || paper.isEmpty) {
+      return;
+    } else if (paper == '58') {
+      state = state.copyWith(paperType: PaperType.mm58);
+    } else if (paper == '72') {
+      state = state.copyWith(paperType: PaperType.mm72);
+    } else if (paper == '80') {
+      state = state.copyWith(paperType: PaperType.mm80);
+    }
+    log('initial paper $paper');
+  }
 
   Future<void> searchPrinters() async {
     try {
@@ -31,12 +66,31 @@ class PrintController extends StateNotifier<PrintState> {
     );
   }
 
-  void selectPrinter(BluetoothInfo printer) {
+  Future<void> selectPrinter(BluetoothInfo printer) async {
     state = state.copyWith(selectedPrinter: printer);
+
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      'saved_bluetooth_printer',
+      jsonEncode({'name': printer.name, 'macAdress': printer.macAdress}),
+    );
+    log('name ${printer.name} mac address ${printer.macAdress}');
   }
 
-  void changePaper(PaperType type) {
+  Future<void> changePaper(PaperType type) async {
     state = state.copyWith(paperType: type);
+    final prefs = await SharedPreferences.getInstance();
+
+    await prefs.setString(
+      'papper_type',
+      type == PaperType.mm58
+          ? "58"
+          : type == PaperType.mm72
+          ? "72"
+          : '80',
+    );
+    log('papertype $type');
   }
 
   PaperSize get paperSize {
@@ -52,7 +106,10 @@ class PrintController extends StateNotifier<PrintState> {
     }
   }
 
-  Future<void> printWidget(ScreenshotController controller) async {
+  Future<void> printWidget(
+    ScreenshotController controller,
+    BuildContext context,
+  ) async {
     try {
       final printer = state.selectedPrinter;
 
@@ -74,6 +131,11 @@ class PrintController extends StateNotifier<PrintState> {
 
       if (!connected) {
         log("Connection failed");
+        AppMessage.show(
+          context,
+          'Please turn on Bluetooth to connect to the printer.',
+        );
+
         state = state.copyWith(isLoading: false);
         log(state.paperType.toString());
 

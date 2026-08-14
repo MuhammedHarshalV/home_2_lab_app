@@ -520,6 +520,7 @@ class MenuScreen extends ConsumerWidget {
                                 ref
                                     .read(printProvider.notifier)
                                     .selectPrinter(item);
+                                log('printer selecting is ${item.toString()}');
                               },
                             );
                           } catch (e) {
@@ -556,7 +557,17 @@ class MenuScreen extends ConsumerWidget {
 
                             tapPosition: details.globalPosition,
                             items: item,
-                            itemText: (item) => item.toString(),
+                            itemText: (item) {
+                              switch (item) {
+                                case PaperType.mm58:
+                                  return '58 mm';
+                                case PaperType.mm72:
+                                  return '72 mm';
+                                case PaperType.mm80:
+                                  return '80 mm';
+                              }
+                              return '58 mm';
+                            },
 
                             onSelected: (item) async {
                               ref

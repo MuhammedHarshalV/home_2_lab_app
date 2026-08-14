@@ -275,7 +275,7 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                             } else {
                               await ref
                                   .read(printProvider.notifier)
-                                  .printWidget(screenshotController);
+                                  .printWidget(screenshotController, context);
                             }
                           },
                           style: ElevatedButton.styleFrom(

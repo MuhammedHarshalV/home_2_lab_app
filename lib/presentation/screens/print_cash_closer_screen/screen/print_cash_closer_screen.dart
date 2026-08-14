@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -309,8 +311,9 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             } else {
                               await ref
                                   .read(printProvider.notifier)
-                                  .printWidget(screenshotController);
+                                  .printWidget(screenshotController,context);
                             }
+                            log('printer bluetooth info : $printer');
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: colorState.primaryColor,
