@@ -32,6 +32,7 @@ class LoginScreen extends ConsumerWidget {
         statusBarBrightness: Brightness.dark, // for iOS
       ),
       child: SafeArea(
+        top: false,
         child: Scaffold(
           backgroundColor: AppColors.appWhite,
           body: Column(

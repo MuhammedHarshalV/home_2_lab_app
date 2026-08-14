@@ -12,6 +12,7 @@ import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/screens/home_screen/screens/home_screen.dart';
 import 'package:icon_infoware/presentation/screens/menu_screen/screen/menu_screen.dart';
 import 'package:icon_infoware/presentation/screens/spot_billing_screen/screen/spot_billing_screen.dart';
+import 'package:icon_infoware/presentation/widgets/system_back_popup.dart';
 import 'package:persistent_bottom_nav_bar/persistent_bottom_nav_bar.dart';
 
 class BottomNavScreen extends ConsumerWidget {
@@ -33,8 +34,10 @@ class BottomNavScreen extends ConsumerWidget {
         // ignore: deprecated_member_use
         onPopInvoked: (didPop) async {
           if (bottomNavState.currentIndex == 0) {
-            //  Exit app
-            SystemNavigator.pop();
+            showDialog(
+              context: context,
+              builder: (context) => SystemBackPopup(),
+            );
           } else {
             //  Go to Home tab
             controller.jumpToTab(0);
