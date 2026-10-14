@@ -47,7 +47,6 @@ class SpecialSchemeCard extends ConsumerWidget {
 
         onChanged: (value) async {
           if (value == null) return;
-      
 
           // --------------------------------------------------
           // 1. Find the patient
@@ -165,10 +164,7 @@ class SpecialSchemeCard extends ConsumerWidget {
           padding: const EdgeInsets.symmetric(horizontal: 12),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: ref.watch(colorProvider).primaryColor,
-              width: 1.5,
-            ),
+            border: Border.all(color: AppColors.borderColor, width: 1.5),
           ),
         ),
 

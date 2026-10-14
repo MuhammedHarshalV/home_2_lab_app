@@ -30,19 +30,9 @@ class ActiveSessionCard extends ConsumerWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
-        color: colorState.secondaryColor.withValues(alpha: .2),
+        color: colorState.secondaryColor.withValues(alpha: .1),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: colorState.primaryColor.withValues(alpha: .2),
-          width: 2,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
+        border: Border.all(color: AppColors.borderColor, width: 2),
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -53,7 +43,7 @@ class ActiveSessionCard extends ConsumerWidget {
               Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Color(0xFFFFEBEE), // Soft red background
+                  // color: Color(0xFFFFEBEE), // Soft red background
                   shape: BoxShape.rectangle,
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
@@ -61,7 +51,7 @@ class ActiveSessionCard extends ConsumerWidget {
                   ),
                 ),
                 child: Icon(
-                  Icons.access_time_filled,
+                  Icons.av_timer,
                   color: colorState.primaryColor,
                   size: 20,
                 ),
@@ -121,7 +111,7 @@ class ActiveSessionCard extends ConsumerWidget {
           // Timer Text
           Container(
             decoration: BoxDecoration(
-              color: Color(0xFFFFEBEE),
+              // color: Color(0xFFFFEBEE),
               borderRadius: BorderRadius.circular(10),
             ),
             child: Padding(

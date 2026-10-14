@@ -11,6 +11,7 @@ import 'package:icon_infoware/controller/patient_billing/patient_billing_control
 import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
+import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/special_scheme_card.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -31,16 +32,16 @@ class PatientDetailsCard extends ConsumerWidget {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
-        border: Border.all(color: colorState.primaryColor),
+        border: Border.all(color: AppColors.borderColor),
         // Soft gradient background matching the image
-        gradient: LinearGradient(
-          colors: [
-            colorState.secondaryColor,
-            Color.fromARGB(255, 255, 255, 255),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        // gradient: LinearGradient(
+        //   colors: [
+        //     colorState.secondaryColor,
+        //     Color.fromARGB(255, 255, 255, 255),
+        //   ],
+        //   begin: Alignment.topLeft,
+        //   end: Alignment.bottomRight,
+        // ),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Padding(
@@ -84,8 +85,9 @@ class PatientDetailsCard extends ConsumerWidget {
                     // margin: EdgeInsets.only(left: 8),
                     // padding: EdgeInsets.all(6),
                     decoration: BoxDecoration(
-                      color: colorState.secondaryColor,
+                      //    color: colorState.secondaryColor,
                       shape: BoxShape.circle,
+                      border: Border.all(color: AppColors.borderColor),
                     ),
                     child: Padding(
                       padding: const EdgeInsets.all(8.0),

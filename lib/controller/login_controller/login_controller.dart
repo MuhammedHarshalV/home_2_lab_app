@@ -108,6 +108,7 @@ class LoginController extends StateNotifier<LoginState> {
       }
       return false;
     } catch (e) {
+      log('========================');
       log(e.toString());
       return false;
     } finally {

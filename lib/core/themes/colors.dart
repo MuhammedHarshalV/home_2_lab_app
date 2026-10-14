@@ -12,6 +12,8 @@ class AppColors {
 
   static const Color appBlueLight = Color.fromARGB(255, 227, 236, 243);
 
+  static Color borderColor = const Color.fromARGB(255, 226, 226, 226);
+
   static const Color appWhite = Colors.white;
   static Color primaryBlue = const Color(0xFF1A4772);
   static const Color appBlack = Colors.black;

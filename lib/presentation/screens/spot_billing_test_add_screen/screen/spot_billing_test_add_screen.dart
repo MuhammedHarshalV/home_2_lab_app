@@ -14,9 +14,9 @@ import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
-import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/add_new_test_popup.dart';
 import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/patient_details_below_card.dart';
 import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/patient_details_card.dart';
+import 'package:icon_infoware/presentation/screens/spot_billing_test_add_screen/widget/sample.dart';
 import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 
 class SpotBillingTestAddScreen extends ConsumerWidget {
@@ -59,7 +59,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                 PatientDetailsCard(index: hiveIndex),
                 SizedBox(height: 10),
                 Container(
-                  decoration: BoxDecoration(color: colorState.secondaryColor),
+                  //  decoration: BoxDecoration(color: colorState.secondaryColor),
                   child: Table(
                     columnWidths: const {
                       0: FlexColumnWidth(1),
@@ -75,10 +75,10 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                           Padding(
                             padding: EdgeInsets.all(10),
                             child: Text(
-                              "SlNo",
+                              "NO",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 10,
+                                fontSize: 13,
                                 color: AppColors.appWhite,
                               ),
                             ),
@@ -89,7 +89,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                               "Test Name",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 10,
+                                fontSize: 13,
                                 color: AppColors.appWhite,
                               ),
                             ),
@@ -100,7 +100,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                               "Amount",
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 10,
+                                fontSize: 13,
                                 color: AppColors.appWhite,
                               ),
                             ),
@@ -369,14 +369,16 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                         showDialog(
                           context: context,
                           builder: (context) =>
-                              AddNewTestPopUp(index: indexget),
+                              //AddNewTestPopUp(index: indexget),
+                              AddNewTestSheet(index: indexget),
                         );
                         log('index not work');
                       } else {
                         showDialog(
                           context: context,
                           builder: (context) =>
-                              AddNewTestPopUp(index: hiveIndex!),
+                              //AddNewTestPopUp(index: hiveIndex!),
+                              AddNewTestSheet(index: hiveIndex!),
                         );
                         log('index work');
                       }
@@ -386,8 +388,9 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                   },
                   child: Container(
                     decoration: BoxDecoration(
-                      color: colorState.secondaryColor,
+                      // color: colorState.primaryColor,
                       borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: colorState.primaryColor),
                     ),
                     child: Center(
                       child: Padding(
