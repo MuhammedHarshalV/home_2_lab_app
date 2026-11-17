@@ -10,51 +10,58 @@ class AboveBillCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        children: [
-          Center(
-            child: AppConstants.base64BwImage.isEmpty
-                ? null
-                : Image.file(
-                    File(AppConstants.base64BwImage),
-                    width: MediaQuery.of(context).size.width / 1.5,
+    return Column(
+      children: [
+        Center(
+          child: AppConstants.base64BwImage.isEmpty
+              ? null
+              : Image.file(
+                  File(AppConstants.base64BwImage),
+                  width: MediaQuery.of(context).size.width / 1.5,
 
-                    fit: BoxFit.fill,
-                    // color: Colors.black,
-                    // colorBlendMode: BlendMode.srcIn,
-                  ),
+                  fit: BoxFit.fill,
+                  // color: Colors.black,
+                  // colorBlendMode: BlendMode.srcIn,
+                ),
+        ),
+
+        const SizedBox(height: 10),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: AppColors.appBlack, width: 2),
+              bottom: BorderSide(color: AppColors.appBlack, width: 2),
+            ),
           ),
-
-          const SizedBox(height: 10),
-          Container(
-            width: double.infinity,
-            decoration: BoxDecoration(color: AppColors.darkBlue),
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 5),
-                child: Text(
-                  AppConstants.billTitle.isEmpty
-                      ? 'LAB TO HOME'
-                      : AppConstants.billTitle,
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.appWhite,
-                    fontFamily: 'Serif',
-                    letterSpacing: 0,
-                  ),
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Text(
+                AppConstants.billTitle.isEmpty
+                    ? 'LAB TO HOME'
+                    : AppConstants.billTitle,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.appBlack,
+                  fontFamily: 'Serif',
+                  letterSpacing: 0,
                 ),
               ),
             ),
           ),
-          const SizedBox(height: 10),
+        ),
+        const SizedBox(height: 10),
+        if (AppConstants.name.isNotEmpty)
           Text(
             AppConstants.name,
-            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            textAlign: TextAlign.center,
+            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
-          const SizedBox(height: 5),
+        if (AppConstants.address.isNotEmpty) SizedBox(height: 5),
+        if (AppConstants.address.isNotEmpty)
           Text(
             AppConstants.address,
             textAlign: TextAlign.center,
@@ -64,7 +71,8 @@ class AboveBillCard extends ConsumerWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 5),
+        if (AppConstants.phoneNumber.isNotEmpty) SizedBox(height: 5),
+        if (AppConstants.phoneNumber.isNotEmpty)
           Text(
             AppConstants.phoneNumber,
             textAlign: TextAlign.center,
@@ -74,17 +82,18 @@ class AboveBillCard extends ConsumerWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          const SizedBox(height: 5),
+        if (AppConstants.webUrl.isNotEmpty) SizedBox(height: 5),
+        if (AppConstants.webUrl.isNotEmpty)
           Text(
-            'Web: ${AppConstants.webUrl}',
+            AppConstants.webUrl,
+            textAlign: TextAlign.center,
             style: TextStyle(
               fontSize: 16,
               color: AppColors.primaryBlue,
               fontWeight: FontWeight.w500,
             ),
           ),
-        ],
-      ),
+      ],
     );
   }
 }

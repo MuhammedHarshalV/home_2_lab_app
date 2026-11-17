@@ -480,14 +480,9 @@ class HomeScreenController extends StateNotifier<HomeScreenState> {
     for (final patient in patients) {
       if (patient.flag == '1' || patient.flag == 1) {
         upcomingBookingList.add(patient);
-      } else if (patient.isCompleted == 'Yes' &&
-          (patient.balance ?? 0) == 0 &&
-          patient.isSync == 'Yes' &&
-          patient.isClosed != 'Yes') {
+      } else if (patient.isSync == 'Yes' && patient.isClosed != 'Yes') {
         completedList.add(patient);
-      } else if (patient.isCompleted == 'Yes' &&
-          (patient.balance ?? 0) != 0 &&
-          patient.isClosed != 'Yes') {
+      } else if (patient.isSync != 'Yes' && patient.isClosed != 'Yes') {
         pendingList.add(patient);
       } else if (patient.isClosed != 'Yes') {
         patientBookingList.add(patient);

@@ -4,16 +4,19 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:icon_infoware/controller/bottom_nav_screen/bottom_nav_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/order_details_screen_controller/order_details_screen_controller.dart';
 import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/controller/payment_controller/payment_controller.dart';
 import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/routes/app_route_names.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/presentation/screens/order_details_screen/widgets/assigned_order_screen.dart';
@@ -35,6 +38,7 @@ class OderDetailsScreen extends ConsumerWidget {
     final timerState = ref.watch(customTimerProvider);
     final tabControllerState = ref.watch(tabControllerProvider);
     final bottomNavState = ref.watch(bottomNavProvider);
+    final paymentState = ref.watch(paymentScreenProvider);
     return DefaultTabController(
       initialIndex: state.selectedTabIndex,
       length: 4,
@@ -97,11 +101,6 @@ class OderDetailsScreen extends ConsumerWidget {
                     ],
                   ),
 
-                  // actions: [
-                  //   // TimerCard(timerState: timerState, timerController: timerController),
-                  //   // const SizedBox(width: 5),
-
-                  // ],
                   bottom: TabBar(
                     indicatorSize: TabBarIndicatorSize.label,
                     controller: DefaultTabController.of(context),
@@ -152,53 +151,124 @@ class OderDetailsScreen extends ConsumerWidget {
                     ],
                   ),
                 ),
+                floatingActionButtonLocation: paymentState.patientList.isEmpty
+                    ? null
+                    : FloatingActionButtonLocation.centerFloat,
+                floatingActionButton: paymentState.patientList.isEmpty
+                    ? FloatingActionButton(
+                        onPressed: () {
+                          if (timerState.isRunning == false) {
+                            AppMessage.show(
+                              context,
+                              "Please press the Start button first.",
+                            );
 
-                floatingActionButton: FloatingActionButton(
-                  onPressed: () {
-                    if (timerState.isRunning == false) {
-                      AppMessage.show(
-                        context,
-                        "Please press the Start button first.",
-                      );
+                            // Stay on the current tab
+                            tabControllerState.jumpToTab(
+                              bottomNavState.currentIndex,
+                            );
+                            return;
+                          }
+                          spotBillingState.patientDetailsController.clear();
+                          spotBillingState.patientNameController.clear();
+                          spotBillingState.patientPhoneController.clear();
+                          spotBillingState.patientEmailController.clear();
+                          spotBillingState.patientDateOfBirthController.clear();
+                          spotBillingState.ageController.clear();
+                          spotBillingState.abhaIdController.clear();
+                          spotBillingState.noteController.clear();
+                          spotBillingState.genderController.clear();
+                          spotBillingState.addressController.clear();
+                          spotBillingState.referredByController.clear();
+                          spotBillingState.assignedByController.clear();
+                          spotBillingState.doneByController.text =
+                              AppConstants.userName.isNotEmpty
+                              ? AppConstants.userName[0].toUpperCase() +
+                                    AppConstants.userName.substring(1)
+                              : '';
+                          spotBillingState.patientEmailController.clear();
+                          spotBillingState.passPortNumberController.clear();
+                          spotBillingState.patientDetailsController.clear();
+                          spotBillingState.patientSearchController.clear();
 
-                      // Stay on the current tab
-                      tabControllerState.jumpToTab(bottomNavState.currentIndex);
-                      return;
-                    }
-                    spotBillingState.patientDetailsController.clear();
-                    spotBillingState.patientNameController.clear();
-                    spotBillingState.patientPhoneController.clear();
-                    spotBillingState.patientEmailController.clear();
-                    spotBillingState.patientDateOfBirthController.clear();
-                    spotBillingState.ageController.clear();
-                    spotBillingState.abhaIdController.clear();
-                    spotBillingState.noteController.clear();
-                    spotBillingState.genderController.clear();
-                    spotBillingState.addressController.clear();
-                    spotBillingState.referredByController.clear();
-                    spotBillingState.assignedByController.clear();
-                    spotBillingState.doneByController.text =
-                        AppConstants.userName.isNotEmpty
-                        ? AppConstants.userName[0].toUpperCase() +
-                              AppConstants.userName.substring(1)
-                        : '';
-                    spotBillingState.patientEmailController.clear();
-                    spotBillingState.passPortNumberController.clear();
-                    spotBillingState.patientDetailsController.clear();
-                    spotBillingState.patientSearchController.clear();
-
-                    spotBillingController.updateState(
-                      ageByYear: 'Year',
-                      isUrgent: false,
-                    );
-                    context.pushNamed(AppRouteNames.spotBillingScreen.name);
-                  },
-                  backgroundColor: colorState.primaryColor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15),
-                  ),
-                  child: const Icon(Icons.add, color: Colors.white, size: 35),
-                ),
+                          spotBillingController.updateState(
+                            ageByYear: 'Year',
+                            isUrgent: false,
+                          );
+                          context.pushNamed(
+                            AppRouteNames.spotBillingScreen.name,
+                          );
+                        },
+                        backgroundColor: colorState.primaryColor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: const Icon(
+                          Icons.add,
+                          color: Colors.white,
+                          size: 35,
+                        ),
+                      )
+                    : Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 15),
+                        padding: const EdgeInsets.all(15),
+                        decoration: BoxDecoration(
+                          color: AppColors.appWhite,
+                          borderRadius: BorderRadius.circular(15),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 10,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Total Balance',
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '₹ ${paymentState.totalamount}',
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.appRed,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 10),
+                            SizedBox(
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () {
+                                  context.pushNamed(
+                                    AppRouteNames.paymentCompletionScreen.name,
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: colorState.primaryColor,
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 14,
+                                  ),
+                                ),
+                                child: const Text(
+                                  'Payment Completion',
+                                  style: TextStyle(
+                                    color: AppColors.appWhite,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
               ),
             ),
           );

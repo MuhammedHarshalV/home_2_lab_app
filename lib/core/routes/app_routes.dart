@@ -160,9 +160,7 @@ final GoRouter router = GoRouter(
       path: AppRouteNames.paymentCompletionScreen.route,
       name: AppRouteNames.paymentCompletionScreen.name,
       builder: (BuildContext context, GoRouterState state) {
-        final int index = state.extra as int;
-
-        return PaymentCompletionScreen(index: index);
+        return PaymentCompletionScreen();
       },
     ),
   ],

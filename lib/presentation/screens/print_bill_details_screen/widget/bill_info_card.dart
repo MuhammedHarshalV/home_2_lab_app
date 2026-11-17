@@ -23,11 +23,11 @@ class BillingRowWidget extends ConsumerWidget {
         children: [
           Text(
             label,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
           Text(
             amount,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
           ),
         ],
       ),

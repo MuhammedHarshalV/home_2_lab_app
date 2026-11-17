@@ -9,6 +9,7 @@ import 'package:icon_infoware/models/spot_billing/test_master_response_model.dar
 class AddTestScreenState {
   final bool isSpecialLoading;
   final bool isTestSync;
+  final bool isProfileShow;
   final bool isSyncLoading;
   final List<String> discountList;
   final List<AccountsList> specialSchemeList;
@@ -46,6 +47,7 @@ class AddTestScreenState {
   final bool isCorporateBilling;
   final bool isSpecialschemeOpen;
   AddTestScreenState({
+    this.isProfileShow = false,
     this.isSpecialLoading = false,
     this.syncId = 0,
     this.isTestSync = false,
@@ -87,6 +89,7 @@ class AddTestScreenState {
     this.primaryType = 'Cash',
   });
   AddTestScreenState copyWith({
+    bool? isProfileShow,
     bool? isSpecialLoading,
     bool? isTestSync,
     bool? isUrgent,
@@ -128,6 +131,7 @@ class AddTestScreenState {
     bool? isSpecialschemeOpen,
   }) {
     return AddTestScreenState(
+      isProfileShow: isProfileShow ?? this.isProfileShow,
       syncId: syncId ?? this.syncId,
       isSpecialLoading: isSpecialLoading ?? this.isSpecialLoading,
       isTestSync: isTestSync ?? this.isTestSync,

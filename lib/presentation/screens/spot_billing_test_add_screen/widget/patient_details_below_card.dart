@@ -1,9 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hive/hive.dart';
+
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
@@ -13,8 +11,10 @@ import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 
 import 'package:icon_infoware/core/routes/app_route_names.dart';
-import 'package:icon_infoware/core/services/network_services/connection_checking.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
+import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/discount_popup.dart';
+import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/service_charge_popup.dart';
 
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,6 +35,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
       children: [
         Divider(color: Colors.grey, thickness: 2),
         Row(
+          spacing: 3,
           children: [
             Icon(Icons.account_balance_wallet_sharp, color: Colors.blueAccent),
             Text(
@@ -45,25 +46,62 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 fontWeight: FontWeight.bold, // Dark grey-blue
               ),
             ),
-            Spacer(),
-            Container(
-              decoration: BoxDecoration(
-                color: testAddState.balanceAmount == 0
-                    ? Colors.green
-                    : Colors.orange,
-                borderRadius: BorderRadius.circular(10),
+            Expanded(
+              child: InkWell(
+                onTap: () async {
+                  await testAddController.storingAndFetchingDiscount();
+                  final int patientIndex =
+                      index ??
+                      (homeState.allBookingDetails.last.indexClick ?? 0);
+                  showDialog(
+                    context: context,
+                    builder: (_) => DiscountDialog(index: patientIndex),
+                  );
+                },
+                child: Container(
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: const Color(0xFFD97706),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Discount : ${homeState.allBookingDetails[index ?? (homeState.allBookingDetails.last.indexClick ?? 0)].discAmt}',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.appWhite,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  ),
+                ),
               ),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Text(
-                    testAddState.balanceAmount == 0
-                        ? 'Complete'
-                        : 'Payment Due',
-                    style: TextStyle(
-                      fontSize: 10,
-                      color: AppColors.appWhite,
-                      fontWeight: FontWeight.bold, // Dark grey-blue
+            ),
+            Expanded(
+              child: InkWell(
+                onTap: () {
+                  final int patientIndex =
+                      index ??
+                      (homeState.allBookingDetails.last.indexClick ?? 0);
+                  showDialog(
+                    context: context,
+                    builder: (_) => ServiceChangeDialog(index: patientIndex),
+                  );
+                },
+                child: Container(
+                  height: 30,
+                  decoration: BoxDecoration(
+                    color: Color(0xFF2563EB),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Center(
+                    child: Text(
+                      'Service Charge : ${homeState.allBookingDetails[index ?? (homeState.allBookingDetails.last.indexClick ?? 0)].servChrge}',
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: AppColors.appWhite,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
@@ -94,7 +132,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 ),
               ],
             ),
-            Divider(color: Colors.grey, thickness: 2),
+            Spacer(),
             Column(
               children: [
                 Text(
@@ -113,60 +151,6 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                 ),
               ],
-            ),
-
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  if (timerState.isRunning == false &&
-                      testAddState.isSync != 'Yes') {
-                    AppMessage.show(
-                      context,
-                      "You must press the Start button first.",
-                    );
-                    return;
-                  }
-                  if (testAddState.isSync != 'Yes') {
-                    testAddController.storingAndFetchingDiscount();
-                    if (index == null) {
-                      int indexGet =
-                          homeState.allBookingDetails.last.indexClick ?? 0;
-                      context.pushNamed(
-                        AppRouteNames.paymentCompletionScreen.name,
-                        extra: indexGet,
-                      );
-                    } else {
-                      context.pushNamed(
-                        AppRouteNames.paymentCompletionScreen.name,
-                        extra: index!,
-                      );
-                    }
-                  } else {
-                    AppMessage.show(context, 'Bill is already synced.');
-                  }
-                },
-
-                child: Container(
-                  // width: double.infinity,
-                  decoration: BoxDecoration(
-                    color: colorState.primaryColor,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Center(
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        'Collect Payment',
-                        style: TextStyle(
-                          fontSize: 10,
-                          color: AppColors.appWhite,
-                          fontWeight: FontWeight.bold, // Dark grey-blue
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
             ),
           ],
         ),
@@ -223,16 +207,9 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     return;
                   }
                   if (testAddState.isSync != 'Yes') {
-                    final bool isConnected =
-                        await InternetChecker.hasConnection();
-
                     final int patientIndex =
                         index ??
                         (homeState.allBookingDetails.last.indexClick ?? 0);
-                    final box = await Hive.openBox('patient_booking');
-                    final hiveIndex = box.values.toList().indexWhere(
-                      (item) => item['indexClick'] == patientIndex,
-                    );
 
                     if (testAddState.testMasterListSelectedNewPrice.isEmpty) {
                       showDialog(
@@ -255,25 +232,6 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                       return;
                     }
 
-                    bool syncing = false;
-
-                    if (isConnected && testAddState.balanceAmount >= 0) {
-                      syncing = await testAddController.patientBillSyncingApi(
-                        context: null,
-                        patient: [homeState.allBookingDetails[hiveIndex]],
-                        sync: true,
-                      );
-
-                      log('Sync status : $syncing');
-                    }
-                    if (testAddState.balanceAmount < 0) {
-                      AppMessage.show(
-                        context,
-                        'Balance amount should be zero or greater.',
-                      );
-                      await Future.delayed(Duration(seconds: 2));
-                    }
-
                     final String time = DateFormat(
                       'hh:mm a',
                     ).format(DateTime.now());
@@ -285,25 +243,21 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     await homeController.updatePatient(
                       index: patientIndex,
                       isCompleted: 'Yes',
-                      isSync: syncing ? 'Yes' : 'No',
+                      isSync: 'No',
                       timeToSave: time,
                       dateToSave: date,
-                      invNo: syncing
-                          ? '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${ref.read(addTestScreenProvider).syncId}'
-                          : '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${ref.read(addTestScreenProvider).syncId + 1}',
+                      invNo:
+                          '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${ref.read(addTestScreenProvider).syncId + 1}',
                     );
                     final prefs = await SharedPreferences.getInstance();
                     await prefs.setInt(
                       'syncId',
-                      syncing
-                          ? ref.read(addTestScreenProvider).syncId
-                          : ref.read(addTestScreenProvider).syncId + 1,
+                      ref.read(addTestScreenProvider).syncId + 1,
                     );
-                    if (syncing == false) {
-                      testAddController.updatestate(
-                        syncId: ref.read(addTestScreenProvider).syncId + 1,
-                      );
-                    }
+
+                    testAddController.updatestate(
+                      syncId: ref.read(addTestScreenProvider).syncId + 1,
+                    );
 
                     if (!context.mounted) return;
 
@@ -328,26 +282,13 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: Center(
-                    child: testAddState.isSyncLoading == true
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: Center(
-                              child: CircularProgressIndicator(
-                                strokeWidth: 1.5,
-                                color: AppColors.appWhite,
-                              ),
-                            ),
-                          )
-                        : Text(
-                            testAddState.isSync != 'Yes'
-                                ? 'Complete'
-                                : 'Share bill',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: AppColors.appWhite,
-                            ),
-                          ),
+                    child: Text(
+                      testAddState.isSync != 'Yes' ? 'Save' : 'Share bill',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.appWhite,
+                      ),
+                    ),
                   ),
                 ),
               ),

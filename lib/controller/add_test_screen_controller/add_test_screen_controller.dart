@@ -245,11 +245,10 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
 
   //stroring discount and fetching
   Future<void> storingAndFetchingDiscount() async {
-    bool isConnected = await InternetChecker.hasConnection();
     try {
       await Future.delayed(Duration(seconds: 1));
       final box = await Hive.openBox('Discount_reasons');
-      if (isConnected == true && box.isEmpty) {
+      if (box.isEmpty) {
         final DiscountReasonResponseModel response =
             await DiscountFetchingApi.discountFetchingApi();
         if (response.success == true && response.discReasonList != null) {
@@ -428,6 +427,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
   //state updation function
   void updatestate({
     num? rateIDSelected,
+    bool? isProfileShow,
     bool? isUrgent,
     String? isSync,
     List<AccountsList>? specialSchemeList,
@@ -448,6 +448,7 @@ class AddTestScreenController extends StateNotifier<AddTestScreenState> {
     int? syncId,
   }) {
     state = state.copyWith(
+      isProfileShow: isProfileShow,
       rateIDSelected: rateIDSelected,
       specialSchemeList: specialSchemeList,
       testMasterListSeeing: testMasterListSeeing,

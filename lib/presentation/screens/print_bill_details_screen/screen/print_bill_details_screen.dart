@@ -10,10 +10,10 @@ import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 
 import 'package:icon_infoware/core/themes/colors.dart';
-import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/above_bill_card.dart';
-import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/below_info_card.dart';
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/bill_info_card.dart';
-import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/lab_info_card.dart';
+import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/hitech_demo_card.dart';
+import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/hitech_demo_lab_info_card.dart';
+import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/hitech_qr_sample.dart';
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/share_bill.dart';
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/test_listing_card.dart';
 
@@ -30,7 +30,7 @@ class PrintBillDetailsScreen extends ConsumerWidget {
     final addTestState = ref.watch(addTestScreenProvider);
     final colorState = ref.watch(colorProvider);
     final printState = ref.watch(printProvider);
-    final spotbillingState = ref.watch(patientBillingProvider);
+    ref.watch(patientBillingProvider);
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: AppColors.appWhite,
@@ -44,11 +44,11 @@ class PrintBillDetailsScreen extends ConsumerWidget {
             children: [
               Expanded(
                 child: SingleChildScrollView(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 10,
-                  ),
+                  // padding: const EdgeInsets.only(
+                  //   left: 10,
+                  //   right: 10,
+                  //   bottom: 10,
+                  // ),
                   child: Center(
                     child: Screenshot(
                       controller: screenshotController,
@@ -59,54 +59,54 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            AboveBillCard(),
-                            _buildDivider(),
-                            LabInfoCard(isCloser: false),
-                            _buildDivider(),
+                            HitechDemoCard(),
+                            // _buildDivider(),
+                            HitechDemoLabInfoCard(isCloser: false),
 
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: _buildInfoRow(
-                                'NAME',
-                                ': ${spotbillingState.patientNameController.text}',
-                                null,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: _buildInfoRow(
-                                'AGE/SEX',
-                                ': ${spotbillingState.ageController.text} Years/${spotbillingState.genderController.text}',
-                                null,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: _buildInfoRow(
-                                'PHONE',
-                                ': ${spotbillingState.patientPhoneController.text}',
-                                null,
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                              ),
-                              child: _buildInfoRow(
-                                'EMAIL',
-                                ': ${spotbillingState.patientEmailController.text}',
-                                null,
-                              ),
-                            ),
+                            //  _buildDivider(),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(
+                            //     horizontal: 16,
+                            //   ),
+                            //   child: _buildInfoRow(
+                            //     'NAME',
+                            //     ': ${spotbillingState.patientNameController.text}',
+                            //     null,
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(
+                            //     horizontal: 16,
+                            //   ),
+                            //   child: _buildInfoRow(
+                            //     'AGE/SEX',
+                            //     ': ${spotbillingState.ageController.text} Years/${spotbillingState.genderController.text}',
+                            //     null,
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(
+                            //     horizontal: 16,
+                            //   ),
+                            //   child: _buildInfoRow(
+                            //     'PHONE',
+                            //     ': ${spotbillingState.patientPhoneController.text}',
+                            //     null,
+                            //   ),
+                            // ),
+                            // Padding(
+                            //   padding: const EdgeInsets.symmetric(
+                            //     horizontal: 16,
+                            //   ),
+                            //   child: _buildInfoRow(
+                            //     'EMAIL',
+                            //     ': ${spotbillingState.patientEmailController.text}',
+                            //     null,
+                            //   ),
+                            // ),
                             TestTableWidget(),
 
-                            _buildDivider(),
+                            //  _buildDivider(),
                             Column(
                               children: [
                                 if (num.tryParse(
@@ -155,23 +155,56 @@ class PrintBillDetailsScreen extends ConsumerWidget {
                                   amount: addTestState.netAmount.toString(),
                                   isLightBlue: false,
                                 ),
+                                Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Divider(
+                                      color: AppColors.appBlack,
+                                      thickness: 2,
+                                      height: 2,
+                                    ),
+                                    SizedBox(height: 2),
+                                    Divider(
+                                      color: AppColors.appBlack,
+                                      thickness: 2,
+                                      height: 2,
+                                    ),
+                                  ],
+                                ),
+
                                 BillingRowWidget(
                                   label: 'Received Amount :',
                                   amount: addTestState.amountPaid.toString(),
                                   isLightBlue: false,
                                 ),
+                                if (num.tryParse(
+                                      addTestState.balanceAmount.toString(),
+                                    ) !=
+                                    0)
+                                  BillingRowWidget(
+                                    label: 'Pending Amount :',
+                                    amount: addTestState.balanceAmount
+                                        .toString(),
+                                    isLightBlue: true,
+                                  ),
                                 BillingRowWidget(
-                                  label: 'Pending Amount :',
-                                  amount: addTestState.balanceAmount.toString(),
-                                  isLightBlue: true,
+                                  label: 'Reporting Time : ',
+                                  amount: "13-NOV-2026 10:38 am",
+                                  isLightBlue: false,
                                 ),
                               ],
                             ),
                             // _buildBillingSummary(),
                             const SizedBox(height: 10),
-                            _buildFooterNote(),
-                            _buildDivider(),
-                            BillFooterWidget(),
+                            // _buildFooterNote(),
+                            // _buildDivider(),
+                            // BillFooterWidget(),
+                            LabBookingInfoWidget(
+                              userName: 'SANDRIYA',
+                              labQrData: 'https://example.com/find-labs',
+                              bookingQrData:
+                                  'https://example.com/book-appointment',
+                            ),
                           ],
                         ),
                       ),

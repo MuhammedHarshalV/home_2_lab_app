@@ -1,4 +1,3 @@
-
 import 'dart:developer';
 import 'dart:io';
 
@@ -13,8 +12,8 @@ class GetApiServices {
   static final Dio dio =
       Dio(
           BaseOptions(
-            connectTimeout: const Duration(seconds: 15),
-            receiveTimeout: const Duration(seconds: 15),
+            connectTimeout: const Duration(seconds: 30),
+            receiveTimeout: const Duration(seconds: 30),
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json",
@@ -110,8 +109,8 @@ class PostApiServices {
   static final Dio dio =
       Dio(
           BaseOptions(
-            connectTimeout: const Duration(seconds: 15),
-            receiveTimeout: const Duration(seconds: 15),
+            connectTimeout: const Duration(seconds: 30),
+            receiveTimeout: const Duration(seconds: 30),
             headers: {
               "Content-Type": "application/json",
               "Accept": "application/json",
@@ -195,4 +194,3 @@ class PostApiServices {
     }
   }
 }
-

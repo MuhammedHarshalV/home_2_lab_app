@@ -3,8 +3,9 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
+
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
+import 'package:icon_infoware/controller/payment_controller/payment_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/core/services/qr_code_image/qr_code_image_service.dart';
@@ -17,7 +18,7 @@ class PaymentOptionCard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Example:
-    final addTestState = ref.watch(addTestScreenProvider);
+    final paymentState = ref.watch(paymentScreenProvider);
     final colorState = ref.watch(colorProvider);
     // final controller = ref.read(addTestScreenProvider.notifier);
 
@@ -39,26 +40,16 @@ class PaymentOptionCard extends ConsumerWidget {
           const SizedBox(height: 12),
           InkWell(
             onTap: () {
-              final primaryType = (addTestState.primaryType.isEmpty)
-                  ? 'Cash'
-                  : addTestState.primaryType;
+              final primaryType = paymentState.primaryPaymentType;
 
-              final secondaryType = (addTestState.secondaryType.isEmpty)
-                  ? 'UPI'
-                  : addTestState.secondaryType;
+              final secondaryType = paymentState.secondaryPaymentType;
 
               num amount = primaryType == 'UPI'
-                  ? addTestState.primaryPaid
+                  ? paymentState.primaryAmount
                   : secondaryType == 'UPI'
-                  ? addTestState.secondaryPaid
+                  ? paymentState.secondaryAmount
                   : 0;
               log('amount is $amount');
-              log(
-                'primary type ${addTestState.primaryType} primary amount ${addTestState.primaryPaid}',
-              );
-              log(
-                'secondary type ${addTestState.secondaryType} secondary amount ${addTestState.secondaryPaid}',
-              );
 
               if (amount == 0) {
                 AppMessage.show(context, "Please enter a UPI payment amount.");

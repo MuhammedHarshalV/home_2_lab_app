@@ -11,6 +11,7 @@ import 'package:icon_infoware/core/routes/app_route_names.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PatientContactCard extends ConsumerWidget {
   final PatientHiveModel patient;
@@ -139,36 +140,72 @@ class PatientContactCard extends ConsumerWidget {
                       ),
                     ),
                   ),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color:
-                          (patient.bookMapUrl?.trim().isEmpty ?? false) ||
-                              patient.bookMapUrl == null
-                          ? const Color.fromARGB(255, 169, 216, 255)
-                          : Colors.blue,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(7.0),
-                      child: Icon(
-                        Icons.location_on,
-                        color: Colors.white,
-                        size: 20,
+                  InkWell(
+                    onTap: () async {
+                      final mapUrl = patient.bookMapUrl?.trim() ?? '';
+
+                      if (mapUrl.isEmpty) {
+                        return;
+                      }
+
+                      final Uri url = Uri.parse(mapUrl);
+
+                      if (await canLaunchUrl(url)) {
+                        await launchUrl(
+                          url,
+                          mode: LaunchMode.externalApplication,
+                        );
+                      }
+                    },
+
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color:
+                            (patient.bookMapUrl?.trim().isEmpty ?? false) ||
+                                patient.bookMapUrl == null
+                            ? const Color.fromARGB(255, 169, 216, 255)
+                            : Colors.blue,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(7.0),
+                        child: Icon(
+                          Icons.location_on,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(width: 10),
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.green,
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(7.0),
-                      child: Icon(
-                        Icons.phone_outlined,
-                        color: Colors.white,
-                        size: 20,
+                  InkWell(
+                    onTap: () async {
+                      final phone = patient.patPhno?.trim() ?? '';
+
+                      if (phone.isNotEmpty) {
+                        final Uri phoneUri = Uri(scheme: 'tel', path: phone);
+
+                        if (await canLaunchUrl(phoneUri)) {
+                          await launchUrl(phoneUri);
+                        }
+                      }
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color:
+                            (patient.patPhno?.trim().isEmpty ?? false) ||
+                                patient.bookMapUrl == null
+                            ? const Color.fromARGB(255, 89, 248, 124)
+                            : Colors.green,
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(7.0),
+                        child: Icon(
+                          Icons.phone_outlined,
+                          color: Colors.white,
+                          size: 20,
+                        ),
                       ),
                     ),
                   ),

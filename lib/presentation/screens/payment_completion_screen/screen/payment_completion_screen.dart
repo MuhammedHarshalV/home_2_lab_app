@@ -3,9 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
-import 'package:icon_infoware/controller/patient_billing/patient_billing_controller.dart';
+import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+
+import 'package:icon_infoware/controller/payment_controller/payment_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
-import 'package:icon_infoware/core/routes/app_route_names.dart';
+
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/above_container_card.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/billing_details_card.dart';
@@ -15,13 +17,17 @@ import 'package:icon_infoware/presentation/widgets/common_appbar.dart';
 import 'package:intl/intl.dart';
 
 class PaymentCompletionScreen extends ConsumerWidget {
-  final int index;
-  const PaymentCompletionScreen({super.key, required this.index});
+  const PaymentCompletionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final patientBillingstate = ref.watch(patientBillingProvider);
+    final paymentController = ref.read(paymentScreenProvider.notifier);
+    final homeController = ref.read(homeScreenProvider.notifier);
+    final paymentState = ref.watch(paymentScreenProvider);
     final colorState = ref.watch(colorProvider);
+    if (paymentState.patientList.isEmpty) {
+      return const Scaffold(body: Center(child: Text('No patients selected')));
+    }
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: SystemUiOverlayStyle(
         statusBarColor: colorState.appbarColor,
@@ -53,7 +59,9 @@ class PaymentCompletionScreen extends ConsumerWidget {
                       AboveContainerCard(
                         icon: Icons.account_balance_wallet_outlined,
                         label: 'Paying with',
-                        value: patientBillingstate.patientNameController.text,
+                        value: paymentState.patientList.length == 1
+                            ? (paymentState.patientList.first.patName ?? '')
+                            : "${paymentState.patientList.length} Patients",
                         color: colorState.primaryColor,
                       ),
                       Container(
@@ -88,12 +96,12 @@ class PaymentCompletionScreen extends ConsumerWidget {
                 SizedBox(height: 16),
 
                 // Bill Details Card
-                BillDetailsCard(index: index),
+                BillDetailsCard(),
                 SizedBox(height: 16),
 
                 //  Total Amount Card
                 TotalAmountCard(
-                  index: index,
+                  index: 1,
                   secondColor: colorState.secondaryColor,
                   primaryColor: colorState.primaryColor,
                 ),
@@ -112,8 +120,43 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   width: double.infinity,
                   height: 52,
                   child: ElevatedButton(
-                    onPressed: () {
-                      context.pushNamed(AppRouteNames.printBillScreen.name);
+                    onPressed: () async {
+                      bool isSync = await paymentController.splitPayments();
+
+                      if (isSync) {
+                        final updatedPatients = ref
+                            .read(paymentScreenProvider)
+                            .patientList;
+
+                        final String time = DateFormat(
+                          'hh:mm a',
+                        ).format(DateTime.now());
+                        final String date = DateFormat(
+                          'dd-MMM-yyyy',
+                        ).format(DateTime.now());
+
+                        for (final patient in updatedPatients) {
+                          await homeController.updatePatient(
+                            index: patient.indexClick!,
+                            isCompleted: 'Yes',
+                            isSync: 'Yes',
+                            timeToSave: time,
+                            dateToSave: date,
+
+                            // Payment details
+                            primaryPaid: patient.primaryPaid,
+                            secondaryPaid: patient.secondaryPaid,
+                            primaryType: patient.primaryType,
+                            secondaryType: patient.secondaryType,
+                            upiReferenceId: patient.upiReferenceId,
+                            paidAmt: patient.paidAmt,
+                            balance: patient.balance,
+                          );
+                        }
+                      }
+
+                      paymentController.clearPaymentState();
+                      context.pop();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorState.primaryColor,
@@ -123,14 +166,22 @@ class PaymentCompletionScreen extends ConsumerWidget {
                       ),
                       elevation: 0,
                     ),
-                    child: const Text(
-                      'Confirm Payment',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        letterSpacing: 0.3,
-                      ),
-                    ),
+                    child: paymentState.isPaymentCompletion
+                        ? SizedBox(
+                            height: 20,
+                            width: 20,
+                            child: CircularProgressIndicator(
+                              color: AppColors.appWhite,
+                            ),
+                          )
+                        : Text(
+                            'Confirm Payment',
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
                   ),
                 ),
                 const SizedBox(height: 16),

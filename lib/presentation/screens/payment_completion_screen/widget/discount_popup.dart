@@ -38,21 +38,6 @@ class DiscountDialog extends ConsumerWidget {
             ),
           );
           await addTestcontroller.updateNetBalanceAmounts();
-          // final testMasterState1 = ref.watch(addTestScreenProvider);
-          // await homeController.updatePatient(
-          //   index: index,
-
-          //   discAmt:
-          //       num.tryParse(testMasterState1.discountAmountController.text) ??
-          //       0,
-          //   balance: testMasterState1.balanceAmount,
-          //   netAmt: testMasterState1.netAmount,
-          //   paidAmt: testMasterState1.amountPaid,
-          //   grossAmt: testMasterState1.totalPrice,
-          //   servChrge:
-          //       num.tryParse(testMasterState1.servicesnargeController.text) ??
-          //       0,
-          // );
         }
       },
       child: AlertDialog(
@@ -86,25 +71,6 @@ class DiscountDialog extends ConsumerWidget {
                     addTeststate.discountPercentageController.clear();
                     addTeststate.discountAmountController.clear();
                     await addTestcontroller.updateNetBalanceAmounts();
-                    //  final testMasterState1 = ref.watch(addTestScreenProvider);
-                    // await homeController.updatePatient(
-                    //   index: index,
-
-                    //   discAmt:
-                    //       num.tryParse(
-                    //         testMasterState1.discountAmountController.text,
-                    //       ) ??
-                    //       0,
-                    //   balance: testMasterState1.balanceAmount,
-                    //   netAmt: testMasterState1.netAmount,
-                    //   paidAmt: testMasterState1.amountPaid,
-                    //   grossAmt: testMasterState1.totalPrice,
-                    //   servChrge:
-                    //       num.tryParse(
-                    //         testMasterState1.servicesnargeController.text,
-                    //       ) ??
-                    //       0,
-                    // );
                   }
                 },
               ),
@@ -127,25 +93,6 @@ class DiscountDialog extends ConsumerWidget {
                     addTeststate.discountPercentageController.clear();
                     addTeststate.discountAmountController.clear();
                     await addTestcontroller.updateNetBalanceAmounts();
-                    // final testMasterState1 = ref.watch(addTestScreenProvider);
-                    // await homeController.updatePatient(
-                    //   index: index,
-
-                    //   discAmt:
-                    //       num.tryParse(
-                    //         testMasterState1.discountAmountController.text,
-                    //       ) ??
-                    //       0,
-                    //   balance: testMasterState1.balanceAmount,
-                    //   netAmt: testMasterState1.netAmount,
-                    //   paidAmt: testMasterState1.amountPaid,
-                    //   grossAmt: testMasterState1.totalPrice,
-                    //   servChrge:
-                    //       num.tryParse(
-                    //         testMasterState1.servicesnargeController.text,
-                    //       ) ??
-                    //       0,
-                    // );
                   }
                 },
               ),
@@ -159,7 +106,7 @@ class DiscountDialog extends ConsumerWidget {
                 isReadOnly: true,
                 dropDown: addTeststate.discountList,
                 onChanged: (p0) {
-                  //  addTeststate.genderController.text = p0;
+                 
                 },
               ),
             ],

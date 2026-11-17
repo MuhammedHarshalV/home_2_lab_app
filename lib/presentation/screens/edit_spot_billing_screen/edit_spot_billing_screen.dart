@@ -164,7 +164,7 @@ class EditSpotBillingScreen extends ConsumerWidget {
                         isPreffix: true,
                       ),
 
-                      // SizedBox(height: 8.h),
+                      SizedBox(height: 7),
                       CommonTextField(
                         label: 'Phone',
                         hint: 'Phone Number',
@@ -172,9 +172,9 @@ class EditSpotBillingScreen extends ConsumerWidget {
                         icon: Icons.phone,
                         controller: spotBillingState.patientPhoneController,
                       ),
-                      SizedBox(height: 20),
 
-                      //SizedBox(height: 8),
+                      //  SizedBox(height: 20),
+                      SizedBox(height: 8),
                       CommonTextField(
                         label: 'Email',
                         hint: 'Email',

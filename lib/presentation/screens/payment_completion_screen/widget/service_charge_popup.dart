@@ -32,21 +32,6 @@ class ServiceChangeDialog extends ConsumerWidget {
               .toString();
 
           await addTestController.updateNetBalanceAmounts();
-          // final testMasterState1 = ref.watch(addTestScreenProvider);
-          // await homeController.updatePatient(
-          //   index: index,
-
-          //   discAmt:
-          //       num.tryParse(testMasterState1.discountAmountController.text) ??
-          //       0,
-          //   balance: testMasterState1.balanceAmount,
-          //   netAmt: testMasterState1.netAmount,
-          //   paidAmt: testMasterState1.amountPaid,
-          //   grossAmt: testMasterState1.totalPrice,
-          //   servChrge:
-          //       num.tryParse(testMasterState1.servicesnargeController.text) ??
-          //       0,
-          // );
         }
       },
       child: AlertDialog(
@@ -92,25 +77,7 @@ class ServiceChangeDialog extends ConsumerWidget {
                         .servChrge
                         .toString();
                     await addTestController.updateNetBalanceAmounts();
-                    // final testMasterState1 = ref.watch(addTestScreenProvider);
-                    // await homeController.updatePatient(
-                    //   index: index,
 
-                    //   discAmt:
-                    //       num.tryParse(
-                    //         testMasterState1.discountAmountController.text,
-                    //       ) ??
-                    //       0,
-                    //   balance: testMasterState1.balanceAmount,
-                    //   netAmt: testMasterState1.netAmount,
-                    //   paidAmt: testMasterState1.amountPaid,
-                    //   grossAmt: testMasterState1.totalPrice,
-                    //   servChrge:
-                    //       num.tryParse(
-                    //         testMasterState1.servicesnargeController.text,
-                    //       ) ??
-                    //       0,
-                    // );
                     context.pop();
                   },
                   child: const Text(

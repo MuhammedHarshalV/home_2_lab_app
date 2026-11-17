@@ -1,20 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
-import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
-
-import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/discount_popup.dart';
-import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/service_charge_popup.dart';
+import 'package:icon_infoware/controller/payment_controller/payment_controller.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/upi_reffernce_id_popup.dart';
 
 class BillDetailsCard extends ConsumerWidget {
-  final int index;
-  const BillDetailsCard({super.key, required this.index});
+  const BillDetailsCard({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final addTeststate = ref.watch(addTestScreenProvider);
+    final paymentState = ref.watch(paymentScreenProvider);
     final colorState = ref.watch(colorProvider);
 
     return Container(
@@ -27,64 +22,59 @@ class BillDetailsCard extends ConsumerWidget {
       child: Column(
         children: [
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Number of tests',
-            value: addTeststate.testMasterListSelectedNewPrice.length
+            value: paymentState.patientList
+                .fold<int>(
+                  0,
+                  (total, patient) => total + (patient.testlists?.length ?? 0),
+                )
                 .toString(),
             color: colorState.primaryColor,
           ),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Gross Amount',
-            value: addTeststate.totalPrice.toString(),
+            value: paymentState.grossAmount.toString(),
             color: colorState.primaryColor,
           ),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Discount Amount',
-            value: addTeststate.discountAmountController.text.isEmpty
-                ? '00'
-                : addTeststate.discountAmountController.text,
+            value: paymentState.discountAmount.toString(),
             color: colorState.primaryColor,
-            isEditable: true,
-            isDiscount: true,
           ),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Service Charge',
-            value: addTeststate.servicesnargeController.text.isEmpty
-                ? '00'
-                : addTeststate.servicesnargeController.text,
-            isEditable: true,
-            isService: true,
+            value: paymentState.serviceAmount.toString(),
+
             color: colorState.primaryColor,
           ),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Net Total',
-            value: addTeststate.netAmount.toString(),
+            value: paymentState.totalamount.toString(),
             color: colorState.primaryColor,
           ),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Amount Paid',
-            value: addTeststate.amountPaid.toString(),
+            value: paymentState.paidAmount.toString(),
             color: colorState.primaryColor,
           ),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'Balance',
-            value: addTeststate.balanceAmount.toString(),
+            value: paymentState.balanceAmount.toString(),
             valueColor: const Color(0xFFA32D2D),
             color: colorState.primaryColor,
           ),
           Divider(color: colorState.primaryColor, height: 20),
           _BillRow(
-            index: index,
+            index: paymentState.patientList.first.indexClick ?? 0,
             label: 'UPI Reference ID',
-            value: addTeststate.upiRefferenceIdController.text.isEmpty
-                ? ''
-                : addTeststate.upiRefferenceIdController.text,
+            value: paymentState.upiReferenceId,
             isEditable: true,
             color: colorState.primaryColor,
             // showEditOnly: true,
@@ -102,17 +92,14 @@ class _BillRow extends StatelessWidget {
   final bool isEditable;
   final Color color;
   final Color? valueColor;
-  final bool isDiscount;
-  final bool isService;
 
   const _BillRow({
     required this.label,
     required this.value,
     this.isEditable = false,
 
-    this.isDiscount = false,
     this.valueColor,
-    this.isService = false,
+
     required this.index,
     required this.color,
   });
@@ -147,11 +134,7 @@ class _BillRow extends StatelessWidget {
                 onTap: () {
                   showDialog(
                     context: context,
-                    builder: (_) => isDiscount
-                        ? DiscountDialog(index: index)
-                        : isService
-                        ? ServiceChangeDialog(index: index)
-                        : RefferenceIdDialog(index: index),
+                    builder: (_) => RefferenceIdDialog(index: index),
                   );
                 },
                 child: Icon(Icons.edit, size: 20, color: color),

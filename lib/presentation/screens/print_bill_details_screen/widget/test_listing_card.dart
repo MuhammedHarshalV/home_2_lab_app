@@ -13,7 +13,13 @@ class TestTableWidget extends ConsumerWidget {
       children: [
         // Table Header
         Container(
-          color: AppColors.darkBlue,
+          decoration: BoxDecoration(
+            border: Border(
+              //  top: BorderSide(color: AppColors.appBlack, width: 2),
+              bottom: BorderSide(color: AppColors.appBlack, width: 2),
+            ),
+          ),
+
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
           child: const Row(
             children: [
@@ -22,7 +28,7 @@ class TestTableWidget extends ConsumerWidget {
                 child: Text(
                   'SLNO',
                   style: TextStyle(
-                    color: AppColors.appWhite,
+                    color: AppColors.appBlack,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -31,7 +37,7 @@ class TestTableWidget extends ConsumerWidget {
                 child: Text(
                   'TEST',
                   style: TextStyle(
-                    color: AppColors.appWhite,
+                    color: AppColors.appBlack,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -39,7 +45,7 @@ class TestTableWidget extends ConsumerWidget {
               Text(
                 'RATE',
                 style: TextStyle(
-                  color: AppColors.appWhite,
+                  color: AppColors.appBlack,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -56,6 +62,8 @@ class TestTableWidget extends ConsumerWidget {
             ),
           ),
         ),
+
+        Divider(color: AppColors.appBlack, height: 2, thickness: 2),
 
         // Table Rows
       ],
@@ -75,21 +83,21 @@ class TestTableWidget extends ConsumerWidget {
               alignment: Alignment.topLeft,
               child: Text(
                 slNo,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
               ),
             ),
           ),
           Expanded(
             child: Text(
               testName,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ),
           Align(
             alignment: Alignment.topLeft,
             child: Text(
               rate,
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
             ),
           ),
         ],

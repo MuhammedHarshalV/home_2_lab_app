@@ -239,6 +239,13 @@ class PatientHiveModel {
     String? currentDatetime,
     String? timeToSave,
     String? dateToSave,
+    num? primaryPaid,
+    num? secondaryPaid,
+    String? primaryType,
+    String? secondaryType,
+    String? upiReferenceId,
+    num? paidAmt,
+    num? balance,
   }) {
     return PatientHiveModel(
       isClosed: isClosed,

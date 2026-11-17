@@ -160,7 +160,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         isPreffix: true,
                       ),
 
-                      // SizedBox(height: 8.h),
+                      SizedBox(height: 7),
                       CommonTextField(
                         label: 'Phone',
                         hint: 'Phone Number',
@@ -168,9 +168,9 @@ class SpotBillingScreen extends ConsumerWidget {
                         isNumberInput: true,
                         controller: spotBillingState.patientPhoneController,
                       ),
-                      SizedBox(height: 20),
 
-                      //SizedBox(height: 8),
+                      // SizedBox(height: 20),
+                      SizedBox(height: 7),
                       CommonTextField(
                         label: 'Email',
                         hint: 'Email',
@@ -236,7 +236,7 @@ class SpotBillingScreen extends ConsumerWidget {
                         textController: spotBillingState.genderController,
                         isSuffix: true,
                         isReadOnly: true,
-                        dropDown: ['Men', 'Female', 'Other'],
+                        dropDown: ['Male', 'Female', 'Other'],
                         onChanged: (p0) {
                           spotBillingState.genderController.text = p0;
                         },

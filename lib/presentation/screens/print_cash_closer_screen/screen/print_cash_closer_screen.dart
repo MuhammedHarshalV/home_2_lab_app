@@ -17,6 +17,7 @@ import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syn
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/above_bill_card.dart';
 
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/bill_info_card.dart';
+import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/hitech_demo_card.dart';
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/lab_info_card.dart';
 import 'package:icon_infoware/presentation/screens/print_bill_details_screen/widget/share_bill.dart';
 import 'package:icon_infoware/presentation/screens/print_cash_closer_screen/widget/cash_closing_popup.dart';
@@ -62,7 +63,7 @@ class PrintCashCloserScreen extends ConsumerWidget {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          AboveBillCard(),
+                          HitechDemoCard(),
                           _buildDivider(),
                           LabInfoCard(isCloser: true),
                           _buildDivider(),
@@ -311,7 +312,7 @@ class PrintCashCloserScreen extends ConsumerWidget {
                             } else {
                               await ref
                                   .read(printProvider.notifier)
-                                  .printWidget(screenshotController,context);
+                                  .printWidget(screenshotController, context);
                             }
                             log('printer bluetooth info : $printer');
                           },

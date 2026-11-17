@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:icon_infoware/controller/add_test_screen_controller/add_test_screen_controller.dart';
 import 'package:icon_infoware/controller/color_controller/color_controller.dart';
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
+import 'package:icon_infoware/controller/payment_controller/payment_controller.dart';
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/widgets/common_text_field.dart';
 
@@ -54,10 +55,16 @@ class RefferenceIdDialog extends ConsumerWidget {
                   final homeState = ref.read(homeScreenProvider);
                   if (p0.trim().isNotEmpty) {
                     addTestController.upiUpdates(p0);
+                    ref
+                        .read(paymentScreenProvider.notifier)
+                        .updateState(upiReferenceId: p0);
                   } else {
                     addTestController.upiUpdates(
                       homeState.allBookingDetails[index].upiReferenceId ?? '',
                     );
+                    ref
+                        .read(paymentScreenProvider.notifier)
+                        .updateState(upiReferenceId: '');
                   }
                 },
               ),
