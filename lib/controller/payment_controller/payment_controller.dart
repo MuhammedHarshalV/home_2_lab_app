@@ -60,11 +60,13 @@ class PaymentController extends StateNotifier<PaymentState> {
   }
 
   //split payment
+
   Future<bool> splitPayments({BuildContext? context}) async {
     if (state.balanceAmount < 0) {
       AppMessage.show(context!, "Payment amount exceeds the total bill amount");
       return false;
     }
+
     if (state.grossAmount <= 0) {
       AppMessage.show(
         context!,
@@ -72,7 +74,9 @@ class PaymentController extends StateNotifier<PaymentState> {
       );
       return false;
     }
+
     state = state.copyWith(isPaymentCompletion: true);
+
     num primaryRemaining = state.primaryAmount;
     num secondaryRemaining = state.secondaryAmount;
 
@@ -84,7 +88,7 @@ class PaymentController extends StateNotifier<PaymentState> {
       num primaryPaid = 0;
       num secondaryPaid = 0;
 
-      // 1. Allocate primary payment
+      // Allocate entered Primary amount
       if (primaryRemaining > 0 && patientBalance > 0) {
         primaryPaid = primaryRemaining >= patientBalance
             ? patientBalance
@@ -94,7 +98,7 @@ class PaymentController extends StateNotifier<PaymentState> {
         patientBalance -= primaryPaid;
       }
 
-      // 2. Allocate secondary payment
+      // Allocate entered Secondary amount
       if (secondaryRemaining > 0 && patientBalance > 0) {
         secondaryPaid = secondaryRemaining >= patientBalance
             ? patientBalance
@@ -104,25 +108,37 @@ class PaymentController extends StateNotifier<PaymentState> {
         patientBalance -= secondaryPaid;
       }
 
-      // 3. Calculate total payment for this patient
+      // Original payment types
+      String primaryType = state.primaryPaymentType;
+      String secondaryType = state.secondaryPaymentType;
+
+      // Swap separately for each patient if Secondary is higher
+      if (secondaryPaid > primaryPaid) {
+        final tempAmount = primaryPaid;
+        primaryPaid = secondaryPaid;
+        secondaryPaid = tempAmount;
+
+        final tempType = primaryType;
+        primaryType = secondaryType;
+        secondaryType = tempType;
+      }
+
       final num totalPaid = primaryPaid + secondaryPaid;
 
-      // 4. Set UPI reference only if an actual UPI payment is allocated
+      // UPI reference
       String upiReference = '';
 
-      if (primaryPaid > 0 && state.primaryPaymentType == 'UPI') {
-        upiReference = state.upiReferenceId;
-      } else if (secondaryPaid > 0 && state.secondaryPaymentType == 'UPI') {
+      if ((primaryPaid > 0 && primaryType == 'UPI') ||
+          (secondaryPaid > 0 && secondaryType == 'UPI')) {
         upiReference = state.upiReferenceId;
       }
 
-      // 5. Create updated patient
       updatedList.add(
         patient.copyWith(
           primaryPaid: primaryPaid,
           secondaryPaid: secondaryPaid,
-          primaryType: primaryPaid > 0 ? state.primaryPaymentType : '',
-          secondaryType: secondaryPaid > 0 ? state.secondaryPaymentType : '',
+          primaryType: primaryPaid > 0 ? primaryType : '',
+          secondaryType: secondaryPaid > 0 ? secondaryType : '',
           upiReferenceId: upiReference,
           paidAmt: (patient.paidAmt ?? 0) + totalPaid,
           balance: patientBalance,
@@ -130,7 +146,6 @@ class PaymentController extends StateNotifier<PaymentState> {
       );
     }
 
-    // 6. Update selected patient list
     final num totalPaid = updatedList.fold<num>(
       0,
       (sum, patient) =>
@@ -152,26 +167,26 @@ class PaymentController extends StateNotifier<PaymentState> {
 
     for (final patient in updatedList) {
       log('''
-  Patient: ${patient.patName}
-  Invoice: ${patient.invNo}
-  Primary Type: ${patient.primaryType}
-  Primary Paid: ${patient.primaryPaid}
-  Secondary Type: ${patient.secondaryType}
-  Secondary Paid: ${patient.secondaryPaid}
-  UPI Reference: ${patient.upiReferenceId}
-  Total Paid: ${patient.paidAmt}
-  Remaining Balance: ${patient.balance}
-  ------------------------------------------
-  ''');
+Patient: ${patient.patName}
+Invoice: ${patient.invNo}
+Primary Type: ${patient.primaryType}
+Primary Paid: ${patient.primaryPaid}
+Secondary Type: ${patient.secondaryType}
+Secondary Paid: ${patient.secondaryPaid}
+UPI Reference: ${patient.upiReferenceId}
+Total Paid: ${patient.paidAmt}
+Remaining Balance: ${patient.balance}
+------------------------------------------
+''');
     }
-    bool syncing = false;
 
-    syncing = await patientBillSyncingApi(
+    final bool syncing = await patientBillSyncingApi(
       context: context,
       patient: updatedList,
     );
 
     log('Sync status : $syncing');
+
     return syncing;
   }
 

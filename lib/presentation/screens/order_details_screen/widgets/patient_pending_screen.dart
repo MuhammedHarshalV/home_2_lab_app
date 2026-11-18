@@ -5,15 +5,10 @@ import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syn
 
 import 'package:icon_infoware/presentation/screens/order_details_screen/widgets/patient_completed_card.dart';
 
-
-
 class PatientPendingScreen extends ConsumerWidget {
   final List<PatientHiveModel> details;
 
-  const PatientPendingScreen({
-    super.key,
-    required this.details,
-  });
+  const PatientPendingScreen({super.key, required this.details});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -28,10 +23,11 @@ class PatientPendingScreen extends ConsumerWidget {
     }
 
     return details.isEmpty
-        ? const Center(
-            child: Text('No Pending Orders found.'),
-          )
+        ? const Center(child: Text('No Pending Orders found.'))
         : ListView.separated(
+            padding: EdgeInsets.only(
+              bottom: paymentState.patientList.isNotEmpty ? 150 : 10,
+            ),
             itemBuilder: (context, index) {
               return PatientCompletedCard(
                 isDate: true,
@@ -50,8 +46,7 @@ class PatientPendingScreen extends ConsumerWidget {
                 },
               );
             },
-            separatorBuilder: (context, index) =>
-                const SizedBox(height: 10),
+            separatorBuilder: (context, index) => const SizedBox(height: 10),
             itemCount: details.length,
           );
   }
