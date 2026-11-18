@@ -40,8 +40,6 @@ class SpotBillingScreen extends ConsumerWidget {
     final spotBillingController = ref.read(patientBillingProvider.notifier);
     final bottomNavController = ref.read(bottomNavProvider.notifier);
     final colorState = ref.watch(colorProvider);
-    log('initial');
-    log(spotBillingState.searchPatientList.length.toString());
     final List<String> patientTitles = [
       "Mr.",
       "Mrs.",
@@ -116,7 +114,9 @@ class SpotBillingScreen extends ConsumerWidget {
                         color: colorState.primaryColor,
                       ),
                       SizedBox(height: 8),
+
                       TypeTextFormField(
+                        isRequired: false,
                         hintText:
                             spotBillingState
                                 .patientDetailsController
@@ -133,20 +133,7 @@ class SpotBillingScreen extends ConsumerWidget {
                           spotBillingState.patientDetailsController.text = p0;
                         },
                       ),
-                      // ShowMenu(heading: 'Ms'),
-                      // CommonTapPossitionDropdown(
-                      //   heading:
-                      //       spotBillingState.patientDetailsController.text.isEmpty
-                      //       ? 'Prefix'
-                      //       : spotBillingState.patientDetailsController.text,
-                      //   items: List.generate(
-                      //     patientTitles.length,
-                      //     (index) => patientTitles[index],
-                      //   ),
-                      //   onSelected: (value) {
-                      //     spotBillingState.patientDetailsController.text = value;
-                      //   },
-                      // ),
+
                       SizedBox(height: 8),
 
                       TopText(

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:icon_infoware/apis/spot_billing/patient_syncing_api.dart';
 import 'package:icon_infoware/controller/payment_controller/payment_state.dart';
+import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
 import 'package:icon_infoware/models/patient_bill_syncing_model/patient_bill_syncing_model.dart';
 
 class PaymentController extends StateNotifier<PaymentState> {
@@ -59,7 +60,18 @@ class PaymentController extends StateNotifier<PaymentState> {
   }
 
   //split payment
-  Future<bool> splitPayments() async {
+  Future<bool> splitPayments({BuildContext? context}) async {
+    if (state.balanceAmount < 0) {
+      AppMessage.show(context!, "Payment amount exceeds the total bill amount");
+      return false;
+    }
+    if (state.grossAmount <= 0) {
+      AppMessage.show(
+        context!,
+        "Please add tests to the bill before making payment",
+      );
+      return false;
+    }
     state = state.copyWith(isPaymentCompletion: true);
     num primaryRemaining = state.primaryAmount;
     num secondaryRemaining = state.secondaryAmount;
@@ -154,7 +166,10 @@ class PaymentController extends StateNotifier<PaymentState> {
     }
     bool syncing = false;
 
-    syncing = await patientBillSyncingApi(context: null, patient: updatedList);
+    syncing = await patientBillSyncingApi(
+      context: context,
+      patient: updatedList,
+    );
 
     log('Sync status : $syncing');
     return syncing;

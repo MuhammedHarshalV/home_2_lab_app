@@ -11,6 +11,7 @@ class TypeTextFormField extends ConsumerWidget {
   final bool isPreffix;
   final bool isNumberInput;
   final bool isReadOnly;
+  final bool isRequired;
   final List<String>? dropDown;
   final Function(String)? onChanged;
   final Function(Function)? onChangedFunction;
@@ -19,6 +20,7 @@ class TypeTextFormField extends ConsumerWidget {
     super.key,
     required this.hintText,
     required this.textController,
+    this.isRequired = true,
     this.isSuffix = false,
     this.isPreffix = false,
     this.isNumberInput = false,
@@ -42,12 +44,14 @@ class TypeTextFormField extends ConsumerWidget {
           FocusManager.instance.primaryFocus?.unfocus();
         },
         // VALIDATION ONLY HERE
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return '$hintText is required';
-          }
-          return null;
-        },
+        validator: isRequired
+            ? (value) {
+                if (value == null || value.trim().isEmpty) {
+                  return 'This field is required';
+                }
+                return null;
+              }
+            : null,
         keyboardType: isNumberInput ? TextInputType.number : TextInputType.text,
         inputFormatters: isNumberInput
             ? [FilteringTextInputFormatter.digitsOnly]
@@ -57,13 +61,22 @@ class TypeTextFormField extends ConsumerWidget {
               ? Icon(Icons.person_2_outlined, color: colorState.primaryColor)
               : null,
           suffixIcon: isSuffix
-              ? InkWell(
-                  splashColor: Colors.transparent,
-                  highlightColor: Colors.transparent,
-                  hoverColor: Colors.transparent,
-                  focusColor: Colors.transparent,
-                  onTapDown: (details) {
-                    showDropDown(context, details.globalPosition, dropDown!);
+              ? GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () {
+                    WidgetsBinding.instance.addPostFrameCallback((_) {
+                      if (!context.mounted) return;
+
+                      final RenderBox box =
+                          context.findRenderObject() as RenderBox;
+                      final Offset position = box.localToGlobal(Offset.zero);
+
+                      showDropDown(
+                        context,
+                        Offset(position.dx, position.dy + box.size.height),
+                        dropDown ?? [],
+                      );
+                    });
                   },
                   child: Icon(Icons.arrow_drop_down, color: AppColors.appBlack),
                 )
@@ -107,6 +120,8 @@ class TypeTextFormField extends ConsumerWidget {
     Offset tapPosition,
     List<String> items,
   ) async {
+    if (!context.mounted || items.isEmpty) return;
+
     final screenSize = MediaQuery.of(context).size;
 
     final selected = await showMenu<String>(
@@ -115,7 +130,7 @@ class TypeTextFormField extends ConsumerWidget {
       position: RelativeRect.fromLTRB(
         tapPosition.dx,
         tapPosition.dy,
-        screenSize.width,
+        screenSize.width - tapPosition.dx,
         screenSize.height - tapPosition.dy,
       ),
       items: items.map((item) {
@@ -124,12 +139,10 @@ class TypeTextFormField extends ConsumerWidget {
       constraints: BoxConstraints(maxHeight: screenSize.height / 2),
     );
 
-    if (selected != null) {
-      textController.text = selected;
+    if (!context.mounted || selected == null) return;
 
-      if (onChanged != null) {
-        onChanged!(selected);
-      }
-    }
+    textController.text = selected;
+
+    onChanged?.call(selected);
   }
 }

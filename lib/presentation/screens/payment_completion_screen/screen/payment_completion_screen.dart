@@ -121,9 +121,22 @@ class PaymentCompletionScreen extends ConsumerWidget {
                   height: 52,
                   child: ElevatedButton(
                     onPressed: () async {
-                      bool isSync = await paymentController.splitPayments();
+                      if (paymentState.isPaymentCompletion) return;
 
-                      if (isSync) {
+                      try {
+                        final bool isSync = await paymentController
+                            .splitPayments(context: context);
+
+                        if (!context.mounted) return;
+
+                        // API failed: keep the screen open so the user can retry.
+                        if (!isSync) {
+                          paymentController.updateState(
+                            isPaymentCompletion: false,
+                          );
+                          return;
+                        }
+
                         final updatedPatients = ref
                             .read(paymentScreenProvider)
                             .patientList;
@@ -136,14 +149,14 @@ class PaymentCompletionScreen extends ConsumerWidget {
                         ).format(DateTime.now());
 
                         for (final patient in updatedPatients) {
+                          if (patient.indexClick == null) continue;
+
                           await homeController.updatePatient(
                             index: patient.indexClick!,
                             isCompleted: 'Yes',
                             isSync: 'Yes',
                             timeToSave: time,
                             dateToSave: date,
-
-                            // Payment details
                             primaryPaid: patient.primaryPaid,
                             secondaryPaid: patient.secondaryPaid,
                             primaryType: patient.primaryType,
@@ -153,10 +166,18 @@ class PaymentCompletionScreen extends ConsumerWidget {
                             balance: patient.balance,
                           );
                         }
-                      }
 
-                      paymentController.clearPaymentState();
-                      context.pop();
+                        if (!context.mounted) return;
+
+                        paymentController.clearPaymentState();
+                        context.pop();
+                      } catch (e) {
+                        debugPrint('Payment completion error: $e');
+
+                        paymentController.updateState(
+                          isPaymentCompletion: false,
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: colorState.primaryColor,
