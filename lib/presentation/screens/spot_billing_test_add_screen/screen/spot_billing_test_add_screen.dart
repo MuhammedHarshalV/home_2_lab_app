@@ -43,7 +43,7 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
       child: SafeArea(
         top: false,
         child: Scaffold(
-          resizeToAvoidBottomInset: false,
+          resizeToAvoidBottomInset: true,
           backgroundColor: AppColors.appWhite,
           appBar: CommonAppbar(
             onBack: () async {
@@ -274,6 +274,15 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                                                       );
                                                       await testMasterController
                                                           .updateNetBalanceAmounts();
+                                                      if (homeState
+                                                          .allBookingDetails
+                                                          .isEmpty) {
+                                                        AppMessage.show(
+                                                          context,
+                                                          'No booking details found.',
+                                                        );
+                                                        return;
+                                                      }
 
                                                       int indexget =
                                                           homeState
@@ -386,28 +395,84 @@ class SpotBillingTestAddScreen extends ConsumerWidget {
                       AppMessage.show(context, 'Bill is already synced.');
                     }
                   },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      // color: colorState.primaryColor,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: colorState.primaryColor),
-                    ),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        child: Text(
-                          '+ Add More Tests',
-                          style: TextStyle(
-                            color: colorState.primaryColor,
-                            fontWeight: FontWeight.bold,
+                  child: Row(
+                    spacing: 10,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: colorState.primaryColor),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                            vertical: 15,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.add_circle,
+                                color: colorState.primaryColor,
+                              ),
+                              const SizedBox(width: 5),
+                              Text(
+                                'Add More Tests',
+                                style: TextStyle(
+                                  color: colorState.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ),
+                      if (hiveIndex != null &&
+                          hiveIndex! >= 0 &&
+                          hiveIndex! < homeState.allBookingDetails.length &&
+                          (homeState.allBookingDetails[hiveIndex!].isSync ??
+                                  'No') ==
+                              'No')
+                        InkWell(
+                          onTap: () {
+                            context.pushNamed(
+                              AppRouteNames.printBillScreen.name,
+                            );
+                          },
+                          child: Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(
+                                color: colorState.primaryColor,
+                              ),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10,
+                                vertical: 15,
+                              ),
+                              child: Text(
+                                'Sample Bill',
+                                style: TextStyle(
+                                  color: colorState.primaryColor,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
                 ),
 
-                PatientDetailsBelowCard(index: hiveIndex),
+                Flexible(
+                  fit: FlexFit.loose,
+                  child: SingleChildScrollView(
+                    child: PatientDetailsBelowCard(index: hiveIndex),
+                  ),
+                ),
               ],
             ),
           ),

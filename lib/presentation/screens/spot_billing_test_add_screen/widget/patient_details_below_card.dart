@@ -7,11 +7,8 @@ import 'package:icon_infoware/controller/color_controller/color_controller.dart'
 import 'package:icon_infoware/controller/home_screen_controller/home_screen_controller.dart';
 import 'package:icon_infoware/controller/timer_controller/timer_controller.dart';
 import 'package:icon_infoware/core/constants/app_constants.dart';
-
 import 'package:icon_infoware/core/errors/api_errors/api_errors.dart';
-
 import 'package:icon_infoware/core/routes/app_route_names.dart';
-
 import 'package:icon_infoware/core/themes/colors.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/discount_popup.dart';
 import 'package:icon_infoware/presentation/screens/payment_completion_screen/widget/service_charge_popup.dart';
@@ -21,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientDetailsBelowCard extends ConsumerWidget {
   final int? index;
+
   const PatientDetailsBelowCard({super.key, this.index});
 
   @override
@@ -31,9 +29,28 @@ class PatientDetailsBelowCard extends ConsumerWidget {
     final colorState = ref.watch(colorProvider);
     final testAddController = ref.read(addTestScreenProvider.notifier);
     final timerState = ref.watch(customTimerProvider);
+
+    // Safely find the current booking.
+    final bookings = homeState.allBookingDetails;
+
+    final booking = index == null
+        ? (bookings.isNotEmpty ? bookings.last : null)
+        : bookings.where((e) => e.indexClick == index).isNotEmpty
+        ? bookings.firstWhere((e) => e.indexClick == index)
+        : null;
+
+    // During navigation, booking data may not have loaded yet.
+    if (booking == null) {
+      return const SizedBox.shrink();
+    }
+
+    final int patientIndex = booking.indexClick ?? 0;
+
     return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
         Divider(color: Colors.grey, thickness: 2),
+
         Row(
           spacing: 3,
           children: [
@@ -43,16 +60,17 @@ class PatientDetailsBelowCard extends ConsumerWidget {
               style: TextStyle(
                 fontSize: 12,
                 color: Color(0xFF37474F),
-                fontWeight: FontWeight.bold, // Dark grey-blue
+                fontWeight: FontWeight.bold,
               ),
             ),
+
             Expanded(
               child: InkWell(
                 onTap: () async {
                   await testAddController.storingAndFetchingDiscount();
-                  final int patientIndex =
-                      index ??
-                      (homeState.allBookingDetails.last.indexClick ?? 0);
+
+                  if (!context.mounted) return;
+
                   showDialog(
                     context: context,
                     builder: (_) => DiscountDialog(index: patientIndex),
@@ -66,7 +84,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'Discount : ${homeState.allBookingDetails[index ?? (homeState.allBookingDetails.last.indexClick ?? 0)].discAmt}',
+                      'Discount : ${booking.discAmt}',
                       style: TextStyle(
                         fontSize: 10,
                         color: AppColors.appWhite,
@@ -77,12 +95,10 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 ),
               ),
             ),
+
             Expanded(
               child: InkWell(
                 onTap: () {
-                  final int patientIndex =
-                      index ??
-                      (homeState.allBookingDetails.last.indexClick ?? 0);
                   showDialog(
                     context: context,
                     builder: (_) => ServiceChangeDialog(index: patientIndex),
@@ -96,7 +112,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                   ),
                   child: Center(
                     child: Text(
-                      'Service Charge : ${homeState.allBookingDetails[index ?? (homeState.allBookingDetails.last.indexClick ?? 0)].servChrge}',
+                      'Service Charge : ${booking.servChrge}',
                       style: TextStyle(
                         fontSize: 10,
                         color: AppColors.appWhite,
@@ -109,7 +125,9 @@ class PatientDetailsBelowCard extends ConsumerWidget {
             ),
           ],
         ),
+
         SizedBox(height: 5),
+
         Row(
           spacing: 5,
           children: [
@@ -117,44 +135,42 @@ class PatientDetailsBelowCard extends ConsumerWidget {
               children: [
                 Text(
                   'Total Amount',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF37474F), // Dark grey-blue
-                  ),
+                  style: TextStyle(fontSize: 10, color: Color(0xFF37474F)),
                 ),
                 Text(
                   '₹ ${testAddState.netAmount}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),
-                    fontWeight: FontWeight.bold, // Dark grey-blue
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
+
             Spacer(),
+
             Column(
               children: [
                 Text(
                   'Due Amount',
-                  style: TextStyle(
-                    fontSize: 10,
-                    color: Color(0xFF37474F), // Dark grey-blue
-                  ),
+                  style: TextStyle(fontSize: 10, color: Color(0xFF37474F)),
                 ),
                 Text(
                   '₹ ${testAddState.balanceAmount.toStringAsFixed(2)}',
                   style: TextStyle(
                     fontSize: 12,
                     color: Color(0xFF37474F),
-                    fontWeight: FontWeight.bold, // Dark grey-blue
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ],
             ),
           ],
         ),
+
         SizedBox(height: 10),
+
         Row(
           spacing: 10,
           children: [
@@ -191,6 +207,7 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                 ),
               ),
             ),
+
             Expanded(
               child: InkWell(
                 splashColor: Colors.transparent,
@@ -206,11 +223,8 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     );
                     return;
                   }
-                  if (testAddState.isSync != 'Yes') {
-                    final int patientIndex =
-                        index ??
-                        (homeState.allBookingDetails.last.indexClick ?? 0);
 
+                  if (testAddState.isSync != 'Yes') {
                     if (testAddState.testMasterListSelectedNewPrice.isEmpty) {
                       showDialog(
                         context: context,
@@ -249,15 +263,15 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                       invNo:
                           '${AppConstants.devCode}-${DateFormat('ddMMyy').format(DateTime.now())}-${ref.read(addTestScreenProvider).syncId + 1}',
                     );
-                    final prefs = await SharedPreferences.getInstance();
-                    await prefs.setInt(
-                      'syncId',
-                      ref.read(addTestScreenProvider).syncId + 1,
-                    );
 
-                    testAddController.updatestate(
-                      syncId: ref.read(addTestScreenProvider).syncId + 1,
-                    );
+                    final prefs = await SharedPreferences.getInstance();
+
+                    final newSyncId =
+                        ref.read(addTestScreenProvider).syncId + 1;
+
+                    await prefs.setInt('syncId', newSyncId);
+
+                    testAddController.updatestate(syncId: newSyncId);
 
                     if (!context.mounted) return;
 
@@ -274,7 +288,6 @@ class PatientDetailsBelowCard extends ConsumerWidget {
                     context.pushNamed(AppRouteNames.printBillScreen.name);
                   }
                 },
-
                 child: Container(
                   height: 50,
                   decoration: BoxDecoration(
